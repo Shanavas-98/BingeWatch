@@ -2,11 +2,12 @@ import { Sidebar } from 'flowbite-react';
 import React, { useState } from 'react';
 import "./SideBar.css";
 import { FaInbox, FaUser, FaProductHunt, FaSignInAlt, FaUserPlus } from 'react-icons/fa';
-import Login from '../Login/Login';
 import Signup from '../Signup/Signup';
+import { useNavigate } from 'react-router-dom';
 
 
 function SideBar() {
+  const navigate = useNavigate();
   const [openModal,setOpenModal]=useState(undefined);
   const toggleModal=(formType)=>{
     setOpenModal(formType);
@@ -34,17 +35,15 @@ function SideBar() {
           <Sidebar.Item href="#" icon={FaProductHunt}>
             <p>Products</p>
           </Sidebar.Item>
-          <Sidebar.Item href="#" icon={FaSignInAlt} onClick={()=>toggleModal("login-form")}>
+          <Sidebar.Item icon={FaSignInAlt} onClick={()=>navigate('/login')}>
               <p>Login</p>  
           </Sidebar.Item>
-          <Sidebar.Item href="#" icon={FaUserPlus} onClick={()=>toggleModal("signup-form")}>
+          <Sidebar.Item icon={FaUserPlus} onClick={()=>navigate('/register')}>
             <p>Signup</p>
           </Sidebar.Item>
         </Sidebar.ItemGroup>
       </Sidebar.Items>
     </Sidebar>
-    <Login openModal={openModal} toggleModal={toggleModal}/>
-    <Signup openModal={openModal} toggleModal={toggleModal}/>
     </>
   )
 }

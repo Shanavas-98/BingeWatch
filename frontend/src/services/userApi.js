@@ -1,13 +1,13 @@
 import { userInstance } from "../axios/axiosInstance"
 
 export const userLogin=(values)=>{
-    return userInstance.post('/login',{...values})
+    return userInstance("userJwt").post('/login',{...values})
 }
 
 export const userSignup = (values)=>{
-    return userInstance.post('/register',{...values})
+    return userInstance("userJwt").post('/register',{...values})
 }
 
 export const verifyOtp=(otp)=>{
-    return userInstance.post('/verify',{otp: otp})
+    return userInstance("userJwt").post('/verifyOtp',{otp})
 }
