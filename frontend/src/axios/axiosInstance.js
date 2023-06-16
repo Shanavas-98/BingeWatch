@@ -2,6 +2,8 @@
 import axios from 'axios';
 import { adminUrl, tmdbUrl, userUrl } from './apiUrls';
 
+const tmdbToken = process.env.REACT_APP_TMDB_ACCESS_TOKEN;
+
 const userInstance = axios.create({
   baseURL: userUrl,
   timeout: 5000,
@@ -36,6 +38,7 @@ const tmdbInstance = axios.create({
   baseURL: tmdbUrl,
   headers: {
     'Content-Type': 'application/json',
+    Authorization: `Bearer ${tmdbToken}`,
   },
 });
 

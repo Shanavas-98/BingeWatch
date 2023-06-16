@@ -1,4 +1,5 @@
-/* eslint-disable linebreak-style */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
@@ -6,7 +7,6 @@ const initialState = {
   fullName: '',
   email: '',
   image: '',
-  token: '',
 };
 
 const userSlice = createSlice({
@@ -14,11 +14,18 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUserDetails: (state, action) => {
-      state.value = action.payload;
+      state.id = action.payload._id;
+      state.fullName = action.payload.fullName;
+      state.email = action.payload.email;
+    },
+    setUserLogout: (state) => {
+      state.id = null;
+      state.fullName = null;
+      state.email = null;
     },
   },
 });
 
-export const { setUserSignout, setUserDetails } = userSlice.actions;
+export const { setUserDetails, setUserLogout } = userSlice.actions;
 
 export default userSlice.reducer;

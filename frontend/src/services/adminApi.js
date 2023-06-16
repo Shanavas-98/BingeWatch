@@ -1,4 +1,3 @@
-/* eslint-disable linebreak-style */
 import { adminInstance } from '../axios/axiosInstance';
 
 export const adminLogin = (values) => adminInstance.post('/login', { ...values });

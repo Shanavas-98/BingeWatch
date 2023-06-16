@@ -1,4 +1,3 @@
-/* eslint-disable linebreak-style */
 import { configureStore } from '@reduxjs/toolkit';
 import userSlice from './features/userSlice';
 import adminSlice from './features/adminSlice';

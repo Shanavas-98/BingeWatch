@@ -1,8 +1,5 @@
-/* eslint-disable linebreak-style */
 /* eslint-disable react/prop-types */
-/* eslint-disable linebreak-style */
-// eslint-disable-next-line linebreak-style
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Sidebar } from 'flowbite-react';
 import './SideBar.css';
 import {
@@ -16,20 +13,32 @@ import {
   UserIcon, UserPlusIcon, UsersIcon,
 } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setUserDetails } from '../../redux/features/userSlice';
-import { setAdminDetails } from '../../redux/features/adminSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserLogout } from '../../redux/features/userSlice';
+import { setAdminLogout } from '../../redux/features/adminSlice';
 
 function SideBar({ userType }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+  const admin = useSelector((state) => state.admin);
+  useEffect(() => {
+    if (userType === 'admin' && !admin) {
+      navigate('/admin');
+    }
+    if (userType === 'user' && !user) {
+      navigate('/');
+    }
+  });
   const userLogout = () => {
     localStorage.removeItem('userJwt');
-    dispatch(setUserDetails(null));
+    dispatch(setUserLogout());
+    navigate('/');
   };
   const adminLogout = () => {
     localStorage.removeItem('adminJwt');
-    dispatch(setAdminDetails(null));
+    dispatch(setAdminLogout());
+    navigate('/admin');
   };
   return (
     <Sidebar aria-label="Sidebar with logo branding example" className="dark h-screen">
@@ -46,7 +55,7 @@ function SideBar({ userType }) {
           <Sidebar.Item icon={UsersIcon}>
             <p>Users</p>
           </Sidebar.Item>
-          <Sidebar.Item icon={FilmIcon}>
+          <Sidebar.Item icon={FilmIcon} onClick={() => navigate('/admin/movies')}>
             <p>Movies</p>
           </Sidebar.Item>
           <Sidebar.Item icon={TvIcon}>
@@ -61,7 +70,7 @@ function SideBar({ userType }) {
           <Sidebar.Item icon={ChatBubbleOvalLeftEllipsisIcon}>
             <p>Reports</p>
           </Sidebar.Item>
-          <Sidebar.Item href="/login" icon={ArrowRightOnRectangleIcon}>
+          <Sidebar.Item icon={ArrowRightOnRectangleIcon} onClick={() => navigate('/admin/login')}>
             <p>Login</p>
           </Sidebar.Item>
           <Sidebar.Item icon={ArrowLeftOnRectangleIcon} onClick={adminLogout}>

@@ -14,7 +14,6 @@ const createToken = (id) => {
 
 const login=async(req,res)=>{
     try{
-        console.log(req.body);
         const {email,password}=req.body;
         const admin = await adminModel.findOne({email});
         if(!admin){
@@ -25,7 +24,7 @@ const login=async(req,res)=>{
             throw Error("wrong password");
         }
         const token = createToken(admin._id);
-        res.json({token});
+        res.json({admin,token});
     }catch(error){
         res.json({error});
     }

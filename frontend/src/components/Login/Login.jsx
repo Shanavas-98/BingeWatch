@@ -1,6 +1,6 @@
-/* eslint-disable linebreak-style */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable react/prop-types */
-/* eslint-disable linebreak-style */
 import React, { useEffect } from 'react';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { adminLogin, authAdmin } from '../../services/adminApi';
 import { authUser, userLogin } from '../../services/userApi';
 import { setUserDetails } from '../../redux/features/userSlice';
+import { setAdminDetails } from '../../redux/features/adminSlice';
 
 function Login({ userType }) {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ function Login({ userType }) {
         const { data } = await userLogin(values);
         if (data.token) {
           localStorage.setItem('userJwt', data.token);
-          dispatch(setUserDetails(data.user));
+          dispatch(setUserDetails({ ...data.user }));
           navigate('/');
         } else {
           throw Error(data.error);
@@ -46,7 +47,7 @@ function Login({ userType }) {
         const { data } = await adminLogin(values);
         if (data.token) {
           localStorage.setItem('adminJwt', data.token);
-          dispatch(setUserDetails(data.user));
+          dispatch(setAdminDetails({ ...data.admin }));
           navigate('/admin/dashboard');
         } else {
           throw Error(data.error);

@@ -1,4 +1,3 @@
-/* eslint-disable linebreak-style */
 import React from 'react';
 import { Button, Label, TextInput } from 'flowbite-react';
 import { useFormik } from 'formik';
