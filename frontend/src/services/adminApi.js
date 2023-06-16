@@ -1,13 +1,10 @@
-import { adminInstance } from "../axios/axiosInstance"
+/* eslint-disable linebreak-style */
+import { adminInstance } from '../axios/axiosInstance';
 
-export const adminLogin=(values)=>{
-    return adminInstance("adminJwt").post('/login',{...values})
-}
+export const adminLogin = (values) => adminInstance.post('/login', { ...values });
 
-export const adminSignup = (values)=>{
-    return adminInstance("adminJwt").post('/register',{...values})
-}
+export const adminSignup = (values) => adminInstance.post('/register', { ...values });
 
-export const verifyOtp=(otp)=>{
-    return adminInstance("adminJwt").post('/verify',{otp: otp})
-}
+export const verifyOtp = (otp) => adminInstance.post('/verify', { otp });
+
+export const authAdmin = () => adminInstance.get('/auth-admin');

@@ -1,28 +1,22 @@
+/* eslint-disable linebreak-style */
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    id: "",
-    login: "",
-    token: ""
-}
+  id: '',
+  login: '',
+  token: '',
+};
 
 const adminSlice = createSlice({
-    name: "admin",
-    initialState,
-    reducers: {
-        setAdminDetails: (state, action) => {
-            state.id = action.payload.id;
-            state.login = action.payload.login;
-            state.token = action.payload.token
-        },
-        setAdminSignoutState: (state, action) => {
-            state.id = null;
-            state.login = null;
-            state.token = null;
-        }
-    }
-})
+  name: 'admin',
+  initialState,
+  reducers: {
+    setAdminDetails: (state, action) => {
+      state.value = action.payload;
+    },
+  },
+});
 
-export const { setAdminSignoutState, setAdminDetails } = adminSlice.actions;
+export const { setAdminSignout, setAdminDetails } = adminSlice.actions;
 
 export default adminSlice.reducer;

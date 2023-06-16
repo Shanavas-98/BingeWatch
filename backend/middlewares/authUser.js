@@ -1,15 +1,16 @@
-const jwt = require('jsonwebtoken');
-const userModel = require('../models/userModel');
+const jwt = require("jsonwebtoken");
+const userModel = require("../models/userModel");
 
 module.exports = async (req, res, next) => {
     try {
         //verify user authentication
-        const { authorization } = req.headers
+        const { authorization } = req.headers;
         if (!authorization) {
-            return res.json({ error: "Authorization token required" })
+            return res.json({ error: "Authorization token required" });
         }
 
-        const token = authorization.split(' ')[1];
+        const token = authorization.split(" ")[1];
+        // eslint-disable-next-line no-undef
         jwt.verify(token, process.env.JWT_KEY, async (err, decoded) => {
             if (err) {
                 res.json({ status: false, message: "Unauthorized" });
@@ -19,13 +20,13 @@ module.exports = async (req, res, next) => {
                     req.userId = user._id;
                     next();
                 } else {
-                    res.json({ status: false, message: "User not exists" })
+                    res.json({ status: false, message: "User not exists" });
                 }
             }
-        })
+        });
 
     } catch (err) {
         console.log(err);
-        res.json({ error: "Request is not authorized" })
+        res.json({ error: "Request is not authorized" });
     }
-}
+};

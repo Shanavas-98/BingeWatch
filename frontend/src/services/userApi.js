@@ -1,13 +1,10 @@
-import { userInstance } from "../axios/axiosInstance"
+/* eslint-disable linebreak-style */
+import { userInstance } from '../axios/axiosInstance';
 
-export const userLogin=(values)=>{
-    return userInstance("userJwt").post('/login',{...values})
-}
+export const userLogin = (values) => userInstance.post('/login', { ...values });
 
-export const userSignup = (values)=>{
-    return userInstance("userJwt").post('/register',{...values})
-}
+export const userSignup = (values) => userInstance.post('/register', { ...values });
 
-export const verifyOtp=(otp)=>{
-    return userInstance("userJwt").post('/verifyOtp',{otp})
-}
+export const verifyOtp = (otp) => userInstance.post('/verifyOtp', { otp });
+
+export const authUser = () => userInstance.get('/auth-user');

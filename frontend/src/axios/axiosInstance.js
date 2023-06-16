@@ -1,42 +1,42 @@
+/* eslint-disable linebreak-style */
 import axios from 'axios';
+import { adminUrl, tmdbUrl, userUrl } from './apiUrls';
 
+const userInstance = axios.create({
+  baseURL: userUrl,
+  timeout: 5000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
-const userInstance = (tokenName)=>{
-    const instance = axios.create({
-        baseURL: process.env.REACT_APP_SERVER_URL,
-        timeout:5000,
-        headers:{
-            'Content-Type':'application/json'
-        }
-    });
+// user instance request interceptor
+userInstance.interceptors.request.use((request) => {
+  const token = localStorage.getItem('userJwt');
+  request.headers.authorization = `Bearer ${token}`;
+  return request;
+});
 
-    //instance request interceptor
-    instance.interceptors.request.use((request)=>{
-        const token = localStorage.getItem(tokenName);
-        request.headers.Authorization = `Bearer ${token}`;
-        return request;
-    })
+const adminInstance = axios.create({
+  baseURL: adminUrl,
+  timeout: 5000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
-    return instance;
-}
+// admin instance request interceptor
+adminInstance.interceptors.request.use((request) => {
+  const token = localStorage.getItem('adminJwt');
+  request.headers.authorization = `Bearer ${token}`;
+  return request;
+});
 
-const adminInstance = (tokenName)=>{
-    const instance = axios.create({
-        baseURL: `${process.env.REACT_APP_SERVER_URL}/admin`,
-        timeout:5000,
-        headers:{
-            'Content-Type':'application/json'
-        }
-    });
+const tmdbInstance = axios.create({
+  baseURL: tmdbUrl,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
-    //instance request interceptor
-    instance.interceptors.request.use((request)=>{
-        const token = localStorage.getItem(tokenName);
-        request.headers.Authorization = `Bearer ${token}`;
-        return request;
-    })
-
-    return instance;
-}
-
-export {userInstance,adminInstance};
+export { userInstance, adminInstance, tmdbInstance };

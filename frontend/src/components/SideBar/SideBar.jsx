@@ -1,51 +1,109 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable react/prop-types */
+/* eslint-disable linebreak-style */
+// eslint-disable-next-line linebreak-style
+import React from 'react';
 import { Sidebar } from 'flowbite-react';
-import React, { useState } from 'react';
-import "./SideBar.css";
-import { FaInbox, FaUser, FaProductHunt, FaSignInAlt, FaUserPlus } from 'react-icons/fa';
-import Signup from '../Signup/Signup';
+import './SideBar.css';
+import {
+  ArrowLeftOnRectangleIcon,
+  ArrowRightOnRectangleIcon,
+  BookmarkSquareIcon,
+  ChatBubbleOvalLeftEllipsisIcon,
+  FilmIcon, HomeIcon,
+  Square3Stack3DIcon,
+  TvIcon, UserGroupIcon,
+  UserIcon, UserPlusIcon, UsersIcon,
+} from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setUserDetails } from '../../redux/features/userSlice';
+import { setAdminDetails } from '../../redux/features/adminSlice';
 
-
-function SideBar() {
+function SideBar({ userType }) {
   const navigate = useNavigate();
-  const [openModal,setOpenModal]=useState(undefined);
-  const toggleModal=(formType)=>{
-    setOpenModal(formType);
-  }
+  const dispatch = useDispatch();
+  const userLogout = () => {
+    localStorage.removeItem('userJwt');
+    dispatch(setUserDetails(null));
+  };
+  const adminLogout = () => {
+    localStorage.removeItem('adminJwt');
+    dispatch(setAdminDetails(null));
+  };
   return (
-    <>
-    <Sidebar aria-label="Sidebar with logo branding example">
-      <Sidebar.Logo href="#" img="/favicon.svg" imgAlt="Flowbite logo">
-        <p>Flowbite</p>
+    <Sidebar aria-label="Sidebar with logo branding example" className="dark h-screen">
+      <Sidebar.Logo href="#" img="./images/bingewatch_logo.png" imgAlt="logo">
+        <p>BingeWatch</p>
       </Sidebar.Logo>
       <Sidebar.Items>
+        { userType === 'admin'
+        && (
         <Sidebar.ItemGroup>
-          <Sidebar.Item href="#" icon={FaInbox}>
+          <Sidebar.Item icon={HomeIcon}>
             <p>Dashboard</p>
           </Sidebar.Item>
-          <Sidebar.Item href="#" icon={FaUser}>
-            <p>Kanban</p>
-          </Sidebar.Item>
-          <Sidebar.Item href="#" icon={FaInbox}>
-            <p>Inbox</p>
-          </Sidebar.Item>
-          <Sidebar.Item href="#" icon={FaUser}>
+          <Sidebar.Item icon={UsersIcon}>
             <p>Users</p>
           </Sidebar.Item>
-          <Sidebar.Item href="#" icon={FaProductHunt}>
-            <p>Products</p>
+          <Sidebar.Item icon={FilmIcon}>
+            <p>Movies</p>
           </Sidebar.Item>
-          <Sidebar.Item icon={FaSignInAlt} onClick={()=>navigate('/login')}>
-              <p>Login</p>  
+          <Sidebar.Item icon={TvIcon}>
+            <p>Series</p>
           </Sidebar.Item>
-          <Sidebar.Item icon={FaUserPlus} onClick={()=>navigate('/register')}>
+          <Sidebar.Item icon={UsersIcon}>
+            <p>Actors</p>
+          </Sidebar.Item>
+          <Sidebar.Item icon={Square3Stack3DIcon}>
+            <p>Genres</p>
+          </Sidebar.Item>
+          <Sidebar.Item icon={ChatBubbleOvalLeftEllipsisIcon}>
+            <p>Reports</p>
+          </Sidebar.Item>
+          <Sidebar.Item href="/login" icon={ArrowRightOnRectangleIcon}>
+            <p>Login</p>
+          </Sidebar.Item>
+          <Sidebar.Item icon={ArrowLeftOnRectangleIcon} onClick={adminLogout}>
+            <p>Logout</p>
+          </Sidebar.Item>
+        </Sidebar.ItemGroup>
+        )}
+        {userType === 'user'
+        && (
+        <Sidebar.ItemGroup>
+          <Sidebar.Item icon={HomeIcon}>
+            <p>Home</p>
+          </Sidebar.Item>
+          <Sidebar.Item icon={UserGroupIcon}>
+            <p>Groups</p>
+          </Sidebar.Item>
+          <Sidebar.Item icon={FilmIcon}>
+            <p>Movies</p>
+          </Sidebar.Item>
+          <Sidebar.Item icon={TvIcon}>
+            <p>Series</p>
+          </Sidebar.Item>
+          <Sidebar.Item icon={BookmarkSquareIcon}>
+            <p>Watchlist</p>
+          </Sidebar.Item>
+          <Sidebar.Item icon={UserIcon}>
+            <p>Profile</p>
+          </Sidebar.Item>
+          <Sidebar.Item icon={ArrowRightOnRectangleIcon} onClick={() => navigate('/login')}>
+            <p>Login</p>
+          </Sidebar.Item>
+          <Sidebar.Item icon={ArrowLeftOnRectangleIcon} onClick={userLogout}>
+            <p>Logout</p>
+          </Sidebar.Item>
+          <Sidebar.Item icon={UserPlusIcon} onClick={() => navigate('/register')}>
             <p>Signup</p>
           </Sidebar.Item>
         </Sidebar.ItemGroup>
+        )}
       </Sidebar.Items>
     </Sidebar>
-    </>
-  )
+  );
 }
 
-export default SideBar
+export default SideBar;

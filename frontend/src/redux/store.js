@@ -1,10 +1,11 @@
-import {configureStore} from '@reduxjs/toolkit'
-import userSlice from './features/userSlice'
-import adminSlice from './features/adminSlice'
+/* eslint-disable linebreak-style */
+import { configureStore } from '@reduxjs/toolkit';
+import userSlice from './features/userSlice';
+import adminSlice from './features/adminSlice';
 
 export default configureStore({
-    reducer:{
-        user:userSlice,
-        admin:adminSlice
-    }
-})
+  reducer: {
+    user: userSlice,
+    admin: adminSlice,
+  },
+});

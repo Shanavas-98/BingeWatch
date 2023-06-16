@@ -1,34 +1,24 @@
-import { createSlice } from "@reduxjs/toolkit"
+/* eslint-disable linebreak-style */
+import { createSlice } from '@reduxjs/toolkit';
 
-const initialState={
-    id:"",
-    fullName:"",
-    email:"",
-    image:"",
-    token:""
-}
+const initialState = {
+  id: '',
+  fullName: '',
+  email: '',
+  image: '',
+  token: '',
+};
 
 const userSlice = createSlice({
-    name:"user",
-    initialState,
-    reducers:{
-        setUserDetails:(state,action)=>{
-            state.id=action.payload.id;
-            state.fullName=action.payload.name;
-            state.email=action.payload.email;
-            state.image = action.payload.image;
-            state.token=action.payload.token;
-        },
-        setSignoutState:(state,action)=>{
-            state.id=null;
-            state.fullName=null;
-            state.email=null;
-            state.image =null;
-            state.token=null;
-        }
-    }
-})
+  name: 'user',
+  initialState,
+  reducers: {
+    setUserDetails: (state, action) => {
+      state.value = action.payload;
+    },
+  },
+});
 
-export const {setSignoutState, setUserDetails}=userSlice.actions;
+export const { setUserSignout, setUserDetails } = userSlice.actions;
 
 export default userSlice.reducer;
