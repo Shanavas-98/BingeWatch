@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const movieSchema = new mongoose.Schema({
     movieId:{
@@ -26,4 +26,4 @@ const movieSchema = new mongoose.Schema({
     }
 });
 
-module.exports = new mongoose.model("movie",movieSchema);
+module.exports = new mongoose.model('movie',movieSchema);

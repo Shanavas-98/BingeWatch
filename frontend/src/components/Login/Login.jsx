@@ -6,25 +6,23 @@ import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { Button, Label, TextInput } from 'flowbite-react';
 import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
-import { adminLogin, authAdmin } from '../../services/adminApi';
-import { authUser, userLogin } from '../../services/userApi';
+import { useDispatch, useSelector } from 'react-redux';
+import { adminLogin } from '../../services/adminApi';
+import { userLogin } from '../../services/userApi';
 import { setUserDetails } from '../../redux/features/userSlice';
 import { setAdminDetails } from '../../redux/features/adminSlice';
 
 function Login({ userType }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+  const admin = useSelector((state) => state.admin);
 
   useEffect(() => {
-    if (userType === 'admin') {
-      authAdmin().then((response) => {
-        if (response.data.status) navigate('/admin/dashboard');
-      });
-    } else if (userType === 'user') {
-      authUser().then((response) => {
-        if (response.data.status) navigate('/');
-      });
+    if (userType === 'admin' && admin) {
+      navigate('/admin/dashboard');
+    } else if (userType === 'user' && user) {
+      navigate('/');
     }
   });
 

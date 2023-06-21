@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const userSchema = new mongoose.Schema({
     fullName:{
         type:String,
@@ -29,8 +29,8 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-userSchema.pre("save",async function(next) {
-    if(!this.isModified("password")){
+userSchema.pre('save',async function(next) {
+    if(!this.isModified('password')){
         return next();
     }
     const salt=await bcrypt.genSalt();
@@ -38,4 +38,4 @@ userSchema.pre("save",async function(next) {
     next();
 });
 
-module.exports = new mongoose.model("user",userSchema);
+module.exports = new mongoose.model('user',userSchema);

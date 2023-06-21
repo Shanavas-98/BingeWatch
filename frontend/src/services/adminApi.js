@@ -6,4 +6,6 @@ export const adminSignup = (values) => adminInstance.post('/register', { ...valu
 
 export const verifyOtp = (otp) => adminInstance.post('/verify', { otp });
 
-export const authAdmin = () => adminInstance.get('/auth-admin');
+export const adminAuth = () => adminInstance.get('/auth-admin');
+
+export const addMovie = (id) => adminInstance.post(`/add-movie/${id}`);

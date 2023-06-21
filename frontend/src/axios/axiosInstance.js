@@ -2,6 +2,8 @@
 import axios from 'axios';
 import { adminUrl, tmdbUrl, userUrl } from './apiUrls';
 
+const userToken = localStorage.getItem('userJwt');
+const adminToken = localStorage.getItem('adminJwt');
 const tmdbToken = process.env.REACT_APP_TMDB_ACCESS_TOKEN;
 
 const userInstance = axios.create({
@@ -9,14 +11,8 @@ const userInstance = axios.create({
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',
+    Authorization: `Bearer ${userToken}`,
   },
-});
-
-// user instance request interceptor
-userInstance.interceptors.request.use((request) => {
-  const token = localStorage.getItem('userJwt');
-  request.headers.authorization = `Bearer ${token}`;
-  return request;
 });
 
 const adminInstance = axios.create({
@@ -24,14 +20,8 @@ const adminInstance = axios.create({
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',
+    Authorization: `Bearer ${adminToken}`,
   },
-});
-
-// admin instance request interceptor
-adminInstance.interceptors.request.use((request) => {
-  const token = localStorage.getItem('adminJwt');
-  request.headers.authorization = `Bearer ${token}`;
-  return request;
 });
 
 const tmdbInstance = axios.create({
