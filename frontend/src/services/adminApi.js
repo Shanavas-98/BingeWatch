@@ -8,4 +8,4 @@ export const verifyOtp = (otp) => adminInstance.post('/verify', { otp });
 
 export const adminAuth = () => adminInstance.get('/auth-admin');
 
-export const addMovie = (id) => adminInstance.post(`/add-movie/${id}`);
+export const addMovie = (id) => adminInstance.get(`/add-movie/${id}`);

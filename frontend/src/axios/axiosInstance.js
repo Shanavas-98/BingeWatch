@@ -1,6 +1,8 @@
 /* eslint-disable linebreak-style */
 import axios from 'axios';
-import { adminUrl, tmdbUrl, userUrl } from './apiUrls';
+import {
+  adminUrl, movieUrl, tmdbUrl, userUrl,
+} from './apiUrls';
 
 const userToken = localStorage.getItem('userJwt');
 const adminToken = localStorage.getItem('adminJwt');
@@ -32,4 +34,14 @@ const tmdbInstance = axios.create({
   },
 });
 
-export { userInstance, adminInstance, tmdbInstance };
+const movieInstance = axios.create({
+  baseURL: movieUrl,
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${tmdbToken}`,
+  },
+});
+
+export {
+  userInstance, adminInstance, tmdbInstance, movieInstance,
+};

@@ -12,7 +12,7 @@ function MovieForm({ movie }) {
   const [loading, setLoading] = useState(false);
   const opts = {
     height: '300',
-    width: '50%',
+    width: '100%',
     playerVars: {
       autoplay: 0,
     },
@@ -32,7 +32,7 @@ function MovieForm({ movie }) {
   return (
     <>
       <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
-        <div className="col-span-1">
+        <div className="col-span-1 w-auto">
           <div className="mb-1 block">
             <Label htmlFor="title" value="Movie Title" className="text-white" />
           </div>
@@ -44,7 +44,7 @@ function MovieForm({ movie }) {
             defaultValue={movie ? movie.title || movie.original_title : ''}
           />
         </div>
-        <div className="col-span-1">
+        <div className="col-span-1 w-auto">
           <div className="mb-1 block">
             <Label htmlFor="language" value="Language" className="text-white" />
           </div>
@@ -56,7 +56,7 @@ function MovieForm({ movie }) {
             defaultValue={movie ? movie.language : ''}
           />
         </div>
-        <div className="col-span-1">
+        <div className="col-span-1 w-auto">
           <div className="mb-1 block">
             <Label htmlFor="duration" value="Duration" className="text-white" />
           </div>
@@ -68,7 +68,7 @@ function MovieForm({ movie }) {
             defaultValue={movie ? movie.duration : ''}
           />
         </div>
-        <div className="col-span-1">
+        <div className="col-span-1 w-auto">
           <div className="mb-1 block">
             <Label htmlFor="rating" value="Rating" className="text-white" />
           </div>
@@ -79,7 +79,7 @@ function MovieForm({ movie }) {
             defaultValue={movie ? movie.rating : ''}
           />
         </div>
-        <div className="col-span-1">
+        <div className="col-span-1 w-auto">
           <div className="mb-1 block">
             <Label htmlFor="date" value="Release Date" className="text-white" />
           </div>
@@ -90,7 +90,7 @@ function MovieForm({ movie }) {
             defaultValue={movie ? movie.releaseDate : ''}
           />
         </div>
-        <div className="col-span-1">
+        <div className="col-span-1 w-auto">
           <div className="mb-1 block">
             <Label htmlFor="genres" value="Genres" className="text-white" />
           </div>
@@ -101,7 +101,7 @@ function MovieForm({ movie }) {
             defaultValue={movie ? movie.genres : ''}
           />
         </div>
-        <div className="col-span-2">
+        <div className="col-span-1 w-auto">
           <div className="mb-1 block">
             <Label htmlFor="summary" value="Summary" className="text-white" />
           </div>
@@ -114,15 +114,27 @@ function MovieForm({ movie }) {
           />
         </div>
       </div>
+      <Label htmlFor="platforms" value="Platforms" className="text-white" />
+      <div className="w-full flex">
+        {movie.platforms.map((platform, index = 1) => (
+          <img key={index} src={imgUrl + platform.logo_path} alt={platform.provider_name} className="h-20 w-20 m-2 rounded-lg" />
+        ))}
+      </div>
       <Label htmlFor="posters" value="Posters" className="text-white" />
       <div className="w-full flex">
         {selectedImages.map((image, index = 1) => (
-          <img key={index} src={imgUrl + image} alt={`poster${index}`} className="h-60 w-36 m-2" />
+          <img key={index} src={imgUrl + image} alt={`poster${index}`} className="h-60 w-36 m-2 rounded-md" />
         ))}
       </div>
+
       <Label htmlFor="trailer" value="Trailer" className="text-white" />
-      <div>
-        <YouTube videoId={movie.videos[0]} opts={opts} />
+      <div className="grid lg:grid-cols-2">
+        <div className="m-2">
+          <YouTube videoId={movie.videos[0]} opts={opts} />
+        </div>
+        <div className="m-2">
+          <YouTube videoId={movie.videos[1]} opts={opts} />
+        </div>
       </div>
       <div className="w-full my-2">
         {loading ? <Button isProcessing type="button" className="dark">Add</Button>
