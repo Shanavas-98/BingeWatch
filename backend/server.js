@@ -11,10 +11,8 @@ const path = require('path');
 const userRouter = require('./routes/userRouter');
 const adminRouter = require('./routes/adminRouter');
 
-mongoose.connect(process.env.MONGO_URI,{
-    useNewUrlParser:true,
-    useUnifiedTopology:true
-}).then(()=>{
+mongoose.set('strictQuery', true);
+mongoose.connect(process.env.MONGO_URI).then(()=>{
     console.log('DB connection successfull');
 }).catch((err)=>{
     console.log(err.message);

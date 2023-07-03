@@ -10,7 +10,7 @@ const tmdbToken = process.env.REACT_APP_TMDB_ACCESS_TOKEN;
 
 const userInstance = axios.create({
   baseURL: userUrl,
-  timeout: 5000,
+  timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${userToken}`,
@@ -19,7 +19,7 @@ const userInstance = axios.create({
 
 const adminInstance = axios.create({
   baseURL: adminUrl,
-  timeout: 5000,
+  timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${adminToken}`,

@@ -58,7 +58,6 @@ const verifyOtp = async (req, res) => {
                     verified: true
                 }).save()
                     .then(async(user) => {
-                        console.log('database',user);
                         const token =await createToken(user._id);
                         return res.json({ status: true, message: 'Verification successfull', token });
                     });
@@ -93,20 +92,20 @@ const userAuth = async (req, res) => {
         //verify user authentication
         const { Authorization } = req.headers;
         if (!Authorization) {
-            return res.json({ error: 'Authorization token required' });
+            return res.json({ success:false, message: 'Authorization token required' });
         }
 
         const token = Authorization.split(' ')[1];
         // eslint-disable-next-line no-undef
         jwt.verify(token, process.env.JWT_KEY, async (err, decoded) => {
             if (err) {
-                res.json({ status: false, message: 'Unauthorized' });
+                return res.json({ success: false, message: 'Unauthorized user' });
             } else {
                 const user = await userModel.findOne({ _id: decoded.id });
                 if (user) {
-                    res.json({user,status:true,message:'Authorised'});
+                    return res.json({user,success:true,message:'Authorised'});
                 } else {
-                    res.json({ status: false, message: 'User not exists' });
+                    return res.json({ success: false, message: 'User not exists' });
                 }
             }
         });

@@ -6,25 +6,33 @@ import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { Button, Label, TextInput } from 'flowbite-react';
 import { toast } from 'react-toastify';
-import { useDispatch, useSelector } from 'react-redux';
-import { adminLogin } from '../../services/adminApi';
-import { userLogin } from '../../services/userApi';
+import { useDispatch } from 'react-redux';
+import { adminAuth, adminLogin } from '../../services/adminApi';
+import { userAuth, userLogin } from '../../services/userApi';
 import { setUserDetails } from '../../redux/features/userSlice';
 import { setAdminDetails } from '../../redux/features/adminSlice';
 
 function Login({ userType }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
-  const admin = useSelector((state) => state.admin);
 
   useEffect(() => {
-    if (userType === 'admin' && admin) {
-      navigate('/admin/dashboard');
-    } else if (userType === 'user' && user) {
-      navigate('/');
+    if (userType === 'admin') {
+      adminAuth().then((res) => {
+        console.log('Admin', res.data);
+        if (res.data.success) {
+          navigate('/admin/dashboard');
+        }
+      });
+    } else if (userType === 'user') {
+      userAuth().then((res) => {
+        console.log('User', res.data);
+        if (res.data.success) {
+          navigate('/');
+        }
+      });
     }
-  });
+  }, []);
 
   const initialValues = {
     email: '',

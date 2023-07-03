@@ -1,11 +1,16 @@
 const express = require('express');
 const router=express.Router();
-const {dashboard, login, addMovie, adminAuth}=require('../controllers/adminController');
-const authAdmin = require('../middlewares/authAdmin');
+const {dashboard, login, adminAuth, fetchUsers, blockUser}=require('../controllers/adminController');
+// const authAdmin = require('../middlewares/authAdmin');
+const { getMovie, fetchMovies, fetchMovie } = require('../controllers/movieController');
 
-router.get('/dashboard',authAdmin,dashboard);
+router.get('/dashboard',dashboard);
 router.post('/login',login);
 router.get('/auth-admin',adminAuth);
-router.post('/add-movie/:movieId',authAdmin,addMovie);
+router.get('/users',fetchUsers);
+router.get('/users/block-user/:userId',blockUser);
+router.get('/movies',fetchMovies);
+router.get('/movies/add-movie/:movieId',getMovie);
+router.get('/movies/view-movie/:movieId',fetchMovie);
 
 module.exports = router;

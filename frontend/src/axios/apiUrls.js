@@ -14,5 +14,3 @@ const trendingUrl = `/trending/all/day?api_key=${tmdbKey}&language=en-US`;
 export {
   userUrl, adminUrl, tmdbUrl, trendingUrl, imgUrl, searchUrl, movieUrl,
 };
-
-// url = " https://api.themoviedb.org/3/search/movie?api_key=468f03cf926f8de90194b9e77de68c92&query=Inception&include_adult=false&language=en-US&page=1 "

@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const maxAge = 3 * 24 * 60 * 60;
 const adminModel = require('../models/adminModel');
-const tmdbInstance = require('../axios/tmdbInstance');
+const userModel = require('../models/userModel');
 
 
 const createToken = (id) => {
@@ -18,7 +18,7 @@ const login = async (req, res) => {
         const { email, password } = req.body;
         const admin = await adminModel.findOne({ email });
         if (!admin) {
-            throw Error('admin email doesn\'t exist');
+            throw Error('admin email doesnot exist');
         }
         const auth = await bcrypt.compare(password, admin.password);
         if (!auth) {
@@ -36,20 +36,20 @@ const adminAuth = async (req, res) => {
         //verify user authentication
         const { Authorization } = req.headers;
         if (!Authorization) {
-            return res.json({ error: 'Authorization token required' });
+            return res.json({ success:false, message: 'Authorization token required' });
         }
 
         const token = Authorization.split(' ')[1];
         // eslint-disable-next-line no-undef
         jwt.verify(token, process.env.JWT_KEY, async (err, decoded) => {
             if (err) {
-                res.json({ status: false, message: 'Unauthorized' });
+                res.json({ success: false, message: 'Unauthorized' });
             } else {
                 const admin = await adminModel.findOne({ _id: decoded.id });
                 if (admin) {
-                    res.json({ admin, status: true, message: 'Authorised' });
+                    res.json({ admin, success: true, message: 'Authorised' });
                 } else {
-                    res.json({ status: false, message: 'User not exists' });
+                    res.json({ success: false, message: 'User not exists' });
                 }
             }
         });
@@ -66,43 +66,32 @@ const dashboard = async (req, res) => {
     }
 };
 
-const addMovie = async (req, res) => {
+const fetchUsers = async(req,res)=>{
     try {
-        const movieId = req.params.movieId;
-        tmdbInstance.get('/movie/'+movieId)
-            .then((res) => {
-                console.log(res.data);
-            }).catch((err) => {
-                throw Error(err);
-            });
+        console.log('fetch user function');
+        const users = await userModel.find().lean();
+        console.log(users);
+        res.json(users);
     } catch (err) {
-        res.json({ err });
+        res.json(err);
     }
 };
 
-// {
-//     "iso_639_1": "en",
-//     "iso_3166_1": "US",
-//     "name": "See It Back On The Big Screen",
-//     "key": "FVq8GX6DqTE",
-//     "site": "YouTube",
-//     "size": 1080,
-//     "type": "Teaser",
-//     "official": true,
-//     "published_at": "2022-09-23T17:00:25.000Z",
-//     "id": "632f736b663b87008558e615"
-//   },
-// {
-//     "iso_639_1": "en",
-//     "iso_3166_1": "US",
-//     "name": "Official Trailer",
-//     "key": "5PSNL1qE6VY",
-//     "published_at": "2009-11-09T21:31:39.000Z",
-//     "site": "YouTube",
-//     "size": 720,
-//     "type": "Trailer",
-//     "official": true,
-//     "id": "5b22be749251416e1b01d1d9"
-//   }
+const blockUser = async(req,res)=>{
+    try{
+        const userId = req.params.userId;
+        const user = await userModel.findOne({_id: userId});
+        user.blocked = !user.blocked;
+        await user.save()
+            .then(()=>{
+                res.json({success:true, block:user.blocked});
+            })
+            .catch((err)=>{
+                throw Error('error while blocking user',err);
+            });
+    }catch(err){
+        res.json(err);
+    }
+};
 
-module.exports = { login, dashboard, adminAuth, addMovie };
+module.exports = { login, dashboard, adminAuth, fetchUsers, blockUser };

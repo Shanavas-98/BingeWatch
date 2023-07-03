@@ -1,29 +1,51 @@
 const mongoose = require('mongoose');
 
 const movieSchema = new mongoose.Schema({
-    movieId:{
-        type:Number,
-        required:true
+    id: {
+        type: Number,
+        required: true
     },
-    title:{
-        type:String,
-        required:true
+    imdbId: {
+        type: String,
+        required: true
     },
-    language:{
-        type:String,
-        required:true
+    title: {
+        type: String,
+        required: true
     },
-    genreIds:[Number],
-    overview:{
-        type:String
+    language: {
+        type: String,
+        required: true
     },
-    rating:{
-        type:Number
+    adult: {
+        type: Boolean,
+        required: true
     },
-    releaseDate:{
-        type:String,
-        required:true
-    }
+    rating: {
+        type: Number,
+        required: true
+    },
+    popularity: {
+        type: Number
+    },
+    duration: {
+        type: String,
+        required: true
+    },
+    releaseDate: {
+        type: String,
+        required: true
+    },
+    genres: [Number],
+    productions: [Number],
+    movieCollection: Number,
+    summary: {
+        type: String,
+        required: true
+    },
+    images: [String],
+    videos: [String],
+    platforms: [Number]
 });
 
-module.exports = new mongoose.model('movie',movieSchema);
+module.exports = new mongoose.model('movie', movieSchema);

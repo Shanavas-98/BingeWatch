@@ -67,8 +67,6 @@ function Signup() {
     validationSchema,
   });
 
-  // console.log("Form values",formik.values);
-
   return (
     <div className="grid h-screen place-items-center">
       <div className=" border-2 border-white m-2 p-5 rounded-lg">

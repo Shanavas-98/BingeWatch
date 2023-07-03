@@ -27,8 +27,8 @@ function SideBar({ userType }) {
   useEffect(() => {
     if (userType === 'admin' && !admin.id) {
       adminAuth().then((res) => {
-        console.log('Admin', res.data);
-        if (res.data.status) {
+        // console.log('Admin', res.data);
+        if (res.data.success) {
           dispatch(setAdminDetails({
             id: res.data.admin._id,
             email: res.data.admin.email,
@@ -41,8 +41,7 @@ function SideBar({ userType }) {
     }
     if (userType === 'user' && !user.id) {
       userAuth().then((res) => {
-        console.log('User', res.data);
-        if (res.data.status) {
+        if (res.data.success) {
           dispatch(setUserDetails({
             id: res.data.user._id,
             fullName: res.data.user.fullName,
@@ -54,7 +53,7 @@ function SideBar({ userType }) {
         }
       });
     }
-  });
+  }, []);
   const userLogout = () => {
     localStorage.removeItem('userJwt');
     dispatch(setUserLogout());
@@ -77,7 +76,7 @@ function SideBar({ userType }) {
               <Sidebar.Item icon={HomeIcon}>
                 <p>Dashboard</p>
               </Sidebar.Item>
-              <Sidebar.Item icon={UsersIcon}>
+              <Sidebar.Item icon={UsersIcon} onClick={() => navigate('/admin/users')}>
                 <p>Users</p>
               </Sidebar.Item>
               <Sidebar.Item icon={FilmIcon} onClick={() => navigate('/admin/movies')}>
@@ -95,12 +94,17 @@ function SideBar({ userType }) {
               <Sidebar.Item icon={ChatBubbleOvalLeftEllipsisIcon}>
                 <p>Reports</p>
               </Sidebar.Item>
-              <Sidebar.Item icon={ArrowRightOnRectangleIcon} onClick={() => navigate('/admin/login')}>
-                <p>Login</p>
-              </Sidebar.Item>
-              <Sidebar.Item icon={ArrowLeftOnRectangleIcon} onClick={adminLogout}>
-                <p>Logout</p>
-              </Sidebar.Item>
+              {admin && admin.id
+                ? (
+                  <Sidebar.Item icon={ArrowLeftOnRectangleIcon} onClick={adminLogout}>
+                    <p>Logout</p>
+                  </Sidebar.Item>
+                )
+                : (
+                  <Sidebar.Item icon={ArrowRightOnRectangleIcon} onClick={() => navigate('/admin')}>
+                    <p>Login</p>
+                  </Sidebar.Item>
+                )}
             </Sidebar.ItemGroup>
           )}
         {userType === 'user'
@@ -124,15 +128,22 @@ function SideBar({ userType }) {
               <Sidebar.Item icon={UserIcon}>
                 <p>Profile</p>
               </Sidebar.Item>
-              <Sidebar.Item icon={ArrowRightOnRectangleIcon} onClick={() => navigate('/login')}>
-                <p>Login</p>
-              </Sidebar.Item>
-              <Sidebar.Item icon={ArrowLeftOnRectangleIcon} onClick={userLogout}>
-                <p>Logout</p>
-              </Sidebar.Item>
-              <Sidebar.Item icon={UserPlusIcon} onClick={() => navigate('/register')}>
-                <p>Signup</p>
-              </Sidebar.Item>
+              {user && user.id
+                ? (
+                  <Sidebar.Item icon={ArrowLeftOnRectangleIcon} onClick={userLogout}>
+                    <p>Logout</p>
+                  </Sidebar.Item>
+                )
+                : (
+                  <>
+                    <Sidebar.Item icon={ArrowRightOnRectangleIcon} onClick={() => navigate('/login')}>
+                      <p>Login</p>
+                    </Sidebar.Item>
+                    <Sidebar.Item icon={UserPlusIcon} onClick={() => navigate('/register')}>
+                      <p>Signup</p>
+                    </Sidebar.Item>
+                  </>
+                )}
             </Sidebar.ItemGroup>
           )}
       </Sidebar.Items>
