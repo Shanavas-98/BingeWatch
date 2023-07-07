@@ -57,8 +57,8 @@ const verifyOtp = async (req, res) => {
                     password: newUser.password,
                     verified: true
                 }).save()
-                    .then(async(user) => {
-                        const token =await createToken(user._id);
+                    .then(async (user) => {
+                        const token = await createToken(user._id);
                         return res.json({ status: true, message: 'Verification successfull', token });
                     });
             }
@@ -70,32 +70,32 @@ const verifyOtp = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        const {email,password}=req.body;
-        const user = await userModel.findOne({email});
-        if(!user){
+        const { email, password } = req.body;
+        const user = await userModel.findOne({ email });
+        if (!user) {
             throw Error('incorrect email');
         }
-        const auth = await bcrypt.compare(password,user.password);
-        if(!auth){
+        const auth = await bcrypt.compare(password, user.password);
+        if (!auth) {
             throw Error('wrong password');
         }
         const token = createToken(user._id);
-        res.json({user,token});
-        
+        res.json({ user, token });
+
     } catch (error) {
-        res.json({error});
+        res.json({ error });
     }
 };
 
 const userAuth = async (req, res) => {
     try {
         //verify user authentication
-        const { Authorization } = req.headers;
-        if (!Authorization) {
-            return res.json({ success:false, message: 'Authorization token required' });
+        const { authorization } = req.headers;
+        if (!authorization) {
+            return res.json({ success: false, message: 'authorization token required' });
         }
 
-        const token = Authorization.split(' ')[1];
+        const token = authorization.split(' ')[1];
         // eslint-disable-next-line no-undef
         jwt.verify(token, process.env.JWT_KEY, async (err, decoded) => {
             if (err) {
@@ -103,7 +103,7 @@ const userAuth = async (req, res) => {
             } else {
                 const user = await userModel.findOne({ _id: decoded.id });
                 if (user) {
-                    return res.json({user,success:true,message:'Authorised'});
+                    return res.json({ success: true, message: 'Authorised', user, token });
                 } else {
                     return res.json({ success: false, message: 'User not exists' });
                 }
@@ -115,11 +115,17 @@ const userAuth = async (req, res) => {
 };
 
 const home = async (req, res) => {
-    try{
+    try {
         console.log(req.body);
-    }catch(error){
+    } catch (error) {
         res.json(error);
     }
 };
+
+// const movies = async(req,res)=>{
+//     try{
+
+//     }
+// }
 
 module.exports = { register, verifyOtp, login, home, userAuth };

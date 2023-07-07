@@ -1,30 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useEffect, useState } from 'react';
 import { Button } from 'flowbite-react';
-import { DataGrid } from '@mui/x-data-grid';
-import { makeStyles } from '@mui/styles';
 import { useNavigate } from 'react-router-dom';
 
 import { fetchMovies } from '../../services/adminApi';
-
-const useStyles = makeStyles({
-  root: {
-    '& .MuiDataGrid-root': {
-      color: 'white', // Set the font color to white
-    },
-    '& .MuiDataGrid-columnHeader': {
-      fontWeight: 'bold',
-      position: 'sticky',
-      top: 0,
-      zIndex: 1,
-    },
-    '& .MuiDataGrid-footer .MuiDataGrid-pagination': {
-      '& .MuiPaginationItem-root': {
-        color: 'white', // Set the font color of pagination to white
-      },
-    },
-  },
-});
+import DataTable from '../Table/DataTable';
 
 export default function MovieTable() {
   const navigate = useNavigate();
@@ -54,7 +34,6 @@ export default function MovieTable() {
     },
   ];
   const [movies, setMovies] = useState([]);
-  const classes = useStyles();
   useEffect(() => {
     const getMovies = async () => {
       try {
@@ -67,19 +46,6 @@ export default function MovieTable() {
     getMovies();
   }, []);
   return (
-    <div className="h-screen m-2">
-      <div className={classes.root}>
-        <DataGrid
-          rows={movies}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 10 },
-            },
-          }}
-          pageSizeOptions={[5, 10]}
-        />
-      </div>
-    </div>
+    <DataTable rows={movies} columns={columns} />
   );
 }

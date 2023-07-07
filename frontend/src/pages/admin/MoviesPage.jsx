@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from 'flowbite-react';
 
 import SideBar from '../../components/SideBar/SideBar';
-import MovieTable from '../../components/MovieTable/MovieTable';
+import MovieList from '../../components/MovieTable/MovieList';
 
 function MoviesPage() {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ function MoviesPage() {
         >
           Add Movie
         </Button>
-        <MovieTable />
+        <MovieList />
       </div>
     </div>
   );

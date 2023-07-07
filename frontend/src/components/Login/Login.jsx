@@ -19,14 +19,12 @@ function Login({ userType }) {
   useEffect(() => {
     if (userType === 'admin') {
       adminAuth().then((res) => {
-        console.log('Admin', res.data);
         if (res.data.success) {
           navigate('/admin/dashboard');
         }
       });
     } else if (userType === 'user') {
       userAuth().then((res) => {
-        console.log('User', res.data);
         if (res.data.success) {
           navigate('/');
         }
@@ -42,18 +40,20 @@ function Login({ userType }) {
     try {
       if (userType === 'user') {
         const { data } = await userLogin(values);
-        if (data.token) {
-          localStorage.setItem('userJwt', data.token);
-          dispatch(setUserDetails({ ...data.user }));
+        const { token, user } = data;
+        if (token) {
+          localStorage.setItem('userJwt', token);
+          dispatch(setUserDetails({ ...user, token }));
           navigate('/');
         } else {
           throw Error(data.error);
         }
       } else if (userType === 'admin') {
         const { data } = await adminLogin(values);
-        if (data.token) {
-          localStorage.setItem('adminJwt', data.token);
-          dispatch(setAdminDetails({ ...data.admin }));
+        const { token, admin } = data;
+        if (token) {
+          localStorage.setItem('adminJwt', token);
+          dispatch(setAdminDetails({ ...admin, token }));
           navigate('/admin/dashboard');
         } else {
           throw Error(data.error);

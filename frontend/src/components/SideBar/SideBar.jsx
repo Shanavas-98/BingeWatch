@@ -14,6 +14,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import { setUserDetails, setUserLogout } from '../../redux/features/userSlice';
 import { setAdminDetails, setAdminLogout } from '../../redux/features/adminSlice';
 import { userAuth } from '../../services/userApi';
@@ -22,34 +23,47 @@ import { adminAuth } from '../../services/adminApi';
 function SideBar({ userType }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
-  const admin = useSelector((state) => state.admin);
+  const userData = useSelector((state) => state.user);
+  const adminData = useSelector((state) => state.admin);
   useEffect(() => {
-    if (userType === 'admin' && !admin.id) {
+    if (userType === 'admin' && !adminData.id) {
       adminAuth().then((res) => {
-        // console.log('Admin', res.data);
-        if (res.data.success) {
+        const {
+          success, message, admin, token,
+        } = res.data;
+        if (success) {
           dispatch(setAdminDetails({
-            id: res.data.admin._id,
-            email: res.data.admin.email,
+            id: admin._id,
+            email: admin.email,
+            token,
           }));
         } else {
           localStorage.removeItem('adminJwt');
           dispatch(setAdminLogout());
+          toast.error(message, {
+            position: 'top-center',
+          });
         }
       });
     }
-    if (userType === 'user' && !user.id) {
+    if (userType === 'user' && !userData.id) {
       userAuth().then((res) => {
-        if (res.data.success) {
+        const {
+          success, message, user, token,
+        } = res.data;
+        if (success) {
           dispatch(setUserDetails({
-            id: res.data.user._id,
-            fullName: res.data.user.fullName,
-            email: res.data.user.email,
+            id: user._id,
+            fullName: user.fullName,
+            email: user.email,
+            token,
           }));
         } else {
           localStorage.removeItem('userJwt');
           dispatch(setUserLogout());
+          toast.error(message, {
+            position: 'top-center',
+          });
         }
       });
     }
@@ -66,7 +80,8 @@ function SideBar({ userType }) {
   };
   return (
     <Sidebar aria-label="Sidebar with logo branding example" className="dark h-screen fixed">
-      <Sidebar.Logo img="./images/bingewatch_logo.png" imgAlt="logo">
+      {/* img="./images/bingewatch_logo.png" imgAlt="logo" */}
+      <Sidebar.Logo>
         <p>BingeWatch</p>
       </Sidebar.Logo>
       <Sidebar.Items>
@@ -82,19 +97,19 @@ function SideBar({ userType }) {
               <Sidebar.Item icon={FilmIcon} onClick={() => navigate('/admin/movies')}>
                 <p>Movies</p>
               </Sidebar.Item>
-              <Sidebar.Item icon={TvIcon}>
-                <p>Series</p>
-              </Sidebar.Item>
-              <Sidebar.Item icon={UsersIcon}>
+              <Sidebar.Item icon={UsersIcon} onClick={() => navigate('/admin/actors')}>
                 <p>Actors</p>
               </Sidebar.Item>
-              <Sidebar.Item icon={Square3Stack3DIcon}>
+              <Sidebar.Item icon={UsersIcon} onClick={() => navigate('/admin/crews')}>
+                <p>Crews</p>
+              </Sidebar.Item>
+              <Sidebar.Item icon={Square3Stack3DIcon} onClick={() => navigate('/admin/genres')}>
                 <p>Genres</p>
               </Sidebar.Item>
               <Sidebar.Item icon={ChatBubbleOvalLeftEllipsisIcon}>
                 <p>Reports</p>
               </Sidebar.Item>
-              {admin && admin.id
+              {adminData && adminData.id
                 ? (
                   <Sidebar.Item icon={ArrowLeftOnRectangleIcon} onClick={adminLogout}>
                     <p>Logout</p>
@@ -128,7 +143,7 @@ function SideBar({ userType }) {
               <Sidebar.Item icon={UserIcon}>
                 <p>Profile</p>
               </Sidebar.Item>
-              {user && user.id
+              {userData && userData.id
                 ? (
                   <Sidebar.Item icon={ArrowLeftOnRectangleIcon} onClick={userLogout}>
                     <p>Logout</p>

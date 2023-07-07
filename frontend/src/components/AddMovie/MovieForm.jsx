@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import YouTube from 'react-youtube';
 import { addMovie } from '../../services/adminApi';
 import { imgUrl } from '../../axios/apiUrls';
+import Carousal from '../Carousal/Carousal';
 
 function MovieForm({ movie }) {
   const [loading, setLoading] = useState(false);
@@ -34,6 +35,10 @@ function MovieForm({ movie }) {
   };
   return (
     <>
+      <div className="w-full my-2">
+        {loading ? <Button isProcessing type="button" className="dark">Add</Button>
+          : <Button type="button" className="dark" onClick={() => add(movie.id)}>Add</Button>}
+      </div>
       <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
         <div className="col-span-1 w-auto">
           <div className="mb-1 block">
@@ -130,7 +135,7 @@ function MovieForm({ movie }) {
         ))}
       </div>
 
-      <Label htmlFor="trailer" value="Trailer" className="text-white" />
+      <Label htmlFor="trailer" value="Videos" className="text-white" />
       {movie.videos
       && (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
@@ -141,10 +146,10 @@ function MovieForm({ movie }) {
         ))}
       </div>
       )}
-      <div className="w-full my-2">
-        {loading ? <Button isProcessing type="button" className="dark">Add</Button>
-          : <Button type="button" className="dark" onClick={() => add(movie.id)}>Add</Button>}
-      </div>
+      <Label htmlFor="cast" value="Cast" className="text-white" />
+      <Carousal persons={movie.cast} />
+      <Label htmlFor="crew" value="Crew" className="text-white" />
+      <Carousal persons={movie.crew} />
     </>
   );
 }

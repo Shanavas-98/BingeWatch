@@ -4,23 +4,24 @@ const adminModel = require('../models/adminModel');
 module.exports = async (req, res, next) => {
     try {
         //verify user authentication
-        const { Authorization } = req.headers;
-        if (!Authorization) {
+        const { authorization } = req.headers;
+        if (!authorization) {
             return res.json({ error: 'Authorization token required' });
         }
 
-        const token = Authorization.split(' ')[1];
+        const token = authorization.split(' ')[1];
         // eslint-disable-next-line no-undef
         jwt.verify(token, process.env.JWT_KEY, async (err, decoded) => {
             if (err) {
-                res.json({ status: false, message: 'Unauthorized' });
+                res.json({ success: false, message: 'Admin unauthorized' });
             } else {
                 // eslint-disable-next-line no-undef
                 const admin = await adminModel.findOne({ _id: decoded.id });
                 if (admin) {
+                    req.adminId=admin._id;
                     next();
                 } else {
-                    res.json({ status: false, message: 'Admin not exists' });
+                    res.json({ success: false, message: 'Admin not exists' });
                 }
             }
         });

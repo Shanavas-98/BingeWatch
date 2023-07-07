@@ -22,10 +22,10 @@ function MovieList({ results, onMovieSelect }) {
           providers = [...providers, ...flatrate];
         }
       });
-    await movieInstance.get(`/${movieId}?api_key=${tmdbKey}&append_to_response=videos,images`)
+    await movieInstance.get(`/${movieId}?api_key=${tmdbKey}&append_to_response=videos,images,credits`)
       .then((res) => {
         const {
-          id, title, original_title, original_language, vote_average, release_date, overview, genres, runtime, images, videos,
+          id, title, original_title, original_language, vote_average, release_date, overview, genres, runtime, images, videos, credits,
         } = res.data;
         const genreNames = genres.map((genre) => genre.name);
         const hour = Math.floor(runtime / 60);
@@ -37,6 +37,49 @@ function MovieList({ results, onMovieSelect }) {
           .filter((video) => video.name === 'Official Trailer' || video.type === 'Trailer' || video.type === 'Teaser')
           .map((video) => video.key)
           .slice(0, 6);
+        const cast = credits.cast.map((person) => {
+          let gender = '';
+          if (person.gender === 1) {
+            gender = 'Female';
+          } else if (person.gender === 2) {
+            gender = 'Male';
+          } else {
+            gender = 'Unknown';
+          }
+          return ({
+            order: person.order,
+            character: person.character,
+            gender,
+            castId: person.id,
+            department: person.known_for_department,
+            name: person.name || person.original_name,
+            popularity: person.popularity,
+            profile: person.profile_path,
+          });
+        })
+          .sort((a, b) => a.order - b.order)
+          .slice(0, 20);
+        const crew = credits.crew.map((person) => {
+          let gender = '';
+          if (person.gender === 1) {
+            gender = 'Female';
+          } else if (person.gender === 2) {
+            gender = 'Male';
+          } else {
+            gender = 'Unknown';
+          }
+          return ({
+            job: person.job,
+            gender,
+            crewId: person.id,
+            department: person.department || person.known_for_department,
+            name: person.name || person.original_name,
+            popularity: person.popularity,
+            profile: person.profile_path,
+          });
+        })
+          .sort((a, b) => b.popularity - a.popularity)
+          .slice(0, 20);
         const movie = {
           id,
           title: title || original_title,
@@ -49,6 +92,8 @@ function MovieList({ results, onMovieSelect }) {
           images: posters,
           videos: trailers,
           platforms: providers,
+          cast,
+          crew,
         };
         onMovieSelect(movie);
       }).catch((err) => {

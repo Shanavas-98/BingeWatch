@@ -34,22 +34,22 @@ const login = async (req, res) => {
 const adminAuth = async (req, res) => {
     try {
         //verify user authentication
-        const { Authorization } = req.headers;
-        if (!Authorization) {
+        const { authorization } = req.headers;
+        if (!authorization) {
             return res.json({ success:false, message: 'Authorization token required' });
         }
 
-        const token = Authorization.split(' ')[1];
+        const token = authorization.split(' ')[1];
         // eslint-disable-next-line no-undef
         jwt.verify(token, process.env.JWT_KEY, async (err, decoded) => {
             if (err) {
-                res.json({ success: false, message: 'Unauthorized' });
+                res.json({ success: false, message: 'Admin unauthorized' });
             } else {
-                const admin = await adminModel.findOne({ _id: decoded.id });
+                const admin = await adminModel.findById({ _id: decoded.id });
                 if (admin) {
-                    res.json({ admin, success: true, message: 'Authorised' });
+                    res.json({ success: true, message: 'Authorised', admin, token });
                 } else {
-                    res.json({ success: false, message: 'User not exists' });
+                    res.json({ success: false, message: 'Admin not exists' });
                 }
             }
         });

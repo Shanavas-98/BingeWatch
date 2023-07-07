@@ -6,6 +6,9 @@ import MoviesPage from '../pages/admin/MoviesPage';
 import AddMoviePage from '../pages/admin/AddMoviePage';
 import EditMoviePage from '../pages/admin/EditMoviePage';
 import UsersPage from '../pages/admin/UsersPage';
+import GenresPage from '../pages/admin/GenresPage';
+import ActorsPage from '../pages/admin/ActorsPage';
+import CrewsPage from '../pages/admin/CrewsPage';
 
 function AdminRouter() {
   return (
@@ -16,6 +19,9 @@ function AdminRouter() {
       <Route path="/movies" element={<MoviesPage />} />
       <Route path="/movies/add-movie" element={<AddMoviePage />} />
       <Route path="/movies/view-movie/:movieId" element={<EditMoviePage />} />
+      <Route path="/genres" element={<GenresPage />} />
+      <Route path="/actors" element={<ActorsPage />} />
+      <Route path="/crews" element={<CrewsPage />} />
     </Routes>
   );
 }

@@ -6,7 +6,7 @@ const initialState = {
   id: '',
   fullName: '',
   email: '',
-  image: '',
+  token: '',
 };
 
 const userSlice = createSlice({
@@ -14,14 +14,16 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUserDetails: (state, action) => {
-      state.id = action.payload._id;
+      state.id = action.payload.id;
       state.fullName = action.payload.fullName;
       state.email = action.payload.email;
+      state.token = action.payload.token;
     },
     setUserLogout: (state) => {
       state.id = null;
       state.fullName = null;
       state.email = null;
+      state.token = null;
     },
   },
 });

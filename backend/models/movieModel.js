@@ -45,7 +45,17 @@ const movieSchema = new mongoose.Schema({
     },
     images: [String],
     videos: [String],
-    platforms: [Number]
+    platforms: [Number],
+    cast: [{
+        castId: Number,
+        character: String,
+        order: Number
+    }],
+    crew: [{
+        crewId: Number,
+        job: String,
+        order: Number
+    }]
 });
 
 module.exports = new mongoose.model('movie', movieSchema);

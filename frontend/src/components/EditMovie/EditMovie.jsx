@@ -16,17 +16,9 @@ function EditMovie() {
   const { movieId } = useParams();
   const navigate = useNavigate();
   const [movie, setMovie] = useState({});
-  useEffect(() => {
-    const getMovie = async (id) => {
-      try {
-        const { data } = await fetchMovie(id);
-        setMovie(data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getMovie(movieId);
-  }, [movieId]);
+  const [edit, setEdit] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const opts = {
     height: '200',
     width: '100%',
@@ -34,15 +26,13 @@ function EditMovie() {
       autoplay: 0,
     },
   };
-  const [edit, setEdit] = useState(false);
-  const [loading, setLoading] = useState(false);
   const initialValues = {
+    id: '',
     title: '',
     language: '',
     duration: '',
     rating: '',
     date: '',
-    genres: '',
     summary: '',
   };
   // Yup form validation
@@ -52,22 +42,24 @@ function EditMovie() {
     language: Yup.string()
       .required('Email is Required'),
     duration: Yup.string()
-      .required('This field required'),
+      .required('duration is required'),
     rating: Yup.string()
       .required('rating is Required'),
-    date: Yup.string()
+    releaseDate: Yup.string()
       .required('date is Required '),
-    genres: Yup.string()
-      .required('date is Required '),
-    Summary: Yup.string()
-      .required('date is Required '),
+    summary: Yup.string()
+      .required('summary is Required '),
   });
   const onSubmit = async (values) => {
     try {
+      console.log('onSubmit works');
       // seting the loading state
       setLoading(!loading);
       const { data } = await editMovie(values);
       if (data.success) {
+        toast.success(data.message, {
+          position: 'top-center',
+        });
         navigate('admin/movies');
       } else {
         setLoading(false);
@@ -85,96 +77,238 @@ function EditMovie() {
     validationSchema,
   });
 
+  useEffect(() => {
+    const getMovie = async (id) => {
+      try {
+        const { data } = await fetchMovie(id);
+        setMovie(data);
+        formik.setValues({
+          id: data?.id || '',
+          title: data?.title || '',
+          language: data?.language || '',
+          duration: data?.duration || '',
+          rating: data?.rating || '',
+          releaseDate: data?.releaseDate || '',
+          summary: data?.summary || '',
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getMovie(movieId);
+  }, [movieId]);
+
   return (
     <div className="m-2">
       <Button type="button" className="dark" onClick={() => setEdit(true)}>Edit</Button>
-      <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
-        <div className="col-span-1 w-auto">
-          <div className="mb-1 block">
-            <Label htmlFor="title" value="Movie Title" className="text-white" />
-          </div>
-          <TextInput
-            name="title"
-            type="text"
-            className="dark"
-            readOnly={!edit}
-            defaultValue={movie ? movie.title || movie.original_title : ''}
-          />
+      <form action="" method="post" onSubmit={formik.handleSubmit}>
+        {edit && (
+        <div className="w-full my-2">
+          {loading ? (
+            <Button isProcessing type="button" className="dark">
+              Update
+            </Button>
+          ) : (
+            <Button type="submit" className="dark">
+              Update
+            </Button>
+          )}
         </div>
-        <div className="col-span-1 w-auto">
-          <div className="mb-1 block">
-            <Label htmlFor="language" value="Language" className="text-white" />
+        )}
+        <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
+          <div className="col-span-1 w-auto">
+            <div className="mb-1 block">
+              <Label htmlFor="title" value="Movie Title" className="text-white" />
+            </div>
+            {formik.touched.title && formik.errors.title
+              ? <p>{formik.errors.title}</p> : null}
+            {edit
+              ? (
+                <TextInput
+                  name="title"
+                  type="text"
+                  className="dark"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.title}
+                />
+              )
+              : (
+                <TextInput
+                  name="title"
+                  type="text"
+                  className="dark"
+                  readOnly={!edit}
+                  defaultValue={movie ? movie.title : ''}
+                />
+              )}
           </div>
-          <TextInput
-            name="language"
-            type="text"
-            className="dark"
-            readOnly={!edit}
-            defaultValue={movie ? movie.language : ''}
-          />
-        </div>
-        <div className="col-span-1 w-auto">
-          <div className="mb-1 block">
-            <Label htmlFor="duration" value="Duration" className="text-white" />
+          <div className="col-span-1 w-auto">
+            <div className="mb-1 block">
+              <Label htmlFor="language" value="Language" className="text-white" />
+            </div>
+            {formik.touched.language && formik.errors.language
+              ? <p>{formik.errors.language}</p> : null}
+            {edit
+              ? (
+                <TextInput
+                  name="language"
+                  type="text"
+                  className="dark"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.language}
+                />
+              )
+              : (
+                <TextInput
+                  name="language"
+                  type="text"
+                  className="dark"
+                  readOnly={!edit}
+                  defaultValue={movie ? movie.language : ''}
+                />
+              )}
           </div>
-          <TextInput
-            name="duration"
-            type="text"
-            className="dark"
-            readOnly={!edit}
-            defaultValue={movie ? movie.duration : ''}
-          />
-        </div>
-        <div className="col-span-1 w-auto">
-          <div className="mb-1 block">
-            <Label htmlFor="rating" value="Rating" className="text-white" />
+          <div className="col-span-1 w-auto">
+            <div className="mb-1 block">
+              <Label htmlFor="duration" value="Duration" className="text-white" />
+            </div>
+            {formik.touched.duration && formik.errors.duration
+              ? <p>{formik.errors.duration}</p> : null}
+            {edit
+              ? (
+                <TextInput
+                  name="duration"
+                  type="text"
+                  className="dark"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.duration}
+                />
+              )
+              : (
+                <TextInput
+                  name="duration"
+                  type="text"
+                  className="dark"
+                  readOnly={!edit}
+                  defaultValue={movie ? movie.duration : ''}
+                />
+              )}
           </div>
-          <TextInput
-            name="rating"
-            type="text"
-            className="dark"
-            readOnly={!edit}
-            defaultValue={movie ? movie.rating : ''}
-          />
-        </div>
-        <div className="col-span-1 w-auto">
-          <div className="mb-1 block">
-            <Label htmlFor="date" value="Release Date" className="text-white" />
+          <div className="col-span-1 w-auto">
+            <div className="mb-1 block">
+              <Label htmlFor="rating" value="Rating" className="text-white" />
+            </div>
+            {formik.touched.rating && formik.errors.rating
+              ? <p>{formik.errors.rating}</p> : null}
+            {edit
+              ? (
+                <TextInput
+                  name="rating"
+                  type="text"
+                  className="dark"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.rating}
+                />
+              )
+              : (
+                <TextInput
+                  name="rating"
+                  type="text"
+                  className="dark"
+                  readOnly={!edit}
+                  defaultValue={movie ? movie.rating : ''}
+                />
+              )}
           </div>
-          <TextInput
-            name="date"
-            type="text"
-            className="dark"
-            readOnly={!edit}
-            defaultValue={movie ? movie.releaseDate : ''}
-          />
-        </div>
-        <div className="col-span-1 w-auto">
-          <div className="mb-1 block">
-            <Label htmlFor="genres" value="Genres" className="text-white" />
+          <div className="col-span-1 w-auto">
+            <div className="mb-1 block">
+              <Label htmlFor="date" value="Release Date" className="text-white" />
+            </div>
+            {formik.touched.releaseDate && formik.errors.releaseDate
+              ? <p>{formik.errors.releaseDate}</p> : null}
+            {edit
+              ? (
+                <TextInput
+                  name="releaseDate"
+                  type="text"
+                  className="dark"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.releaseDate}
+                />
+              )
+              : (
+                <TextInput
+                  name="date"
+                  type="text"
+                  className="dark"
+                  readOnly={!edit}
+                  defaultValue={movie ? movie.releaseDate : ''}
+                />
+              )}
           </div>
-          <TextInput
-            name="genres"
-            type="text"
-            className="dark"
-            readOnly={!edit}
-            defaultValue={movie ? movie.genres : ''}
-          />
-        </div>
-        <div className="col-span-1 w-auto">
-          <div className="mb-1 block">
-            <Label htmlFor="summary" value="Summary" className="text-white" />
+          <div className="col-span-1 w-auto">
+            <div className="mb-1 block">
+              <Label htmlFor="genres" value="Genres" className="text-white" />
+            </div>
+            {formik.touched.genres && formik.errors.genres
+              ? <p>{formik.errors.genres}</p> : null}
+            {edit
+              ? (
+                <TextInput
+                  name="genres"
+                  type="text"
+                  className="dark"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.genres}
+                />
+              )
+              : (
+                <TextInput
+                  name="genres"
+                  type="text"
+                  className="dark"
+                  readOnly={!edit}
+                  defaultValue={movie ? movie.genres : ''}
+                />
+              )}
           </div>
-          <Textarea
-            name="summary"
-            type="text"
-            rows={5}
-            className="bg-slate-700 text-white "
-            readOnly={!edit}
-            defaultValue={movie ? movie.summary : ''}
-          />
+          <div className="col-span-1 w-auto">
+            <div className="mb-1 block">
+              <Label htmlFor="summary" value="Summary" className="text-white" />
+            </div>
+            {formik.touched.summary && formik.errors.summary
+              ? <p>{formik.errors.summary}</p> : null}
+            {edit
+              ? (
+                <Textarea
+                  name="summary"
+                  type="text"
+                  rows={5}
+                  className="bg-slate-700 text-white"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.summary}
+                />
+              )
+              : (
+                <Textarea
+                  name="summary"
+                  type="text"
+                  rows={5}
+                  className="bg-slate-700 text-white"
+                  readOnly={!edit}
+                  defaultValue={movie ? movie.summary : ''}
+                />
+              )}
+          </div>
         </div>
-      </div>
+      </form>
       <Label htmlFor="posters" value="Posters" className="text-white" />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
         {movie?.images?.map((image, index = 1) => (
@@ -192,19 +326,6 @@ function EditMovie() {
             ))}
           </div>
         )}
-      {edit && (
-        <div className="w-full my-2">
-          {loading ? (
-            <Button isProcessing type="button" className="dark">
-              Update
-            </Button>
-          ) : (
-            <Button type="button" className="dark" onClick={() => update(movie.id)}>
-              Update
-            </Button>
-          )}
-        </div>
-      )}
     </div>
   );
 }

@@ -1,0 +1,27 @@
+
+.tiles{
+    display: flex;
+    padding: 5px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+.tiles::-webkit-scrollbar{
+    display: none;
+}
+
+.tile{
+    width: 100px;
+    cursor: pointer;
+}
+
+.tile-img{
+    width: 100px;
+    height: 200px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.tile-img:hover{
+    transform: scale(1.1);
+}
