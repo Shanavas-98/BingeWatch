@@ -4,7 +4,6 @@ import './Carousal.css';
 import { imgUrl } from '../../axios/apiUrls';
 
 function Carousal({ persons }) {
-  console.log(persons);
   return (
     <div className="flex">
       <div className="tiles">

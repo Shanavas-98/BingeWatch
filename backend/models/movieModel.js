@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const movieSchema = new mongoose.Schema({
     id: {
@@ -36,8 +37,14 @@ const movieSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    genres: [Number],
-    productions: [Number],
+    genres: [{
+        type: ObjectId,
+        ref: 'platform',
+    }],
+    productions: [{
+        type: ObjectId,
+        ref: 'production',
+    }],
     movieCollection: Number,
     summary: {
         type: String,
@@ -45,14 +52,23 @@ const movieSchema = new mongoose.Schema({
     },
     images: [String],
     videos: [String],
-    platforms: [Number],
-    cast: [{
-        castId: Number,
+    platforms: [{
+        type: ObjectId,
+        ref: 'platform',
+    }],
+    casts: [{
+        cast: {
+            type: ObjectId,
+            ref: 'cast'
+        },
         character: String,
         order: Number
     }],
-    crew: [{
-        crewId: Number,
+    crews: [{
+        crew: {
+            type: ObjectId,
+            ref: 'crew'
+        },
         job: String,
         order: Number
     }]
