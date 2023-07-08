@@ -15,7 +15,7 @@ mongoose.set('strictQuery', true);
 mongoose.connect(process.env.MONGO_URI).then(()=>{
     console.log('DB connection successfull');
 }).catch((err)=>{
-    console.log(err.message);
+    console.error(err.message);
 });
 
 app.use(cors({

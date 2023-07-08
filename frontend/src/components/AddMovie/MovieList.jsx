@@ -97,7 +97,7 @@ function MovieList({ results, onMovieSelect }) {
         };
         onMovieSelect(movie);
       }).catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
   return (

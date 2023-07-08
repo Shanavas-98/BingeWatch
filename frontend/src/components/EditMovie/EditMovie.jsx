@@ -92,7 +92,7 @@ function EditMovie() {
           summary: data?.summary || '',
         });
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     };
     getMovie(movieId);

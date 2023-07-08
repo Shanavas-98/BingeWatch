@@ -60,7 +60,7 @@ const adminAuth = async (req, res) => {
 
 const dashboard = async (req, res) => {
     try {
-        console.log(req.body);
+        // console.log(req.body);
     } catch (error) {
         res.json({ error });
     }
@@ -68,9 +68,7 @@ const dashboard = async (req, res) => {
 
 const fetchUsers = async(req,res)=>{
     try {
-        console.log('fetch user function');
         const users = await userModel.find().lean();
-        console.log(users);
         res.json(users);
     } catch (err) {
         res.json(err);

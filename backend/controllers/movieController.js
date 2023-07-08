@@ -14,15 +14,26 @@ const addPlatform = async (platform) => {
         const exist = await platformModel
             .findOne({ platformId: platform?.provider_id })
             .lean();
-        if (!exist) {
-            const platformData = await new platformModel({
-                platformId: platform?.provider_id,
-                platformName: platform?.provider_name,
-                logoPath: platform?.logo_path,
-            }).save();
-            const platformId = mongoose.Types.ObjectId(platformData._id);
-            return platformId;
+        if (exist) {
+            return (mongoose.Types.ObjectId(exist._id));
+        } else {
+            const result = await new Promise((resolve, reject) => {
+                new platformModel({
+                    platformId: platform?.provider_id,
+                    platformName: platform?.provider_name,
+                    logoPath: platform?.logo_path,
+                })
+                    .save()
+                    .then((document) => {
+                        resolve(mongoose.Types.ObjectId(document._id));
+                    }).catch((error) => {
+                        console.error('Error saving platform:', error);
+                        reject(null);
+                    });
+            });
+            return result;
         }
+
     } catch (err) {
         console.error('error adding single platform', err);
     }
@@ -33,7 +44,9 @@ const addPlatforms = async (providers) => {
         let platformArray = [];
         for (const platform of providers) {
             const platformId = await addPlatform(platform);
-            platformArray.push(platformId);
+            if (platformId) {
+                platformArray.push(platformId);
+            }
         }
         return platformArray;
     } catch (err) {
@@ -59,31 +72,38 @@ const getPlatformDetails = async (movieId) => {
         const platformIds = await addPlatforms(providers);
         return platformIds;
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
-
 };
-
-
 
 const addCast = async (actor) => {
     try {
         const exist = await castModel
             .findOne({ castId: actor?.castId })
             .lean();
-        if (!exist) {
-            const cast = await new castModel({
-                castId: actor?.castId,
-                name: actor?.name,
-                profile: actor?.profile,
-                gender: actor?.gender,
-                popularity: actor?.popularity
-            }).save();
-            const castData = { cast: mongoose.Types.ObjectId(cast._id), character: actor?.character, order: actor?.order };
-            return castData;
+        if (exist) {
+            return ({ cast: mongoose.Types.ObjectId(exist._id), character: actor?.character, order: actor?.order });
+        } else {
+            const result = await new Promise((resolve, reject) => {
+                new castModel({
+                    castId: actor?.castId,
+                    name: actor?.name,
+                    profile: actor?.profile,
+                    gender: actor?.gender,
+                    popularity: actor?.popularity
+                })
+                    .save()
+                    .then((document) => {
+                        resolve({ cast: mongoose.Types.ObjectId(document._id), character: actor?.character, order: actor?.order });
+                    }).catch((error) => {
+                        console.error('Error saving cast:', error);
+                        reject(null);
+                    });
+            });
+            return result;
         }
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 };
 
@@ -92,19 +112,29 @@ const addCrew = async (person) => {
         const exist = await crewModel
             .findOne({ crewId: person?.crewId })
             .lean();
-        if (!exist) {
-            const crew = await new crewModel({
-                crewId: person?.crewId,
-                name: person?.name,
-                profile: person?.profile,
-                gender: person?.gender,
-                popularity: person?.popularity
-            }).save();
-            const crewData = { crew: mongoose.Types.ObjectId(crew._id), job: person?.job };
-            return crewData;
+        if (exist) {
+            return ({ crew: mongoose.Types.ObjectId(exist._id), job: person?.job });
+        } else {
+            const result = await new Promise((resolve, reject) => {
+                new crewModel({
+                    crewId: person?.crewId,
+                    name: person?.name,
+                    profile: person?.profile,
+                    gender: person?.gender,
+                    popularity: person?.popularity
+                })
+                    .save()
+                    .then((document) => {
+                        resolve({ crew: mongoose.Types.ObjectId(document._id), job: person?.job });
+                    }).catch((error) => {
+                        console.error('Error saving cast:', error);
+                        reject(null);
+                    });
+            });
+            return result;
         }
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 };
 
@@ -113,36 +143,35 @@ const addCasts = async (casts) => {
         let castArray = [];
         for (const actor of casts) {
             const castData = await addCast(actor);
-            castArray.push(castData);
+            if (castData) {
+                castArray.push(castData);
+            }
         }
         return castArray;
     } catch (err) {
-        console.log(err);
+        console.errpr(err);
     }
 };
 
 const addCrews = async (crew) => {
     try {
-        // let crewArray = [];
-        // let index = 0;
-        // for (const person of crew) {
-        //     const crewData = addCrew(person);
-        //     crewArray.push({...crewData,order:index});
-        //     index++;
-        // }
-        const crewArray = crew.map(async (person, index) => {
-            const crewData = await addCrew(person);
-            return { ...crewData, order: index };
-        });
+        let crewArray = [];
+        for (let i = 0; i < crew.length; i++) {
+            const crewData = await addCrew(crew[i]);
+            if (crewData) {
+                crewData.order = i;
+                crewArray.push(crewData);
+            }
+        }
         return crewArray;
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 };
 
 const addCastDetails = async (castDetails) => {
     try {
-        castDetails.map((person) => {
+        const cast = castDetails.map((person) => {
             let gender = '';
             if (person.gender === 1) {
                 gender = 'Female';
@@ -209,7 +238,7 @@ const getCastAndCrew = async (movieId) => {
         await movieInstance
             .get(`/${movieId}/credits?api_key=${tmdbKey}`)
             .then((response) => {
-                const { cast, crew } = response;
+                const { cast, crew } = response.data;
                 castDetails = cast;
                 crewDetails = crew;
             });
@@ -226,16 +255,26 @@ const addGenre = async (genre) => {
         const exist = await genreModel
             .findOne({ genreId: genre?.id })
             .lean();
-        if (!exist) {
-            const genreData = await new genreModel({
-                genreId: genre?.id,
-                genreName: genre?.name
-            }).save();
-            const genreId = mongoose.Types.ObjectId(genreData._id);
-            return genreId;
+        if (exist) {
+            return (mongoose.Types.ObjectId(exist._id));
+        } else {
+            const result = await new Promise((resolve, reject) => {
+                new genreModel({
+                    genreId: genre?.id,
+                    genreName: genre?.name
+                })
+                    .save()
+                    .then((document) => {
+                        resolve(mongoose.Types.ObjectId(document._id));
+                    }).catch((error) => {
+                        console.error('Error saving platform:', error);
+                        reject(null);
+                    });
+            });
+            return result;
         }
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 };
 
@@ -244,11 +283,13 @@ const addGenres = async (genres) => {
         let genreArray = [];
         for (const genre of genres) {
             const genreId = await addGenre(genre);
-            genreArray.push(genreId);
+            if (genreId) {
+                genreArray.push(genreId);
+            }
         }
         return genreArray;
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 };
 
@@ -257,18 +298,28 @@ const addProduction = async (production) => {
         const exist = await productionModel
             .findOne({ productionId: production?.id })
             .lean();
-        if (!exist) {
-            const productionData = await new productionModel({
-                productionId: production?.id,
-                productionName: production?.name,
-                logoPath: production?.logo_path,
-                country: production?.origin_country
-            }).save();
-            const productionId = mongoose.Types.ObjectId(productionData._id);
-            return productionId;
+        if (exist) {
+            return (mongoose.Types.ObjectId(exist._id));
+        } else {
+            const result = await new Promise((resolve, reject) => {
+                new productionModel({
+                    productionId: production?.id,
+                    productionName: production?.name,
+                    logoPath: production?.logo_path,
+                    country: production?.origin_country
+                })
+                    .save()
+                    .then((document) => {
+                        resolve(mongoose.Types.ObjectId(document._id));
+                    }).catch((error) => {
+                        console.error('Error saving platform:', error);
+                        reject(null);
+                    });
+            });
+            return result;
         }
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 };
 
@@ -277,11 +328,13 @@ const addProductions = async (productions) => {
         let productionArray = [];
         for (const production of productions) {
             const productionId = await addProduction(production);
-            productionArray.push(productionId);
+            if (productionId) {
+                productionArray.push(productionId);
+            }
         }
         return productionArray;
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 };
 
@@ -290,7 +343,9 @@ const addMovie = async (movie) => {
         const exist = await movieModel
             .findOne({ id: movie?.id })
             .lean();
-        if (!exist) {
+        if (exist) {
+            return ({ success: false, message: 'movie already exists!' });
+        } else {
             const result = await new Promise((resolve, reject) => {
                 new movieModel(movie)
                     .save()
@@ -298,15 +353,13 @@ const addMovie = async (movie) => {
                         resolve({ success: true, message: 'movie added successfully' });
                     }).catch((error) => {
                         console.error('Error saving movie:', error);
-                        reject({ success: false, message: 'failed to save movie', error });
+                        reject({ success: false, message: 'failed to save movie' });
                     });
             });
             return result;
-        } else {
-            return ({ success: false, message: 'movie already exists!' });
         }
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 };
 
@@ -335,8 +388,6 @@ const addMovieDetails = async (movieDetails) => {
         } = movieDetails;
         const genreIds = await addGenres(genres);
         const productionIds = await addProductions(production_companies);
-        // const genreIds = genres.map((genre) => genre?.id);
-        // const productionIds = production_companies?.map((company) => company?.id);
         const hour = Math.floor(runtime / 60);
         const min = runtime % 60;
         const duration = `${hour}h ${min}m`;
@@ -377,13 +428,8 @@ const addMovieDetails = async (movieDetails) => {
 const getMovieDetails = async (req, res) => {
     try {
         const movieId = req.params?.movieId;
-        console.log('movieId', movieId);
         const platforms = await getPlatformDetails(movieId);
-        console.log('plaaaaaaaaaaatfooooormsssssssss\n', platforms);
-        // const providerIds = [...new Set(providers.map((provider) => provider?.provider_id))];
         const { casts, crews } = await getCastAndCrew(movieId);
-        console.log('caaaaaaaaaasssssssstttttttttsssssss\n', casts);
-        console.log('crrreeeeeeeeewwwwsssssss\n', crews);
         let movieData = {};
         await movieInstance
             .get(`/${movieId}?api_key=${tmdbKey}&append_to_response=videos,images`)
@@ -430,7 +476,7 @@ const getMovieDetails = async (req, res) => {
                 };
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
             });
         const { success, message } = await addMovieDetails(movieData);
         res.json({ success, message });
@@ -439,18 +485,6 @@ const getMovieDetails = async (req, res) => {
         res.json(err);
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
 
 const fetchMovies = async (req, res) => {
     try {
