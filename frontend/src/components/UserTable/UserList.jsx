@@ -1,37 +1,16 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
-import { makeStyles } from '@mui/styles';
 import { Button } from 'flowbite-react';
 
 import { toast } from 'react-toastify';
 import { blockUser, fetchUsers } from '../../services/adminApi';
-
-const useStyles = makeStyles({
-  root: {
-    '& .MuiDataGrid-root': {
-      color: 'white', // Set the font color to white
-    },
-    '& .MuiDataGrid-columnHeader': {
-      fontWeight: 'bold',
-      position: 'sticky',
-      top: 0,
-      zIndex: 1,
-    },
-    '& .MuiDataGrid-footer .MuiDataGrid-pagination': {
-      '& .MuiPaginationItem-root': {
-        color: 'white', // Set the font color of pagination to white
-      },
-    },
-  },
-});
+import DataTable from '../Table/DataTable';
 
 function BlockButton(params) {
   const [block, setBlock] = useState(params?.row?.blocked);
   const handleBlock = async () => {
     const userId = params?.row?._id;
     const { data } = await blockUser(userId);
-    console.log('block', data);
     if (data.success) {
       if (data.block) {
         toast.warning('user blocked successfully');
@@ -49,19 +28,21 @@ function BlockButton(params) {
 }
 
 function UserList() {
+  const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   useEffect(() => {
     const getUsers = async () => {
       try {
         const { data } = await fetchUsers();
         setUsers(data);
-      } catch (err) {
-        console.error('Error while fetching users', err);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+        setLoading(false);
       }
     };
     getUsers();
   }, []);
-  const classes = useStyles();
   const columns = [
     { field: 'id', headerName: 'ID', width: 100 },
     { field: 'fullName', headerName: 'Full Name', width: 150 },
@@ -72,7 +53,7 @@ function UserList() {
       field: '_id', headerName: 'Action', width: 100, renderCell: BlockButton,
     },
   ];
-  const rows = users.map((user, index) => ({
+  const rows = users?.map((user, index) => ({
     id: index + 1,
     fullName: user.fullName,
     email: user.email,
@@ -80,23 +61,25 @@ function UserList() {
     verified: user.verified,
     _id: user._id,
   }));
-
-  return (
-    <div className="h-screen m-2">
-      <h1 className="text-white">Users List</h1>
-      <div className={classes.root}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 10 },
-            },
-          }}
-          pageSizeOptions={[5, 10]}
-        />
+  if (loading) {
+    return (
+      <div>
+        <h1 className="text-white">Loading...</h1>
       </div>
-    </div>
+    ); // Display a loading indicator
+  }
+  if (rows.length < 1) {
+    return (
+      <div>
+        <h1 className="text-white">Users List is Empty</h1>
+      </div>
+    );
+  }
+  return (
+    <>
+      <h1 className="text-white m-2">Users List</h1>
+      <DataTable rows={rows} columns={columns} />
+    </>
   );
 }
 

@@ -79,6 +79,9 @@ const login = async (req, res) => {
         if (!auth) {
             throw Error('wrong password');
         }
+        if(user.blocked){
+            throw Error('user is temporarily blocked');
+        }
         const token = createToken(user._id);
         res.json({ user, token });
 
@@ -103,7 +106,7 @@ const userAuth = async (req, res) => {
             } else {
                 const user = await userModel.findOne({ _id: decoded.id });
                 if (user) {
-                    return res.json({ success: true, message: 'Authorised', user, token });
+                    return res.json({ success: true, message: 'Authorised', user });
                 } else {
                     return res.json({ success: false, message: 'User not exists' });
                 }

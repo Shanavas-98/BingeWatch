@@ -5,7 +5,6 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   id: '',
   email: '',
-  token: '',
 };
 
 const adminSlice = createSlice({
@@ -13,15 +12,10 @@ const adminSlice = createSlice({
   initialState,
   reducers: {
     setAdminDetails: (state, action) => {
-      state.id = action.payload.id;
+      state.id = action.payload._id;
       state.email = action.payload.email;
-      state.token = action.payload.token;
     },
-    setAdminLogout: (state) => {
-      state.id = null;
-      state.email = null;
-      state.token = null;
-    },
+    setAdminLogout: () => initialState,
   },
 });
 

@@ -4,14 +4,17 @@ import DataTable from '../Table/DataTable';
 import { fetchCrews } from '../../services/adminApi';
 
 function CrewsList() {
+  const [loading, setLoading] = useState(true);
   const [crews, setCrews] = useState([]);
   useEffect(() => {
     const getCrews = async () => {
       try {
         const { data } = await fetchCrews();
         setCrews(data);
+        setLoading(false);
       } catch (err) {
-        console.error('Error while fetching actors', err);
+        console.error('Error fetching crews', err);
+        setLoading(false);
       }
     };
     getCrews();
@@ -32,9 +35,23 @@ function CrewsList() {
     popularity: person.popularity,
     _id: person._id,
   }));
+  if (loading) {
+    return (
+      <div>
+        <h1 className="text-white">Loading...</h1>
+      </div>
+    ); // Display a loading indicator
+  }
+  if (rows.length < 1) {
+    return (
+      <div>
+        <h1 className="text-white">Crews List is Empty</h1>
+      </div>
+    );
+  }
   return (
     <>
-      <h1 className="text-white m-2">Actors List</h1>
+      <h1 className="text-white m-2">Crews List</h1>
       <DataTable rows={rows} columns={columns} />
     </>
   );

@@ -21,22 +21,16 @@ import { userAuth } from '../../services/userApi';
 import { adminAuth } from '../../services/adminApi';
 
 function SideBar({ userType }) {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
   const userData = useSelector((state) => state.user);
   const adminData = useSelector((state) => state.admin);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   useEffect(() => {
     if (userType === 'admin' && !adminData.id) {
       adminAuth().then((res) => {
-        const {
-          success, message, admin, token,
-        } = res.data;
+        const { success, message, admin } = res.data;
         if (success) {
-          dispatch(setAdminDetails({
-            id: admin._id,
-            email: admin.email,
-            token,
-          }));
+          dispatch(setAdminDetails({ ...admin }));
         } else {
           localStorage.removeItem('adminJwt');
           dispatch(setAdminLogout());
@@ -48,16 +42,9 @@ function SideBar({ userType }) {
     }
     if (userType === 'user' && !userData.id) {
       userAuth().then((res) => {
-        const {
-          success, message, user, token,
-        } = res.data;
+        const { success, message, user } = res.data;
         if (success) {
-          dispatch(setUserDetails({
-            id: user._id,
-            fullName: user.fullName,
-            email: user.email,
-            token,
-          }));
+          dispatch(setUserDetails({ ...user }));
         } else {
           localStorage.removeItem('userJwt');
           dispatch(setUserLogout());

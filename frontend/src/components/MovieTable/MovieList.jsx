@@ -33,18 +33,35 @@ export default function MovieTable() {
       ),
     },
   ];
+  const [loading, setLoading] = useState(true);
   const [movies, setMovies] = useState([]);
   useEffect(() => {
     const getMovies = async () => {
       try {
         const { data } = await fetchMovies();
         setMovies(data);
+        setLoading(false);
       } catch (err) {
-        console.error('error while fetching', err);
+        console.error('Error fetching movies:', err);
+        setLoading(false);
       }
     };
     getMovies();
   }, []);
+  if (loading) {
+    return (
+      <div>
+        <h1 className="text-white">Loading...</h1>
+      </div>
+    ); // Display a loading indicator
+  }
+  if (movies.length < 1) {
+    return (
+      <div>
+        <h1 className="text-white">Movies List is Empty</h1>
+      </div>
+    );
+  }
   return (
     <DataTable rows={movies} columns={columns} />
   );

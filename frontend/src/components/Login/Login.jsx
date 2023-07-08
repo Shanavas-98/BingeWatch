@@ -43,7 +43,7 @@ function Login({ userType }) {
         const { token, user } = data;
         if (token) {
           localStorage.setItem('userJwt', token);
-          dispatch(setUserDetails({ ...user, token }));
+          dispatch(setUserDetails({ ...user }));
           navigate('/');
         } else {
           throw Error(data.error);
@@ -53,7 +53,7 @@ function Login({ userType }) {
         const { token, admin } = data;
         if (token) {
           localStorage.setItem('adminJwt', token);
-          dispatch(setAdminDetails({ ...admin, token }));
+          dispatch(setAdminDetails({ ...admin }));
           navigate('/admin/dashboard');
         } else {
           throw Error(data.error);
