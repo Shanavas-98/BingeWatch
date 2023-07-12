@@ -45,7 +45,7 @@ const adminAuth = async (req, res) => {
             if (err) {
                 res.json({ success: false, message: 'Admin unauthorized' });
             } else {
-                const admin = await adminModel.findById({ _id: decoded.id });
+                const admin = await adminModel.findById(decoded.id);
                 if (admin) {
                     res.json({ success: true, message: 'Authorised', admin });
                 } else {

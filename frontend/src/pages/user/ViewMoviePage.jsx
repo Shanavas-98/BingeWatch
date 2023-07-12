@@ -1,17 +1,22 @@
+/* eslint-disable no-underscore-dangle */
 import React from 'react';
-import SideBar from '../../components/SideBar/SideBar';
+import { useParams } from 'react-router-dom';
 
-function HomePage() {
+import SideBar from '../../components/SideBar/SideBar';
+import ViewMovie from '../../components/ViewMovie/ViewMovie';
+
+function ViewMoviePage() {
+  const { movieId } = useParams();
   return (
     <div className="grid grid-cols-10">
       <div className="col-span-2">
         <SideBar userType="user" />
       </div>
       <div className="col-span-8">
-        <h1 className="text-white">Home Page Contents</h1>
+        <ViewMovie movieId={movieId} />
       </div>
     </div>
   );
 }
 
-export default HomePage;
+export default ViewMoviePage;

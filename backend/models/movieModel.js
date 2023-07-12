@@ -39,7 +39,7 @@ const movieSchema = new mongoose.Schema({
     },
     genres: [{
         type: ObjectId,
-        ref: 'platform',
+        ref: 'genre',
     }],
     productions: [{
         type: ObjectId,

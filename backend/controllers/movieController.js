@@ -7,6 +7,7 @@ const platformModel = require('../models/platformModel');
 const productionModel = require('../models/productionModel');
 const castModel = require('../models/castModel');
 const crewModel = require('../models/crewModel');
+const reviewModel = require('../models/reviewModel');
 const tmdbKey = process.env.TMDB_KEY;
 
 const addPlatform = async (platform) => {
@@ -488,7 +489,7 @@ const getMovieDetails = async (req, res) => {
 
 const fetchMovies = async (req, res) => {
     try {
-        const movies = await movieModel.find().exec();
+        const movies = await movieModel.find().populate('genres').exec();
         res.json(movies);
     } catch (err) {
         console.error(err);
@@ -499,23 +500,33 @@ const fetchMovies = async (req, res) => {
 const fetchMovie = async (req, res) => {
     try {
         const movieId = req.params?.movieId;
-        const movie = await movieModel.findOne({ id: movieId }).lean();
-        if (movie) {
-            // Fetch genres details
-            const genres = await genreModel.find({ id: { $in: movie.genres } }).lean();
-
-            // Fetch productions details
-            const productions = await productionModel.find({ id: { $in: movie.productions } }).lean();
-
-            // Fetch platforms details
-            const platforms = await platformModel.find({ id: { $in: movie.platforms } }).lean();
-
-            // Attach the fetched details to the movie object
-            movie.genres = genres;
-            movie.productions = productions;
-            movie.platforms = platforms;
-        }
+        const movie = await movieModel.findById(movieId).populate('genres').lean();
         res.json(movie);
+    } catch (err) {
+        console.error(err);
+        res.json(err);
+    }
+};
+
+const fetchGenreMovies = async (req, res) => {
+    try {
+        const genreName = req.params.genreName;
+        const movies = await movieModel.aggregate([
+            {
+                $lookup: {
+                    from: 'genres',
+                    localField: 'genres',
+                    foreignField: '_id',
+                    as: 'genres'
+                }
+            },
+            {
+                $match: {
+                    'genres.genreName': genreName
+                }
+            }
+        ]);
+        res.json(movies);
     } catch (err) {
         console.error(err);
         res.json(err);
@@ -526,8 +537,8 @@ const editMovie = async (req, res) => {
     try {
         const { title, language, duration, rating, releaseDate, summary } = req.body;
         const movieId = req.params?.movieId;
-        await movieModel.findOneAndUpdate(
-            { id: movieId },
+        await movieModel.findByIdAndUpdate(
+            movieId,
             {
                 $set: {
                     title,
@@ -537,7 +548,8 @@ const editMovie = async (req, res) => {
                     releaseDate,
                     summary
                 }
-            })
+            },
+            { new: true })
             .then(() => {
                 res.json({ success: true, message: 'movie edited successfully' });
             })
@@ -580,5 +592,90 @@ const fetchCrews = async (req, res) => {
     }
 };
 
-module.exports = { getMovieDetails, fetchMovies, fetchMovie, editMovie, fetchGenres, fetchActors, fetchCrews };
+const fetchMovieDetails = async (req, res) => {
+    try {
+        const movieId = req.params?.movieId;
+        const movie = await movieModel
+            .findById(movieId)
+            .populate('genres')
+            .populate('productions')
+            .populate('platforms')
+            .populate({
+                path: 'casts',
+                populate: {
+                    path: 'cast',
+                    model: 'cast'
+                }
+            })
+            .populate({
+                path: 'crews',
+                populate: {
+                    path: 'crew',
+                    model: 'crew'
+                }
+            })
+            .exec();
+        res.json(movie);
+    } catch (err) {
+        console.error(err);
+        res.json(err);
+    }
+};
+
+const movieRating = async(req,res)=>{
+    try {
+        const movieId = req.params.movieId;
+        console.log('rating movie ',movieId);
+        const user = req.userId;
+        const rating = req.query.rating;
+        const exist = await reviewModel.findOne({movie:movieId,user:user});
+        if(!exist){
+            await reviewModel.create({
+                movie:movieId,
+                user:user,
+                rating:rating
+            });
+            res.json({success:true,message:'rating added'});
+        }else{
+            await reviewModel.findByIdAndUpdate(exist._id,{
+                rating:rating
+            });
+            res.json({success:true,message:'rating updated'});
+        }
+    } catch (error) {
+        console.error('Error rating movie:',error);
+        res.json({success:false, message:'error while rating'});
+    }
+
+};
+
+const fetchRating = async(req,res)=>{
+    try {
+        const movieId = req.params.movieId;
+        console.log('fetch rating of',movieId);
+        const userId = req.userId;
+        const exist = await reviewModel.findOne({movie:movieId,user:userId});
+        if(exist){
+            res.json(exist.rating);
+        }else{
+            res.json(0);
+        }
+    } catch (error) {
+        console.error('Error fetching movie rating:',error);
+    }
+};
+
+module.exports = {
+    getMovieDetails,
+    fetchMovies,
+    fetchMovie,
+    editMovie,
+    fetchGenres,
+    fetchActors,
+    fetchCrews,
+    fetchGenreMovies,
+    fetchMovieDetails,
+    movieRating,
+    fetchRating
+};
 

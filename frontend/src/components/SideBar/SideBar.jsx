@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
+import './SideBar.css';
 import { Sidebar } from 'flowbite-react';
 import {
   ArrowLeftOnRectangleIcon,
@@ -66,7 +67,7 @@ function SideBar({ userType }) {
     navigate('/admin');
   };
   return (
-    <Sidebar aria-label="Sidebar with logo branding example" className="dark h-screen fixed">
+    <Sidebar aria-label="Sidebar with logo branding example" className="dark h-screen fixed sidebar">
       {/* img="./images/bingewatch_logo.png" imgAlt="logo" */}
       <Sidebar.Logo>
         <p>BingeWatch</p>
@@ -118,7 +119,7 @@ function SideBar({ userType }) {
               <Sidebar.Item icon={UserGroupIcon}>
                 <p>Groups</p>
               </Sidebar.Item>
-              <Sidebar.Item icon={FilmIcon}>
+              <Sidebar.Item icon={FilmIcon} onClick={() => navigate('/movies')}>
                 <p>Movies</p>
               </Sidebar.Item>
               <Sidebar.Item icon={TvIcon}>

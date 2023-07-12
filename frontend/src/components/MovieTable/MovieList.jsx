@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useEffect, useState } from 'react';
 import { Button } from 'flowbite-react';
@@ -12,11 +13,12 @@ export default function MovieTable() {
     navigate(`/admin/movies/view-movie/${movieId}`);
   };
   const columns = [
-    { field: 'id', headerName: 'ID', width: 100 },
-    { field: 'title', headerName: 'Title', width: 250 },
+    { field: 'id', headerName: 'ID', width: 80 },
+    { field: 'title', headerName: 'Title', width: 240 },
+    { field: 'genres', headerName: 'Genres', width: 300 },
     { field: 'duration', headerName: 'Duration', width: 100 },
-    { field: 'language', headerName: 'Language', width: 100 },
-    { field: 'releaseDate', headerName: 'Release date', width: 150 },
+    { field: 'language', headerName: 'Language', width: 80 },
+    { field: 'releaseDate', headerName: 'Release date', width: 100 },
     {
       field: 'view',
       headerName: 'Action',
@@ -26,7 +28,7 @@ export default function MovieTable() {
           variant="outlined"
           color="primary"
           size="medium"
-          onClick={() => viewMovie(params.row.id)}
+          onClick={() => viewMovie(params.row._id)}
         >
           View
         </Button>
@@ -48,6 +50,18 @@ export default function MovieTable() {
     };
     getMovies();
   }, []);
+  const rows = movies?.map((movie) => {
+    const genresData = movie.genres?.map((genre) => genre.genreName).join(', ');
+    return ({
+      id: movie?.id,
+      title: movie?.title,
+      genres: genresData,
+      duration: movie?.duration,
+      language: movie?.language,
+      releaseDate: movie?.releaseDate,
+      _id: movie?._id,
+    });
+  });
   if (loading) {
     return (
       <div>
@@ -62,7 +76,9 @@ export default function MovieTable() {
       </div>
     );
   }
-  return (
-    <DataTable rows={movies} columns={columns} />
-  );
+  if (movies.length > 0) {
+    return (
+      <DataTable rows={rows} columns={columns} />
+    );
+  }
 }

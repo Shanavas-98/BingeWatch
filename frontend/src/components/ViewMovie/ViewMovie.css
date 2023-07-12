@@ -1,0 +1,13 @@
+.posters{
+    display: flex;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+.posters::-webkit-scrollbar{
+    display: none;
+}
+
+.posters > .flex-col {
+    flex-shrink: 0; /* Add this line to prevent cards from compressing */
+}

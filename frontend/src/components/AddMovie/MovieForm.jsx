@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable react/prop-types */
 import {
   Button, Label, TextInput, Textarea,
@@ -7,7 +8,7 @@ import { toast } from 'react-toastify';
 import YouTube from 'react-youtube';
 import { addMovie } from '../../services/adminApi';
 import { imgUrl } from '../../axios/apiUrls';
-import Carousal from '../Carousal/Carousal';
+import CardCarousal from '../CardCarousal/CardCarousal';
 
 function MovieForm({ movie }) {
   const [loading, setLoading] = useState(false);
@@ -24,7 +25,7 @@ function MovieForm({ movie }) {
       const { data } = await addMovie(id);
       if (data.success) {
         setLoading(false);
-        toast.success(data.message, { position: 'top-center' });
+        toast.success(data.message, { position: 'top-right' });
       } else {
         setLoading(false);
         throw Error(data.message);
@@ -33,13 +34,32 @@ function MovieForm({ movie }) {
       toast.error(err.message, { position: 'top-center' });
     }
   };
+  const castCards = movie.cast?.map((person) => ({
+    id: person._id,
+    key: person.castId,
+    title: person.name,
+    subtitle: person.character,
+    image: person.profile,
+  }));
+  const crewCards = movie.crew?.map((person) => ({
+    id: person._id,
+    key: person.crewId,
+    title: person.name,
+    subtitle: person.job,
+    image: person.profile,
+  }));
+  const cardStyle = {
+    wd: 'w-28',
+    ht: 'h-44',
+  };
+
   return (
     <>
       <div className="w-full my-2">
         {loading ? <Button isProcessing type="button" className="dark">Add</Button>
           : <Button type="button" className="dark" onClick={() => add(movie.id)}>Add</Button>}
       </div>
-      <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
+      <div className="grid gap-2 grid-cols-1 lg:grid-cols-2 w-3">
         <div className="col-span-1 w-auto">
           <div className="mb-1 block">
             <Label htmlFor="title" value="Movie Title" className="text-white" />
@@ -146,10 +166,10 @@ function MovieForm({ movie }) {
         ))}
       </div>
       )}
-      <Label htmlFor="cast" value="Cast" className="text-white" />
-      <Carousal persons={movie.cast} />
-      <Label htmlFor="crew" value="Crew" className="text-white" />
-      <Carousal persons={movie.crew} />
+      <Label htmlFor="cast" value="Casts" className="text-white" />
+      <CardCarousal cards={castCards} baseLink="" style={cardStyle} />
+      <Label htmlFor="crew" value="Crews" className="text-white" />
+      <CardCarousal cards={crewCards} baseLink="" style={cardStyle} />
     </>
   );
 }

@@ -44,7 +44,7 @@ function UserList() {
     getUsers();
   }, []);
   const columns = [
-    { field: 'id', headerName: 'ID', width: 100 },
+    { field: 'id', headerName: 'ID', width: 80 },
     { field: 'fullName', headerName: 'Full Name', width: 150 },
     { field: 'email', headerName: 'Email', width: 200 },
     { field: 'mobile', headerName: 'Mobile', width: 150 },

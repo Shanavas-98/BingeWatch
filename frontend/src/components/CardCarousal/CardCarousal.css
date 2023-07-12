@@ -1,0 +1,13 @@
+.cards-carousal{
+    display: flex;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+.cards-carousal::-webkit-scrollbar{
+    display: none;
+}
+
+.cards-carousal > .flex-col {
+    flex-shrink: 0; /* Add this line to prevent cards from compressing */
+}

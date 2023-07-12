@@ -6,12 +6,12 @@ import { Button } from 'flowbite-react';
 import { imgUrl } from '../../axios/apiUrls';
 import { movieInstance } from '../../axios/axiosInstance';
 
-const tmdbKey = process.env.REACT_APP_TMDB_KEY;
+const TMDB_KEY = process.env.REACT_APP_TMDB_KEY;
 
-function MovieList({ results, onMovieSelect }) {
+function SearchList({ results, onMovieSelect }) {
   const getMovie = async (movieId) => {
     let providers = [];
-    await movieInstance.get(`/${movieId}/watch/providers?api_key=${tmdbKey}`)
+    await movieInstance.get(`/${movieId}/watch/providers?api_key=${TMDB_KEY}`)
       .then((res) => {
         const buy = res.data?.results?.IN?.buy;
         const flatrate = res.data?.results?.IN?.flatrate;
@@ -22,7 +22,7 @@ function MovieList({ results, onMovieSelect }) {
           providers = [...providers, ...flatrate];
         }
       });
-    await movieInstance.get(`/${movieId}?api_key=${tmdbKey}&append_to_response=videos,images,credits`)
+    await movieInstance.get(`/${movieId}?api_key=${TMDB_KEY}&append_to_response=videos,images,credits`)
       .then((res) => {
         const {
           id, title, original_title, original_language, vote_average, release_date, overview, genres, runtime, images, videos, credits,
@@ -121,4 +121,4 @@ function MovieList({ results, onMovieSelect }) {
   );
 }
 
-export default MovieList;
+export default SearchList;

@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { searchUrl } from '../../axios/apiUrls';
 import { tmdbInstance } from '../../axios/axiosInstance';
 import MovieForm from './MovieForm';
-import MovieList from './MovieList';
+import SearchList from './SearchList';
 
 function AddMovie() {
   const [results, setResults] = useState([]);
@@ -49,7 +49,7 @@ function AddMovie() {
           Search
         </Button>
       </div>
-      {results && !movie && <MovieList results={results} onMovieSelect={handleMovieUpdate} />}
+      {results && !movie && <SearchList results={results} onMovieSelect={handleMovieUpdate} />}
       {movie && <MovieForm movie={movie} />}
     </div>
   );

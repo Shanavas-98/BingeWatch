@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable react/prop-types */
 import {
   Button, Label, TextInput, Textarea,
@@ -5,15 +6,14 @@ import {
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import YouTube from 'react-youtube';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 
 import { editMovie, fetchMovie } from '../../services/adminApi';
 import { imgUrl } from '../../axios/apiUrls';
 
-function EditMovie() {
-  const { movieId } = useParams();
+function EditMovie({ movieId }) {
   const navigate = useNavigate();
   const [movie, setMovie] = useState({});
   const [edit, setEdit] = useState(false);
@@ -52,7 +52,6 @@ function EditMovie() {
   });
   const onSubmit = async (values) => {
     try {
-      console.log('onSubmit works');
       // seting the loading state
       setLoading(!loading);
       const { data } = await editMovie(values);
@@ -83,7 +82,7 @@ function EditMovie() {
         const { data } = await fetchMovie(id);
         setMovie(data);
         formik.setValues({
-          id: data?.id || '',
+          id: data?._id || '',
           title: data?.title || '',
           language: data?.language || '',
           duration: data?.duration || '',
@@ -251,34 +250,24 @@ function EditMovie() {
                 />
               )}
           </div>
+          {!edit && (
           <div className="col-span-1 w-auto">
             <div className="mb-1 block">
               <Label htmlFor="genres" value="Genres" className="text-white" />
             </div>
             {formik.touched.genres && formik.errors.genres
               ? <p>{formik.errors.genres}</p> : null}
-            {edit
-              ? (
-                <TextInput
-                  name="genres"
-                  type="text"
-                  className="dark"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.genres}
-                />
-              )
-              : (
-                <TextInput
-                  name="genres"
-                  type="text"
-                  className="dark"
-                  readOnly={!edit}
-                  defaultValue={movie ? movie.genres : ''}
-                />
-              )}
+            <TextInput
+              name="genres"
+              type="text"
+              className="dark"
+              readOnly={!edit}
+              defaultValue={movie ? movie.genres?.map((genre) => genre.genreName).join(', ') : ''}
+            />
           </div>
-          <div className="col-span-1 w-auto">
+          )}
+
+          <div className="lg:col-span-2 w-auto">
             <div className="mb-1 block">
               <Label htmlFor="summary" value="Summary" className="text-white" />
             </div>
