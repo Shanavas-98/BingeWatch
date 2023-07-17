@@ -49,9 +49,7 @@ function SideBar({ userType }) {
         } else {
           localStorage.removeItem('userJwt');
           dispatch(setUserLogout());
-          toast.error(message, {
-            position: 'top-center',
-          });
+          console.error(message);
         }
       });
     }

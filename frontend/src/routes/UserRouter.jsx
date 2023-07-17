@@ -6,6 +6,8 @@ import Signup from '../components/Signup/Signup';
 import Otp from '../components/Otp/Otp';
 import MoviesPage from '../pages/user/MoviesPage';
 import ViewMoviePage from '../pages/user/ViewMoviePage';
+import ActorDetailsPage from '../pages/user/ActorDetailsPage';
+import ReviewsPage from '../pages/user/ReviewsPage';
 
 function UserRouter() {
   return (
@@ -16,6 +18,9 @@ function UserRouter() {
       <Route path="/verify" element={<Otp />} />
       <Route path="/movies" element={<MoviesPage />} />
       <Route path="/movies/view-movie/:movieId" element={<ViewMoviePage />} />
+      <Route path="/movies/view-movie/actor/:personId" element={<ActorDetailsPage type="cast" />} />
+      <Route path="/movies/view-movie/crew/:personId" element={<ActorDetailsPage type="crew" />} />
+      <Route path="/movies/view-movie/reviews/:movieId" element={<ReviewsPage />} />
     </Routes>
   );
 }

@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const mongoose = require('mongoose');
-const { movieInstance } = require('../axios/tmdbInstance');
+const { movieInstance, personInstance } = require('../axios/tmdbInstance');
 const genreModel = require('../models/genreModel');
 const movieModel = require('../models/movieModel');
 const platformModel = require('../models/platformModel');
@@ -8,7 +8,7 @@ const productionModel = require('../models/productionModel');
 const castModel = require('../models/castModel');
 const crewModel = require('../models/crewModel');
 const reviewModel = require('../models/reviewModel');
-const tmdbKey = process.env.TMDB_KEY;
+const TMDB_KEY = process.env.TMDB_KEY;
 
 const addPlatform = async (platform) => {
     try {
@@ -59,7 +59,7 @@ const getPlatformDetails = async (movieId) => {
     try {
         let providers = [];
         await movieInstance
-            .get(`/${movieId}/watch/providers?api_key=${tmdbKey}`)
+            .get(`/${movieId}/watch/providers?api_key=${TMDB_KEY}`)
             .then((response) => {
                 const buy = response.data?.results?.IN?.buy;
                 const flatrate = response.data?.results?.IN?.flatrate;
@@ -77,56 +77,49 @@ const getPlatformDetails = async (movieId) => {
     }
 };
 
-const addCast = async (actor) => {
+const addCast = async (person) => {
     try {
         const exist = await castModel
-            .findOne({ castId: actor?.castId })
+            .findOne({ actorId: person?.castId })
             .lean();
         if (exist) {
-            return ({ cast: mongoose.Types.ObjectId(exist._id), character: actor?.character, order: actor?.order });
+            return ({ cast: mongoose.Types.ObjectId(exist._id), tmdbId: exist.actorId, name: exist.name, character: person?.character, profile: exist.profile });
         } else {
+            const { data } = await personInstance.get(`/${person?.castId}?api_key=${TMDB_KEY}&append_to_response=combined_credits`);
+            const { biography, birthday, deathday, gender,
+                id, known_for_department, name, place_of_birth,
+                popularity, profile_path, combined_credits } = data;
+            let genderType = '';
+            if (gender === 1) {
+                genderType = 'Female';
+            } else if (gender === 2) {
+                genderType = 'Male';
+            } else if (gender === 3) {
+                genderType = 'Non-binary';
+            } else {
+                genderType = 'Unknown';
+            }
+            const castCredits = combined_credits.cast
+                .sort((a, b) => (b.vote_average - a.vote_average))
+                .slice(0, 15)
+                .map((movie) => (movie.id));
             const result = await new Promise((resolve, reject) => {
                 new castModel({
-                    castId: actor?.castId,
-                    name: actor?.name,
-                    profile: actor?.profile,
-                    gender: actor?.gender,
-                    popularity: actor?.popularity
+                    actorId: id,
+                    name,
+                    biography,
+                    birthday,
+                    deathday,
+                    gender: genderType,
+                    department: known_for_department,
+                    placeOfBirth: place_of_birth,
+                    popularity,
+                    profile: profile_path,
+                    knownFor:castCredits
                 })
                     .save()
                     .then((document) => {
-                        resolve({ cast: mongoose.Types.ObjectId(document._id), character: actor?.character, order: actor?.order });
-                    }).catch((error) => {
-                        console.error('Error saving cast:', error);
-                        reject(null);
-                    });
-            });
-            return result;
-        }
-    } catch (err) {
-        console.error(err);
-    }
-};
-
-const addCrew = async (person) => {
-    try {
-        const exist = await crewModel
-            .findOne({ crewId: person?.crewId })
-            .lean();
-        if (exist) {
-            return ({ crew: mongoose.Types.ObjectId(exist._id), job: person?.job });
-        } else {
-            const result = await new Promise((resolve, reject) => {
-                new crewModel({
-                    crewId: person?.crewId,
-                    name: person?.name,
-                    profile: person?.profile,
-                    gender: person?.gender,
-                    popularity: person?.popularity
-                })
-                    .save()
-                    .then((document) => {
-                        resolve({ crew: mongoose.Types.ObjectId(document._id), job: person?.job });
+                        resolve({ cast: mongoose.Types.ObjectId(document._id), tmdbId: document.actorId, name: document.name, character: person?.character, profile: document.profile });
                     }).catch((error) => {
                         console.error('Error saving cast:', error);
                         reject(null);
@@ -141,59 +134,31 @@ const addCrew = async (person) => {
 
 const addCasts = async (casts) => {
     try {
-        let castArray = [];
+        let castsArray = [];
         for (const actor of casts) {
             const castData = await addCast(actor);
             if (castData) {
-                castArray.push(castData);
+                castsArray.push(castData);
             }
         }
-        return castArray;
+        return castsArray;
     } catch (err) {
         console.errpr(err);
     }
 };
 
-const addCrews = async (crew) => {
-    try {
-        let crewArray = [];
-        for (let i = 0; i < crew.length; i++) {
-            const crewData = await addCrew(crew[i]);
-            if (crewData) {
-                crewData.order = i;
-                crewArray.push(crewData);
-            }
-        }
-        return crewArray;
-    } catch (err) {
-        console.error(err);
-    }
-};
-
 const addCastDetails = async (castDetails) => {
     try {
-        const cast = castDetails.map((person) => {
-            let gender = '';
-            if (person.gender === 1) {
-                gender = 'Female';
-            } else if (person.gender === 2) {
-                gender = 'Male';
-            } else {
-                gender = 'Unknown';
-            }
-            return ({
-                order: person.order,
-                character: person.character,
-                gender,
-                castId: person.id,
-                department: person.known_for_department,
-                name: person.name || person.original_name,
-                popularity: person.popularity,
-                profile: person.profile_path,
-            });
-        })
+        const cast = castDetails
             .sort((a, b) => a.order - b.order)
-            .slice(0, 20);
+            .slice(0, 20)
+            .map((person) => {
+                return ({
+                    castId: person.id,
+                    name: person.name,
+                    character: person.character,
+                });
+            });
         const castData = await addCasts(cast);
         return castData;
     } catch (err) {
@@ -202,29 +167,97 @@ const addCastDetails = async (castDetails) => {
 
 };
 
+const addCrew = async (person) => {
+    try {
+        const exist = await crewModel
+            .findOne({ crewId: person?.crewId })
+            .lean();
+        if (exist) {
+            return ({ crew: mongoose.Types.ObjectId(exist._id), tmdbId: exist.crewId, name: exist.name, job: person?.job, profile: exist.profile });
+        } else {
+            const { data } = await personInstance.get(`/${person?.crewId}?api_key=${TMDB_KEY}&append_to_response=combined_credits`);
+            const { biography, birthday, deathday, gender,
+                id, known_for_department, name, place_of_birth,
+                popularity, profile_path, combined_credits } = data;
+            let genderType = '';
+            if (gender === 1) {
+                genderType = 'Female';
+            } else if (gender === 2) {
+                genderType = 'Male';
+            } else if (gender === 3) {
+                genderType = 'Non-binary';
+            } else {
+                genderType = 'Unknown';
+            }
+            const crewCredits = combined_credits.crew
+                .sort((a, b) => (b.vote_average - a.vote_average))
+                .slice(0, 15)
+                .map((movie) => (movie.id));
+            const result = await new Promise((resolve, reject) => {
+                new crewModel({
+                    crewId: id,
+                    name,
+                    profile: profile_path,
+                    biography,
+                    birthday,
+                    deathday,
+                    gender: genderType,
+                    department: known_for_department,
+                    placeOfBirth: place_of_birth,
+                    popularity,
+                    knownFor:crewCredits
+                })
+                    .save()
+                    .then((document) => {
+                        resolve({ crew: mongoose.Types.ObjectId(document._id), tmdbId: document.crewId, name: document.name, job: person?.job, profile: document.profile });
+                    }).catch((error) => {
+                        console.error('Error saving cast:', error);
+                        reject(null);
+                    });
+            });
+            return result;
+        }
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+const addCrews = async (crews) => {
+    try {
+        let resultArray = [];
+        for (const person of crews) {
+            const crewData = await addCrew(person);
+            if (crewData) {
+                resultArray.push(crewData);
+            }
+        }
+        const crewsArray = resultArray.reduce((acc, obj) => {
+            const existingObj = acc.find((item) => (item.tmdbId === obj.tmdbId));
+            if (existingObj) {
+                existingObj.job += `, ${obj.job}`;
+            } else {
+                acc.push(obj);
+            }
+            return acc;
+        }, []);
+        return crewsArray;
+    } catch (err) {
+        console.error(err);
+    }
+};
+
 const addCrewDetails = async (crewDetails) => {
     try {
-        const crew = crewDetails.map((person) => {
-            let gender = '';
-            if (person.gender === 1) {
-                gender = 'Female';
-            } else if (person.gender === 2) {
-                gender = 'Male';
-            } else {
-                gender = 'Unknown';
-            }
-            return ({
-                job: person.job,
-                gender,
-                crewId: person.id,
-                department: person.department || person.known_for_department,
-                name: person.name || person.original_name,
-                popularity: person.popularity,
-                profile: person.profile_path,
-            });
-        })
+        const crew = crewDetails
             .sort((a, b) => b.popularity - a.popularity)
-            .slice(0, 20);
+            .slice(0, 20)
+            .map((person) => {
+                return ({
+                    crewId: person.id,
+                    name: person.name,
+                    job: person.job,
+                });
+            });
         const crewData = await addCrews(crew);
         return crewData;
     } catch (err) {
@@ -237,7 +270,7 @@ const getCastAndCrew = async (movieId) => {
         let castDetails;
         let crewDetails;
         await movieInstance
-            .get(`/${movieId}/credits?api_key=${tmdbKey}`)
+            .get(`/${movieId}/credits?api_key=${TMDB_KEY}`)
             .then((response) => {
                 const { cast, crew } = response.data;
                 castDetails = cast;
@@ -433,7 +466,7 @@ const getMovieDetails = async (req, res) => {
         const { casts, crews } = await getCastAndCrew(movieId);
         let movieData = {};
         await movieInstance
-            .get(`/${movieId}?api_key=${tmdbKey}&append_to_response=videos,images`)
+            .get(`/${movieId}?api_key=${TMDB_KEY}&append_to_response=videos,images`)
             .then((response) => {
                 const {
                     id,
@@ -600,20 +633,6 @@ const fetchMovieDetails = async (req, res) => {
             .populate('genres')
             .populate('productions')
             .populate('platforms')
-            .populate({
-                path: 'casts',
-                populate: {
-                    path: 'cast',
-                    model: 'cast'
-                }
-            })
-            .populate({
-                path: 'crews',
-                populate: {
-                    path: 'crew',
-                    model: 'crew'
-                }
-            })
             .exec();
         res.json(movie);
     } catch (err) {
@@ -622,46 +641,154 @@ const fetchMovieDetails = async (req, res) => {
     }
 };
 
-const movieRating = async(req,res)=>{
+const addRating = async (req, res) => {
     try {
         const movieId = req.params.movieId;
-        console.log('rating movie ',movieId);
         const user = req.userId;
         const rating = req.query.rating;
-        const exist = await reviewModel.findOne({movie:movieId,user:user});
-        if(!exist){
+        const exist = await reviewModel.findOne({ movie: movieId, user: user });
+        if (!exist) {
             await reviewModel.create({
-                movie:movieId,
-                user:user,
-                rating:rating
+                movie: movieId,
+                user: user,
+                rating: rating
             });
-            res.json({success:true,message:'rating added'});
-        }else{
-            await reviewModel.findByIdAndUpdate(exist._id,{
-                rating:rating
+            res.json({ success: true, message: 'rating added' });
+        } else {
+            await reviewModel.findByIdAndUpdate(exist._id, {
+                rating: rating
             });
-            res.json({success:true,message:'rating updated'});
+            res.json({ success: true, message: 'rating updated' });
         }
     } catch (error) {
-        console.error('Error rating movie:',error);
-        res.json({success:false, message:'error while rating'});
+        console.error('Error rating movie:', error);
+        res.json({ success: false, message: 'error while rating' });
     }
 
 };
 
-const fetchRating = async(req,res)=>{
+const fetchReview = async (req, res) => {
     try {
         const movieId = req.params.movieId;
-        console.log('fetch rating of',movieId);
         const userId = req.userId;
-        const exist = await reviewModel.findOne({movie:movieId,user:userId});
-        if(exist){
-            res.json(exist.rating);
-        }else{
-            res.json(0);
+        const review = await reviewModel.findOne({ movie: movieId, user: userId });
+        if (review) {
+            res.json(review);
+        } else {
+            res.json({ success: true, message: 'review not posted' });
         }
     } catch (error) {
-        console.error('Error fetching movie rating:',error);
+        console.error('Error fetching movie rating:', error);
+        res.json({ success: false, message: 'fetching review failed' });
+    }
+};
+
+const addReview = async (req, res) => {
+    try {
+        const movieId = req.params.movieId;
+        const userId = req.userId;
+        const review = req.body.review;
+        const exist = await reviewModel.findOne({ movie: movieId, user: userId });
+        if (!exist) {
+            await reviewModel.create({
+                movie: movieId,
+                user: userId,
+                review: review
+            });
+            res.json({ success: true, message: 'review added' });
+        } else {
+            await reviewModel.findByIdAndUpdate(exist._id, {
+                review: review
+            });
+            res.json({ success: true, message: 'review updated' });
+        }
+    } catch (error) {
+        console.error('Error reviewing movie:', error);
+        res.json({ success: false, message: 'error while reviewing' });
+    }
+
+};
+
+const fetchActorDetails = async (req, res) => {
+    try {
+        const actorId = req.params.actorId;
+        const actor = await castModel.findById(actorId);
+        if (actor) {
+            const movies = await Promise.all(
+                actor.knownFor?.map(async (movieId) => {
+                    const movie = await movieModel.findOne({ id: movieId });
+                    return movie;
+                })
+            );
+            if(movies.length>0){
+                const knownFor = movies.filter((movie) => movie !== null);
+                res.json({actor,knownFor});
+            }
+        } else {
+            res.json({ status: false, message: 'Actor not found' });
+        }
+    } catch (error) {
+        console.error('Error fetching actor', error);
+        res.json(error);
+    }
+};
+
+const fetchCrewDetails = async (req, res) => {
+    try {
+        const crewId = req.params.crewId;
+        const crew = await crewModel.findById(crewId);
+        if (crew) {
+            const movies = await Promise.all(
+                crew.knownFor?.map(async (movieId) => {
+                    const movie = await movieModel.findOne({ id: movieId });
+                    return movie;
+                })
+            );
+            if(movies.length>0){
+                const knownFor = movies.filter((movie) => movie !== null);
+                res.json({status:true,crew,knownFor});
+            }
+        } else {
+            res.json({ status: false, message: 'Crew not found' });
+        }
+    } catch (error) {
+        console.error('Error fetching crew', error);
+        res.json(error);
+    }
+};
+
+const fetchUserReviews = async(req,res)=>{
+    try {
+        const movieId = req.params.movieId;
+        const userId = req.userId;
+        const reviews = await reviewModel.find({movie:movieId, user:{$ne:userId}});
+        const userReview = await reviewModel.findOne({user:userId, movie:movieId});
+        if(reviews){
+            if(userReview){
+                return res.json({reviews,userReview});
+            }
+            return res.json({reviews,userReview:null});
+        }else{
+            return res.json({reviews:null,userReview:null});
+        }
+    } catch (error) {
+        res.json(error);
+    }
+};
+
+const fetchRelatedMovies = async(req,res)=>{
+    try {
+        const movieId = req.params.movieId;
+        console.log('related movies of',movieId);
+        const genresData = await movieModel.findById(movieId,{genres:1,movieCollection:1});
+        if (genresData) {
+            const relatedMovies = await movieModel.find({ genres: { $in: genresData.genres } });
+            res.json(relatedMovies);
+        } else {
+            console.log('Genres not found');
+        }
+    } catch (error) {
+        res.json(error);
     }
 };
 
@@ -675,7 +802,12 @@ module.exports = {
     fetchCrews,
     fetchGenreMovies,
     fetchMovieDetails,
-    movieRating,
-    fetchRating
+    addRating,
+    fetchReview,
+    addReview,
+    fetchActorDetails,
+    fetchCrewDetails,
+    fetchUserReviews,
+    fetchRelatedMovies
 };
 

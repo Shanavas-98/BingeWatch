@@ -7,17 +7,13 @@ import './ViewMovie.css';
 import { fetchMovieDetails } from '../../services/userApi';
 import NavigBar from '../NavigationBar/NavigBar';
 import VideoPlay from '../VideoPlay/VideoPlay';
-import { imgUrl } from '../../axios/apiUrls';
+import { IMG_URL } from '../../axios/apiUrls';
 import CardCarousal from '../CardCarousal/CardCarousal';
-import ReviewModal from '../ReviewModal/ReviewModal';
 
 function ViewMovie({ movieId }) {
   const [loading, setLoading] = useState(true);
   const [movie, setMovie] = useState({});
-  const [reviewModalOpen, setReviewModalOpen] = useState(false);
-  const openReviewModal = () => {
-    setReviewModalOpen(true);
-  };
+
   useEffect(() => {
     const getMovie = async (id) => {
       await fetchMovieDetails(id)
@@ -47,18 +43,18 @@ function ViewMovie({ movieId }) {
     } = movie;
     const year = releaseDate.slice(0, 4);
     const castCards = casts?.map((person) => ({
-      id: person.cast?._id,
-      key: person.cast?.castId,
-      title: person.cast?.name,
+      id: person.cast,
+      key: person.tmdbId,
+      title: person.name,
       subtitle: person.character,
-      image: person.cast?.profile,
+      image: person.profile,
     }));
     const crewCards = crews?.map((person) => ({
-      id: person.crew?._id,
-      key: person.crew?.crewId,
-      title: person.crew?.name,
+      id: person.crew,
+      key: person.tmdbId,
+      title: person.name,
       subtitle: person.job,
-      image: person.crew?.profile,
+      image: person.profile,
     }));
     const cardStyle = {
       wd: 'w-28',
@@ -68,23 +64,13 @@ function ViewMovie({ movieId }) {
       <div className="grid grid-cols-2">
         <div className="col-span-2">
           <NavigBar
-            key={_id}
             data={{
-              title, year, duration, rating, movieId: _id,
+              title, year, duration, rating, id: _id,
             }}
-            openReviewModal={openReviewModal}
           />
         </div>
-        {reviewModalOpen
-        && (
-        <ReviewModal
-          key={_id}
-          movieId={movieId}
-          closeModal={() => setReviewModalOpen(false)}
-        />
-        )}
         <div className="md:col-span-1 col-span-2">
-          <VideoPlay key={_id} videos={videos} />
+          <VideoPlay key={videos[0]} videos={videos} />
         </div>
         <div className="md:col-span-1 col-span-2">
           <h2 className="text-white text-lg mb-2">Summary</h2>
@@ -99,7 +85,7 @@ function ViewMovie({ movieId }) {
             <div className="posters">
               {platforms?.map((platform) => (
                 <img
-                  src={imgUrl + platform.logoPath}
+                  src={IMG_URL + platform.logoPath}
                   alt={`${platform?.platformName} Thumbnail`}
                   className="mr-1 h-20 w-20 rounded-2xl"
                 />
@@ -109,9 +95,9 @@ function ViewMovie({ movieId }) {
         </div>
         <div className="col-span-2 ml-2">
           <h2 className="text-white text-lg mb-2">Casts</h2>
-          <CardCarousal cards={castCards} baseLink="" style={cardStyle} />
+          <CardCarousal key={castCards[0].id} cards={castCards} baseLink="/movies/view-movie/actor" style={cardStyle} />
           <h2 className="text-white text-lg mb-2">Crews</h2>
-          <CardCarousal cards={crewCards} baseLink="" style={cardStyle} />
+          <CardCarousal key={crewCards[0].id} cards={crewCards} baseLink="/movies/view-movie/crew" style={cardStyle} />
         </div>
       </div>
     );
@@ -119,15 +105,3 @@ function ViewMovie({ movieId }) {
 }
 
 export default ViewMovie;
-
-/* <h2 className="text-white text-lg mb-2">Posters</h2>
-<div className="flex mt-2">
-  <div className="posters">
-    {images?.map((path) => (
-      <img
-        src={imgUrl + path}
-        className="mr-1 h-44 w-28 rounded-md"
-      />
-    ))}
-  </div>
-</div> */

@@ -1,47 +1,56 @@
 /* eslint-disable linebreak-style */
 import axios from 'axios';
 import {
-  adminUrl, movieUrl, tmdbUrl, userUrl,
+  ADMIN_URL, MOVIE_URL, SEARCH_MOVIE_URL, TMDB_URL, USER_URL,
 } from './apiUrls';
 
-const userToken = localStorage.getItem('userJwt');
-const adminToken = localStorage.getItem('adminJwt');
-const tmdbToken = process.env.REACT_APP_TMDB_ACCESS_TOKEN;
+const USER_TOKEN = localStorage.getItem('userJwt');
+const ADMIN_TOKEN = localStorage.getItem('adminJwt');
+const TMDB_TOKEN = process.env.REACT_APP_TMDB_ACCESS_TOKEN;
+const TMDB_KEY = process.env.REACT_APP_TMDB_KEY;
 
 const userInstance = axios.create({
-  baseURL: userUrl,
+  baseURL: USER_URL,
   timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${userToken}`,
+    Authorization: `Bearer ${USER_TOKEN}`,
   },
 });
 
 const adminInstance = axios.create({
-  baseURL: adminUrl,
+  baseURL: ADMIN_URL,
   timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${adminToken}`,
+    Authorization: `Bearer ${ADMIN_TOKEN}`,
   },
 });
 
 const tmdbInstance = axios.create({
-  baseURL: tmdbUrl,
+  baseURL: TMDB_URL,
   headers: {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${tmdbToken}`,
+    Authorization: `Bearer ${TMDB_TOKEN}`,
   },
 });
 
 const movieInstance = axios.create({
-  baseURL: movieUrl,
+  baseURL: MOVIE_URL,
   headers: {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${tmdbToken}`,
+    Authorization: `Bearer ${TMDB_TOKEN}`,
+  },
+});
+
+const searchMovieInstance = axios.create({
+  baseURL: `${SEARCH_MOVIE_URL}?api_key=${TMDB_KEY}&include_adult=false&language=en-US`,
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${TMDB_TOKEN}`,
   },
 });
 
 export {
-  userInstance, adminInstance, tmdbInstance, movieInstance,
+  userInstance, adminInstance, tmdbInstance, movieInstance, searchMovieInstance,
 };

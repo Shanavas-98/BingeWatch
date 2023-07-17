@@ -28,6 +28,8 @@ const reviewSchema = new mongoose.Schema({
         type: ObjectId,
         ref: 'user'
     }]
+},{
+    timestamps:true
 });
 
 module.exports = new mongoose.model('review',reviewSchema);

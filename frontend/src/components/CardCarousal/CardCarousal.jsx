@@ -5,7 +5,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import './CardCarousal.css';
-import { imgUrl } from '../../axios/apiUrls';
+import { IMG_URL } from '../../axios/apiUrls';
 
 function CardCarousal({ cards, baseLink, style }) {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ function CardCarousal({ cards, baseLink, style }) {
         {cards?.map((card) => (
           <div className={`flex flex-col m-1 ${style.wd} rounded-md items-center`}>
             <img
-              src={imgUrl + card.image}
+              src={IMG_URL + card.image}
               alt={card.title}
               key={card.key}
               className={`${style.wd} ${style.ht} m-1 rounded-md hover:cursor-pointer hover:scale-110`}

@@ -2,16 +2,19 @@
 import { Button } from 'flowbite-react';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import CloseIcon from '@mui/icons-material/Close';
+
+import './ReviewModal.css';
 import { addReview } from '../../services/userApi';
 
-function ReviewModal({ movieId, closeModal }) {
-  const [review, setReview] = useState('');
-
+function ReviewModal({ movieId, reviewData, closeModal }) {
+  const [review, setReview] = useState(reviewData);
   const reviewSubmit = async (movReview) => {
     try {
       const { data } = await addReview(movieId, movReview);
       const { success, message } = data;
       if (success) {
+        setReview(movReview);
         toast.success(message);
       } else {
         throw Error(message);
@@ -24,32 +27,26 @@ function ReviewModal({ movieId, closeModal }) {
 
   const handleSubmit = () => {
     reviewSubmit(review);
-    setReview('');
-    closeModal();
-  };
-
-  const handleClear = () => {
-    setReview('');
-  };
-
-  const handleCancel = () => {
-    setReview('');
     closeModal();
   };
 
   return (
     <div className="modal">
-      <div className="modal-content">
-        <h2>Add Movie Review</h2>
+      <div className="modal-content bg-gray-700">
+        <div className="flex justify-between">
+          <h2 className="text-white text-lg mb-2">Add Review</h2>
+          <CloseIcon onClick={() => closeModal()} className="text-white hover:cursor-pointer" />
+        </div>
         <textarea
+          className="w-full bg-slate-500 text-white rounded-md"
           value={review}
+          rows={6}
           onChange={(e) => setReview(e.target.value)}
           placeholder="Enter your review..."
         />
-        <div className="button-container">
-          <Button className="m-2" onClick={handleSubmit}>Submit</Button>
-          <Button className="m-2" onClick={handleClear}>Clear</Button>
-          <Button className="m-2" onClick={handleCancel}>Cancel</Button>
+        <div className="flex w-full justify-end">
+          <Button className="m-1 bg-blue-700 hover:bg-blue-800" onClick={() => setReview('')}>Clear</Button>
+          <Button className="m-1 bg-green-700 hover:bg-green-800" onClick={handleSubmit}>Submit</Button>
         </div>
       </div>
     </div>

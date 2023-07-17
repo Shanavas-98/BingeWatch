@@ -23,7 +23,8 @@ function VideoPlay({ videos }) {
             <img
               src={`https://img.youtube.com/vi/${videoKey}/mqdefault.jpg`}
               alt="Video Thumbnail"
-              className="mr-1 h-28 hover:cursor-pointer"
+              className="mr-1 h-24 w-40 hover:cursor-pointer"
+              key={videoKey}
               onClick={() => setKey(videoKey)}
             />
           ))}

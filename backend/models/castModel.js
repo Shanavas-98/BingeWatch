@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const castSchema = new mongoose.Schema({
-    castId:{
+    actorId:{
         type:Number,
         required:true
     },
@@ -10,14 +10,20 @@ const castSchema = new mongoose.Schema({
         required:true
     },
     profile:String,
+    biography:String,
+    birthday:String,
+    deathday:String,
     gender:{
         type:String,
         required:true
     },
+    department:String,
+    placeOfBirth:String,
     popularity:{
         type:Number,
         required:true
-    }
+    },
+    knownFor:[Number]
 });
 
 module.exports = new mongoose.model('cast',castSchema);

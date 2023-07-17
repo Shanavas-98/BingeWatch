@@ -61,16 +61,20 @@ const movieSchema = new mongoose.Schema({
             type: ObjectId,
             ref: 'cast'
         },
+        tmdbId:Number,
+        name:String,
         character: String,
-        order: Number
+        profile:String
     }],
     crews: [{
         crew: {
             type: ObjectId,
             ref: 'crew'
         },
+        tmdbId:Number,
+        name:String,
         job: String,
-        order: Number
+        profile:String
     }]
 });
 

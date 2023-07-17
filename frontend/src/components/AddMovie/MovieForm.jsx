@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import YouTube from 'react-youtube';
 import { addMovie } from '../../services/adminApi';
-import { imgUrl } from '../../axios/apiUrls';
+import { IMG_URL } from '../../axios/apiUrls';
 import CardCarousal from '../CardCarousal/CardCarousal';
 
 function MovieForm({ movie }) {
@@ -59,7 +59,7 @@ function MovieForm({ movie }) {
         {loading ? <Button isProcessing type="button" className="dark">Add</Button>
           : <Button type="button" className="dark" onClick={() => add(movie.id)}>Add</Button>}
       </div>
-      <div className="grid gap-2 grid-cols-1 lg:grid-cols-2 w-3">
+      <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
         <div className="col-span-1 w-auto">
           <div className="mb-1 block">
             <Label htmlFor="title" value="Movie Title" className="text-white" />
@@ -69,7 +69,7 @@ function MovieForm({ movie }) {
             type="text"
             className="dark"
             readOnly
-            defaultValue={movie ? movie.title || movie.original_title : ''}
+            defaultValue={movie ? movie.title : ''}
           />
         </div>
         <div className="col-span-1 w-auto">
@@ -145,13 +145,13 @@ function MovieForm({ movie }) {
       <Label htmlFor="platforms" value="Platforms" className="text-white" />
       <div className="w-full flex">
         {movie.platforms.map((platform, index = 1) => (
-          <img key={index} src={imgUrl + platform.logo_path} alt={platform.provider_name} className="h-20 w-20 m-2 rounded-lg" />
+          <img key={index} src={IMG_URL + platform.logo_path} alt={platform.provider_name} className="h-20 w-20 m-2 rounded-lg" />
         ))}
       </div>
       <Label htmlFor="posters" value="Posters" className="text-white" />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
         {movie?.images?.map((image, index = 1) => (
-          <img key={index} src={imgUrl + image} alt={`poster${index}`} className="h-60 w-36 m-2 rounded-md" />
+          <img key={index} src={IMG_URL + image} alt={`poster${index}`} className="h-60 w-36 m-2 rounded-md" />
         ))}
       </div>
 

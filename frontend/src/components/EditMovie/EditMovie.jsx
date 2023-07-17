@@ -11,7 +11,7 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 
 import { editMovie, fetchMovie } from '../../services/adminApi';
-import { imgUrl } from '../../axios/apiUrls';
+import { IMG_URL } from '../../axios/apiUrls';
 
 function EditMovie({ movieId }) {
   const navigate = useNavigate();
@@ -301,7 +301,7 @@ function EditMovie({ movieId }) {
       <Label htmlFor="posters" value="Posters" className="text-white" />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
         {movie?.images?.map((image, index = 1) => (
-          <img key={index} src={imgUrl + image} alt={`poster${index}`} className="h-60 w-36 m-2 rounded-md" />
+          <img key={index} src={IMG_URL + image} alt={`poster${index}`} className="h-60 w-36 m-2 rounded-md" />
         ))}
       </div>
       <Label htmlFor="trailer" value="Videos" className="text-white" />

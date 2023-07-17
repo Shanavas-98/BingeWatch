@@ -28,7 +28,7 @@ function ActorsList() {
     { field: '_id', headerName: 'Action', width: 100 },
   ];
   const rows = actors.map((person) => ({
-    id: person.castId,
+    id: person.actorId,
     profile: person.profile,
     name: person.name,
     gender: person.gender,
