@@ -8,7 +8,7 @@ import { ArrowForwardIos, ArrowBackIos } from '@mui/icons-material';
 
 import { searchMovieInstance } from '../../axios/axiosInstance';
 import MovieForm from './MovieForm';
-import SearchList from './SearchList';
+import MovieResults from './MovieResults';
 
 function AddMovie() {
   const [results, setResults] = useState([]);
@@ -125,7 +125,7 @@ function AddMovie() {
         )}
 
       </div>
-      { results && !movie && <SearchList results={results} onMovieSelect={handleMovieUpdate} /> }
+      { results && !movie && <MovieResults results={results} onMovieSelect={handleMovieUpdate} /> }
       { movie && <MovieForm movie={movie} /> }
     </div>
   );

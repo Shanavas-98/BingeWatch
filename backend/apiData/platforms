@@ -1,0 +1,19 @@
+{
+  "id": 1399,
+  "results": {
+    "IN": {
+      "link": "https://www.themoviedb.org/tv/1399-game-of-thrones/watch?locale=IN",
+      "flatrate": [
+        {
+          "logo_path": "/jRpQbuHbGR0MzSIBxJjxZxpXhqC.jpg",
+          "provider_id": 220,
+          "provider_name": "Jio Cinema",
+          "display_priority": 4
+        }
+      ],
+      "buy":null,
+      "rent":null,
+      "free":null
+    }
+  }
+}

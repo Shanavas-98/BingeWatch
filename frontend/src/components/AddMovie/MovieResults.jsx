@@ -8,7 +8,7 @@ import { movieInstance } from '../../axios/axiosInstance';
 
 const TMDB_KEY = process.env.REACT_APP_TMDB_KEY;
 
-function SearchList({ results, onMovieSelect }) {
+function MovieResults({ results, onMovieSelect }) {
   const getMovie = async (movieId) => {
     let providers = [];
     await movieInstance.get(`/${movieId}/watch/providers?api_key=${TMDB_KEY}`)
@@ -121,4 +121,4 @@ function SearchList({ results, onMovieSelect }) {
   );
 }
 
-export default SearchList;
+export default MovieResults;

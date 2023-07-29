@@ -14,3 +14,5 @@ export const fetchActorDetails = (actorId) => userInstance.get(`/movies/view-mov
 export const fetchCrewDetails = (crewId) => userInstance.get(`/movies/view-movie/crew/${crewId}`);
 export const fetchUserReviews = (movieId) => userInstance.get(`/movies/view-movie/reviews/${movieId}`);
 export const fetchRelatedMovies = (movieId) => userInstance.get(`/movies/view-movie/related-movies/${movieId}`);
+export const fetchGenreSeries = (genreName) => userInstance.get(`/series/${genreName}`);
+export const fetchSeriesDetails = (showId) => userInstance.get(`/series/view-series/${showId}`);

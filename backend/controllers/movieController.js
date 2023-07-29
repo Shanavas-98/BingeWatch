@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const mongoose = require('mongoose');
-const { movieInstance, personInstance } = require('../axios/tmdbInstance');
+const { tmdbInstance } = require('../axios/tmdbInstance');
 const genreModel = require('../models/genreModel');
 const movieModel = require('../models/movieModel');
 const platformModel = require('../models/platformModel');
@@ -55,20 +55,17 @@ const addPlatforms = async (providers) => {
     }
 };
 
-const getPlatformDetails = async (movieId) => {
+const getPlatformDetails = async (content, contentId) => {
     try {
         let providers = [];
-        await movieInstance
-            .get(`/${movieId}/watch/providers?api_key=${TMDB_KEY}`)
+        await tmdbInstance
+            .get(`/${content}/${contentId}/watch/providers?api_key=${TMDB_KEY}`)
             .then((response) => {
                 const buy = response.data?.results?.IN?.buy;
                 const flatrate = response.data?.results?.IN?.flatrate;
-                if (buy && buy.length > 0) {
-                    providers = [...buy];
-                }
-                if (flatrate && flatrate.length > 0) {
-                    providers = [...providers, ...flatrate];
-                }
+                const rent = response.data?.results?.IN?.rent;
+                const free = response.data?.results?.IN?.free;
+                providers = [...(buy ?? []), ...(flatrate ?? []), ...(rent ?? []), ...(free ?? [])];
             });
         const platformIds = await addPlatforms(providers);
         return platformIds;
@@ -85,7 +82,7 @@ const addCast = async (person) => {
         if (exist) {
             return ({ cast: mongoose.Types.ObjectId(exist._id), tmdbId: exist.actorId, name: exist.name, character: person?.character, profile: exist.profile });
         } else {
-            const { data } = await personInstance.get(`/${person?.castId}?api_key=${TMDB_KEY}&append_to_response=combined_credits`);
+            const { data } = await tmdbInstance.get(`/person/${person?.castId}?api_key=${TMDB_KEY}&append_to_response=combined_credits`);
             const { biography, birthday, deathday, gender,
                 id, known_for_department, name, place_of_birth,
                 popularity, profile_path, combined_credits } = data;
@@ -100,8 +97,7 @@ const addCast = async (person) => {
                 genderType = 'Unknown';
             }
             const castCredits = combined_credits.cast
-                .sort((a, b) => (b.vote_average - a.vote_average))
-                .slice(0, 15)
+                .slice(0, 20)
                 .map((movie) => (movie.id));
             const result = await new Promise((resolve, reject) => {
                 new castModel({
@@ -115,7 +111,7 @@ const addCast = async (person) => {
                     placeOfBirth: place_of_birth,
                     popularity,
                     profile: profile_path,
-                    knownFor:castCredits
+                    knownFor: castCredits
                 })
                     .save()
                     .then((document) => {
@@ -175,7 +171,7 @@ const addCrew = async (person) => {
         if (exist) {
             return ({ crew: mongoose.Types.ObjectId(exist._id), tmdbId: exist.crewId, name: exist.name, job: person?.job, profile: exist.profile });
         } else {
-            const { data } = await personInstance.get(`/${person?.crewId}?api_key=${TMDB_KEY}&append_to_response=combined_credits`);
+            const { data } = await tmdbInstance.get(`/person/${person?.crewId}?api_key=${TMDB_KEY}&append_to_response=combined_credits`);
             const { biography, birthday, deathday, gender,
                 id, known_for_department, name, place_of_birth,
                 popularity, profile_path, combined_credits } = data;
@@ -190,8 +186,8 @@ const addCrew = async (person) => {
                 genderType = 'Unknown';
             }
             const crewCredits = combined_credits.crew
-                .sort((a, b) => (b.vote_average - a.vote_average))
-                .slice(0, 15)
+                .sort((a, b) => b.vote_average - a.vote_average)
+                .slice(0, 20)
                 .map((movie) => (movie.id));
             const result = await new Promise((resolve, reject) => {
                 new crewModel({
@@ -205,7 +201,7 @@ const addCrew = async (person) => {
                     department: known_for_department,
                     placeOfBirth: place_of_birth,
                     popularity,
-                    knownFor:crewCredits
+                    knownFor: crewCredits
                 })
                     .save()
                     .then((document) => {
@@ -249,7 +245,6 @@ const addCrews = async (crews) => {
 const addCrewDetails = async (crewDetails) => {
     try {
         const crew = crewDetails
-            .sort((a, b) => b.popularity - a.popularity)
             .slice(0, 20)
             .map((person) => {
                 return ({
@@ -265,12 +260,12 @@ const addCrewDetails = async (crewDetails) => {
     }
 };
 
-const getCastAndCrew = async (movieId) => {
+const getCastAndCrew = async (content, contentId) => {
     try {
         let castDetails;
         let crewDetails;
-        await movieInstance
-            .get(`/${movieId}/credits?api_key=${TMDB_KEY}`)
+        await tmdbInstance
+            .get(`/${content}/${contentId}/credits?api_key=${TMDB_KEY}`)
             .then((response) => {
                 const { cast, crew } = response.data;
                 castDetails = cast;
@@ -428,7 +423,7 @@ const addMovieDetails = async (movieDetails) => {
         const posters = images?.posters?.map((poster) => poster?.file_path)
             .slice(0, 10);
         const trailers = videos?.results?.filter((video) =>
-            (video?.name === 'Official Trailer' || video?.name === 'Official Teaser' || video?.type === 'Trailer' || video?.type === 'Teaser'))
+            (video?.official == true || video?.type === 'Trailer' || video?.type === 'Teaser'))
             .map((video) => video?.key)
             .slice(0, 10);
         movie = {
@@ -462,51 +457,33 @@ const addMovieDetails = async (movieDetails) => {
 const getMovieDetails = async (req, res) => {
     try {
         const movieId = req.params?.movieId;
-        const platforms = await getPlatformDetails(movieId);
-        const { casts, crews } = await getCastAndCrew(movieId);
+        const exist = await movieModel
+            .findOne({ id: movieId })
+            .lean();
+        if (exist) {
+            return ({ success: false, message: 'movie already exists!' });
+        }
+        const platforms = await getPlatformDetails('movie', movieId);
+        const { casts, crews } = await getCastAndCrew('movie', movieId);
         let movieData = {};
-        await movieInstance
-            .get(`/${movieId}?api_key=${TMDB_KEY}&append_to_response=videos,images`)
+        await tmdbInstance
+            .get(`/movie/${movieId}?api_key=${TMDB_KEY}&append_to_response=videos,images`)
             .then((response) => {
                 const {
-                    id,
-                    imdb_id,
-                    title,
-                    original_title,
-                    original_language,
-                    adult,
-                    vote_average,
-                    popularity,
-                    production_companies,
-                    belongs_to_collection,
-                    release_date,
-                    overview,
-                    genres,
-                    runtime,
-                    images,
-                    videos
+                    id, imdb_id, title, original_title,
+                    original_language, adult, vote_average,
+                    popularity, production_companies,
+                    belongs_to_collection, release_date,
+                    overview, genres, runtime, images, videos
                 } = response.data;
 
                 movieData = {
-                    id,
-                    imdb_id,
-                    title,
-                    original_title,
-                    original_language,
-                    adult,
-                    vote_average,
-                    popularity,
-                    production_companies,
-                    belongs_to_collection,
-                    release_date,
-                    overview,
-                    genres,
-                    runtime,
-                    images,
-                    videos,
-                    platforms,
-                    casts,
-                    crews
+                    id, imdb_id, title, original_title,
+                    original_language, adult, vote_average,
+                    popularity, production_companies,
+                    belongs_to_collection, release_date,
+                    overview, genres, runtime, images,
+                    videos, platforms, casts, crews
                 };
             })
             .catch((err) => {
@@ -520,10 +497,60 @@ const getMovieDetails = async (req, res) => {
     }
 };
 
+// const before = res.pagination.previous;
+// const current = res.pagination.current;
+// const after = res.pagination.next;
+// const pagination={before,current,after};
+
 const fetchMovies = async (req, res) => {
     try {
-        const movies = await movieModel.find().populate('genres').exec();
-        res.json(movies);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const start = (page - 1) * limit;
+        const end = page * limit;
+        const search = req.query.search;
+        const year = req.query.year;
+        const field = req.query.field;
+        const order = JSON.parse(req.query.order);
+        const sortObj = {};
+        sortObj[field] = (order ? 1 : -1);
+        const genreId = req.query.genre;
+        const genres = await genreModel.find();
+        const count = await movieModel
+            .find({
+                $and: [
+                    { title: { $regex: search, $options: 'i' } },
+                    { releaseDate: { $regex: year, $options: 'i' } },
+                    ...(genreId
+                        ? [{ genres: { $elemMatch: { $eq: genreId } } }]
+                        : [])
+                ]
+            })
+            .countDocuments().exec();
+        const movies = await movieModel
+            .find({
+                $and: [
+                    { title: { $regex: search, $options: 'i' } },
+                    { releaseDate: { $regex: year, $options: 'i' } },
+                    ...(genreId
+                        ? [{ genres: { $elemMatch: { $eq: genreId } } }]
+                        : [])
+                ]
+            })
+            .populate('genres')
+            .sort(sortObj)
+            .skip(start)
+            .limit(limit)
+            .exec();
+        const pagination = {};
+        pagination.current = page;
+        if (start > 0) {
+            pagination.previous = page - 1;
+        }
+        if (end < count) {
+            pagination.next = page + 1;
+        }
+        res.json({ movies, pagination, genres });
     } catch (err) {
         console.error(err);
         res.json(err);
@@ -720,9 +747,9 @@ const fetchActorDetails = async (req, res) => {
                     return movie;
                 })
             );
-            if(movies.length>0){
+            if (movies.length > 0) {
                 const knownFor = movies.filter((movie) => movie !== null);
-                res.json({actor,knownFor});
+                res.json({ actor, knownFor });
             }
         } else {
             res.json({ status: false, message: 'Actor not found' });
@@ -744,9 +771,9 @@ const fetchCrewDetails = async (req, res) => {
                     return movie;
                 })
             );
-            if(movies.length>0){
+            if (movies.length > 0) {
                 const knownFor = movies.filter((movie) => movie !== null);
-                res.json({status:true,crew,knownFor});
+                res.json({ status: true, crew, knownFor });
             }
         } else {
             res.json({ status: false, message: 'Crew not found' });
@@ -757,32 +784,35 @@ const fetchCrewDetails = async (req, res) => {
     }
 };
 
-const fetchUserReviews = async(req,res)=>{
+const fetchUserReviews = async (req, res) => {
     try {
         const movieId = req.params.movieId;
         const userId = req.userId;
-        const reviews = await reviewModel.find({movie:movieId, user:{$ne:userId}});
-        const userReview = await reviewModel.findOne({user:userId, movie:movieId});
-        if(reviews){
-            if(userReview){
-                return res.json({reviews,userReview});
-            }
-            return res.json({reviews,userReview:null});
-        }else{
-            return res.json({reviews:null,userReview:null});
+        const reviews = await reviewModel
+            .find({ movie: movieId, user: { $ne: userId } })
+            .populate('user')
+            .exec();
+        const userReview = await reviewModel
+            .findOne({ user: userId, movie: movieId })
+            .populate('user')
+            .exec();
+        if (reviews || userReview) {
+            return res.json({ reviews, userReview });
+        } else {
+            return res.json({ reviews: null, userReview: null });
         }
     } catch (error) {
         res.json(error);
     }
 };
 
-const fetchRelatedMovies = async(req,res)=>{
+const fetchRelatedMovies = async (req, res) => {
     try {
         const movieId = req.params.movieId;
-        console.log('related movies of',movieId);
-        const genresData = await movieModel.findById(movieId,{genres:1,movieCollection:1});
+        console.log('related movies of', movieId);
+        const genresData = await movieModel.findById(movieId, { genres: 1, movieCollection: 1 });
         if (genresData) {
-            const relatedMovies = await movieModel.find({ genres: { $in: genresData.genres } });
+            const relatedMovies = await movieModel.find({ genres: { $in: genresData.genres } }).limit(10);
             res.json(relatedMovies);
         } else {
             console.log('Genres not found');
@@ -794,6 +824,12 @@ const fetchRelatedMovies = async(req,res)=>{
 
 module.exports = {
     getMovieDetails,
+    getPlatformDetails,
+    getCastAndCrew,
+    addGenres,
+    addProductions,
+    addCastDetails,
+    addCrewDetails,
     fetchMovies,
     fetchMovie,
     editMovie,

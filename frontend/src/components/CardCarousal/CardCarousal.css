@@ -8,6 +8,6 @@
     display: none;
 }
 
-.cards-carousal > .flex-col {
+.cards-carousal > .flex {
     flex-shrink: 0; /* Add this line to prevent cards from compressing */
 }

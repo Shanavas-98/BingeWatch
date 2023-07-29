@@ -83,6 +83,9 @@ function SideBar({ userType }) {
               <Sidebar.Item icon={FilmIcon} onClick={() => navigate('/admin/movies')}>
                 <p>Movies</p>
               </Sidebar.Item>
+              <Sidebar.Item icon={FilmIcon} onClick={() => navigate('/admin/series')}>
+                <p>Series</p>
+              </Sidebar.Item>
               <Sidebar.Item icon={UsersIcon} onClick={() => navigate('/admin/actors')}>
                 <p>Actors</p>
               </Sidebar.Item>
@@ -120,7 +123,7 @@ function SideBar({ userType }) {
               <Sidebar.Item icon={FilmIcon} onClick={() => navigate('/movies')}>
                 <p>Movies</p>
               </Sidebar.Item>
-              <Sidebar.Item icon={TvIcon}>
+              <Sidebar.Item icon={TvIcon} onClick={() => navigate('/series')}>
                 <p>Series</p>
               </Sidebar.Item>
               <Sidebar.Item icon={BookmarkSquareIcon}>

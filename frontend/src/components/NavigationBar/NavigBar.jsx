@@ -12,7 +12,7 @@ import ReviewModal from '../ReviewModal/ReviewModal';
 
 function NavigBar({ data }) {
   const {
-    title, year, duration, rating, id,
+    title, year, duration, tagline, start, end, rating, id,
   } = data;
   const [rate, setRate] = useState(0);
   const [review, setReview] = useState('');
@@ -41,7 +41,10 @@ function NavigBar({ data }) {
             {title}
           </span>
           <span className="text-gray-400 text-sm self-center">
-            {`${year} | ${duration}`}
+            {`${tagline}`}
+          </span>
+          <span className="text-gray-400 text-sm self-center">
+            {`${year || start} | ${duration || end}`}
           </span>
         </div>
         <div className="flex gap-2">

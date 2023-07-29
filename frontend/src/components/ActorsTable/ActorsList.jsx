@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
-import DataTable from '../Table/DataTable';
 import { fetchActors } from '../../services/adminApi';
+import { IMG_URL } from '../../axios/apiUrls';
 
 function ActorsList() {
   const [loading, setLoading] = useState(true);
@@ -19,22 +19,6 @@ function ActorsList() {
     };
     getActors();
   }, []);
-  const columns = [
-    { field: 'id', headerName: 'ID', width: 100 },
-    { field: 'profile', headerName: 'Profile', width: 150 },
-    { field: 'name', headerName: 'Name', width: 150 },
-    { field: 'gender', headerName: 'Gender', width: 100 },
-    { field: 'popularity', headerName: 'Popularity', width: 100 },
-    { field: '_id', headerName: 'Action', width: 100 },
-  ];
-  const rows = actors.map((person) => ({
-    id: person.actorId,
-    profile: person.profile,
-    name: person.name,
-    gender: person.gender,
-    popularity: person.popularity,
-    _id: person._id,
-  }));
   if (loading) {
     return (
       <div>
@@ -42,7 +26,7 @@ function ActorsList() {
       </div>
     ); // Display a loading indicator
   }
-  if (rows.length < 1) {
+  if (actors.length < 1) {
     return (
       <div>
         <h1 className="text-white">Actors List is Empty</h1>
@@ -51,8 +35,31 @@ function ActorsList() {
   }
   return (
     <>
-      <h1 className="text-white m-2">Actors List</h1>
-      <DataTable rows={rows} columns={columns} />
+      <h1 className="text-white p-2 text-xl font-bold bg-black text-center">Actors List</h1>
+      <table className="table-fixed w-full m-2">
+        <thead className="text-white text-justify">
+          <tr>
+            <th>ID</th>
+            <th>Profile</th>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Popularity</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody className="text-white">
+          {actors.map((person) => (
+            <tr className="">
+              <td>{person.actorId}</td>
+              <td><img src={IMG_URL + person.profile} alt="" className="w-15 h-20" /></td>
+              <td>{person.name}</td>
+              <td>{person.gender}</td>
+              <td>{person.popularity}</td>
+              <td>{person._id}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </>
   );
 }

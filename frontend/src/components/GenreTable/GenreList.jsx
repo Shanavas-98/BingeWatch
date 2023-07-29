@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 
 import { fetchGenres } from '../../services/adminApi';
-import DataTable from '../Table/DataTable';
 
 function GenreList() {
   const [loading, setLoading] = useState(true);
@@ -20,16 +19,6 @@ function GenreList() {
     };
     getGenres();
   }, []);
-  const columns = [
-    { field: 'id', headerName: 'ID', width: 100 },
-    { field: 'genreName', headerName: 'Genre', width: 150 },
-    { field: '_id', headerName: 'Action', width: 100 },
-  ];
-  const rows = genres.map((genre) => ({
-    id: genre.genreId,
-    genreName: genre.genreName,
-    _id: genre._id,
-  }));
   if (loading) {
     return (
       <div>
@@ -37,7 +26,7 @@ function GenreList() {
       </div>
     ); // Display a loading indicator
   }
-  if (rows.length < 1) {
+  if (genres.length < 1) {
     return (
       <div>
         <h1 className="text-white">Genres List is Empty</h1>
@@ -46,8 +35,25 @@ function GenreList() {
   }
   return (
     <>
-      <h1 className="text-white m-2">Genres List</h1>
-      <DataTable rows={rows} columns={columns} />
+      <h1 className="text-white p-2 text-xl font-bold bg-black text-center">Genres List</h1>
+      <table className="table-fixed w-full m-2">
+        <thead className="text-white text-justify">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody className="text-white">
+          {genres.map((item) => (
+            <tr>
+              <td>{item.genreId}</td>
+              <td>{item.genreName}</td>
+              <td>{item._id}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </>
   );
 }

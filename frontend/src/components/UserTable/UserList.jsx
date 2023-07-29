@@ -1,15 +1,16 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
 import { Button } from 'flowbite-react';
 
 import { toast } from 'react-toastify';
 import { blockUser, fetchUsers } from '../../services/adminApi';
-import DataTable from '../Table/DataTable';
+import { IMG_URL } from '../../axios/apiUrls';
 
-function BlockButton(params) {
-  const [block, setBlock] = useState(params?.row?.blocked);
+function BlockButton({ user }) {
+  const [block, setBlock] = useState(user.blocked);
   const handleBlock = async () => {
-    const userId = params?.row?._id;
+    const userId = user._id;
     const { data } = await blockUser(userId);
     if (data.success) {
       if (data.block) {
@@ -43,24 +44,6 @@ function UserList() {
     };
     getUsers();
   }, []);
-  const columns = [
-    { field: 'id', headerName: 'ID', width: 80 },
-    { field: 'fullName', headerName: 'Full Name', width: 150 },
-    { field: 'email', headerName: 'Email', width: 200 },
-    { field: 'mobile', headerName: 'Mobile', width: 150 },
-    { field: 'verified', headerName: 'Verified', width: 100 },
-    {
-      field: '_id', headerName: 'Action', width: 100, renderCell: BlockButton,
-    },
-  ];
-  const rows = users?.map((user, index) => ({
-    id: index + 1,
-    fullName: user.fullName,
-    email: user.email,
-    mobile: user.mobile,
-    verified: user.verified,
-    _id: user._id,
-  }));
   if (loading) {
     return (
       <div>
@@ -68,7 +51,7 @@ function UserList() {
       </div>
     ); // Display a loading indicator
   }
-  if (rows.length < 1) {
+  if (users.length < 1) {
     return (
       <div>
         <h1 className="text-white">Users List is Empty</h1>
@@ -77,8 +60,33 @@ function UserList() {
   }
   return (
     <>
-      <h1 className="text-white m-2">Users List</h1>
-      <DataTable rows={rows} columns={columns} />
+      <h1 className="text-white p-2 text-xl font-bold bg-black text-center">Actors List</h1>
+      <table className="table-fixed w-full m-2">
+        <thead className="text-white text-justify">
+          <tr>
+            <th>S.No</th>
+            <th>Profile</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>Verified</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody className="text-white">
+          {users?.map((person, index) => (
+            <tr className="">
+              <td>{index + 1}</td>
+              <td><img src={IMG_URL + person.profile} alt="" className="w-15 h-20" /></td>
+              <td>{person.fullName}</td>
+              <td>{person.email}</td>
+              <td>{person.mobile}</td>
+              <td>{person.verified ? 'true' : 'false'}</td>
+              <td><BlockButton user={person} /></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </>
   );
 }

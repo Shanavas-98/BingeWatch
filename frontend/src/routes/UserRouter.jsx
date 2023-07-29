@@ -8,6 +8,8 @@ import MoviesPage from '../pages/user/MoviesPage';
 import ViewMoviePage from '../pages/user/ViewMoviePage';
 import ActorDetailsPage from '../pages/user/ActorDetailsPage';
 import ReviewsPage from '../pages/user/ReviewsPage';
+import SeriesPage from '../pages/user/SeriesPage';
+import ViewSeriesPage from '../pages/user/ViewSeriesPage';
 
 function UserRouter() {
   return (
@@ -21,6 +23,8 @@ function UserRouter() {
       <Route path="/movies/view-movie/actor/:personId" element={<ActorDetailsPage type="cast" />} />
       <Route path="/movies/view-movie/crew/:personId" element={<ActorDetailsPage type="crew" />} />
       <Route path="/movies/view-movie/reviews/:movieId" element={<ReviewsPage />} />
+      <Route path="/series" element={<SeriesPage />} />
+      <Route path="/series/view-series/:showId" element={<ViewSeriesPage />} />
     </Routes>
   );
 }

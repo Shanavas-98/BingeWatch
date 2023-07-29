@@ -1,7 +1,7 @@
 /* eslint-disable linebreak-style */
 import axios from 'axios';
 import {
-  ADMIN_URL, MOVIE_URL, SEARCH_MOVIE_URL, TMDB_URL, USER_URL,
+  ADMIN_URL, MOVIE_URL, SEARCH_MOVIE_URL, SEARCH_SHOW_URL, SHOW_URL, TMDB_URL, USER_URL,
 } from './apiUrls';
 
 const USER_TOKEN = localStorage.getItem('userJwt');
@@ -51,6 +51,23 @@ const searchMovieInstance = axios.create({
   },
 });
 
+const showInstance = axios.create({
+  baseURL: SHOW_URL,
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${TMDB_TOKEN}`,
+  },
+});
+
+const searchShowInstance = axios.create({
+  baseURL: `${SEARCH_SHOW_URL}?api_key=${TMDB_KEY}&include_adult=false&language=en-US`,
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${TMDB_TOKEN}`,
+  },
+});
+
 export {
-  userInstance, adminInstance, tmdbInstance, movieInstance, searchMovieInstance,
+  userInstance, adminInstance, tmdbInstance, movieInstance,
+  searchMovieInstance, showInstance, searchShowInstance,
 };

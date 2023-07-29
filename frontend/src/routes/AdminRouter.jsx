@@ -9,6 +9,8 @@ import UsersPage from '../pages/admin/UsersPage';
 import GenresPage from '../pages/admin/GenresPage';
 import ActorsPage from '../pages/admin/ActorsPage';
 import CrewsPage from '../pages/admin/CrewsPage';
+import AddSeriesPage from '../pages/admin/AddSeriesPage';
+import SeriesPage from '../pages/admin/SeriesPage';
 
 function AdminRouter() {
   return (
@@ -18,6 +20,8 @@ function AdminRouter() {
       <Route path="/users" element={<UsersPage />} />
       <Route path="/movies" element={<MoviesPage />} />
       <Route path="/movies/add-movie" element={<AddMoviePage />} />
+      <Route path="/series" element={<SeriesPage />} />
+      <Route path="/series/add-series" element={<AddSeriesPage />} />
       <Route path="/movies/view-movie/:movieId" element={<EditMoviePage />} />
       <Route path="/genres" element={<GenresPage />} />
       <Route path="/actors" element={<ActorsPage />} />

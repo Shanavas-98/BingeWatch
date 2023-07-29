@@ -3,7 +3,6 @@
 
 import React, { useEffect, useState } from 'react';
 
-import './ViewMovie.css';
 import { fetchMovieDetails } from '../../services/userApi';
 import NavigBar from '../NavigationBar/NavigBar';
 import VideoPlay from '../VideoPlay/VideoPlay';
@@ -41,7 +40,7 @@ function ViewMovie({ movieId }) {
       _id, videos, summary, genres,
       platforms, casts, crews,
     } = movie;
-    const year = releaseDate.slice(0, 4);
+    const year = releaseDate?.slice(0, 4);
     const castCards = casts?.map((person) => ({
       id: person.cast,
       key: person.tmdbId,
@@ -70,7 +69,7 @@ function ViewMovie({ movieId }) {
           />
         </div>
         <div className="md:col-span-1 col-span-2">
-          <VideoPlay key={videos[0]} videos={videos} />
+          <VideoPlay videos={videos} />
         </div>
         <div className="md:col-span-1 col-span-2">
           <h2 className="text-white text-lg mb-2">Summary</h2>
@@ -82,7 +81,7 @@ function ViewMovie({ movieId }) {
           </div>
           <h2 className="text-white text-lg mb-2">Platforms</h2>
           <div className="flex mt-2">
-            <div className="posters">
+            <div className="cards-carousal">
               {platforms?.map((platform) => (
                 <img
                   src={IMG_URL + platform.logoPath}

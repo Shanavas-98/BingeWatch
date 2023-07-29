@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
 import { Rating, Stack } from '@mui/material';
@@ -13,7 +14,6 @@ function ReviewList({ movieId }) {
         .then((res) => {
           setReviews(res.data.reviews);
           setUserReview(res.data.userReview);
-          console.log('user reviews', reviews);
         }).catch((error) => {
           console.error('error fetching user reviews', error);
         });
@@ -21,26 +21,33 @@ function ReviewList({ movieId }) {
     getReviews(movieId);
   }, [movieId]);
   return (
-    <div>
+    <div className="m-2">
+      <h1 className="text-white">
+        User Reviews
+      </h1>
       {userReview
-        && (
+  && (
+  <div className="m-2 border border-white p-2">
+    <div className="flex justify-between border-b-2">
+      <h3 className="text-white">{userReview?.user?.fullName}</h3>
+      <Stack spacing={1}>
+        <Rating name="half-rating" defaultValue={userReview?.rating} precision={0.5} />
+        <span className="text-slate-400 text-sm self-center">{userReview?.createdAt?.slice(0, 10)}</span>
+      </Stack>
+    </div>
+    <p className="text-slate-200 text-sm">{userReview?.review}</p>
+  </div>
+  )}
+      {reviews?.length > 0 && reviews?.map((review) => (
         <div className="m-1">
-          <h3>{userReview.user.fullName}</h3>
-          <Stack spacing={1}>
-            <Rating name="half-rating" value={userReview.rating} precision={0.5} />
-            <span className="text-slate-400 text-sm self-center">{userReview.createdAt.slice(0, 10)}</span>
-          </Stack>
-          <p>{userReview.review}</p>
-        </div>
-        )}
-      {reviews && reviews.map((review) => (
-        <div className="m-1">
-          <h3>{review.user.fullName}</h3>
-          <Stack spacing={1}>
-            <Rating name="half-rating" value={review.rating} precision={0.5} />
-            <span className="text-slate-400 text-sm self-center">{review.createdAt.slice(0, 10)}</span>
-          </Stack>
-          <p>{review.review}</p>
+          <div className="flex justify-between border border-white">
+            <h3>{review?.user?.fullName}</h3>
+            <Stack spacing={1}>
+              <Rating name="half-rating" value={review?.rating} precision={0.5} />
+              <span className="text-slate-400 text-sm self-center">{review?.createdAt}</span>
+            </Stack>
+          </div>
+          <p>{review?.review}</p>
         </div>
       ))}
     </div>
