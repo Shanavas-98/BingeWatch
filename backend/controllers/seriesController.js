@@ -343,6 +343,35 @@ const fetchSeriesDetails = async(req,res)=>{
     }
 };
 
+const fetchSeasonDetails = async(req,res)=>{
+    try {
+        const seasonId = req.params?.seasonId;
+        const season = await seasonModel
+            .findOne({id:seasonId})
+            .exec();
+        console.log('season details',season);
+        res.json(season);
+    } catch (error) {
+        console.error(error);
+        res.json(error);
+    }
+};
+
+const fetchEpisodeDetails = async(req,res)=>{
+    try {
+        console.log('fetching episode details');
+        const episodeId = req.params?.episodeId;
+        const episode = await episodeModel
+            .findOne({id:episodeId})
+            .exec();
+        console.log('season details',episode);
+        res.json(episode);
+    } catch (error) {
+        console.error(error);
+        res.json(error);
+    }
+};
+
 
 module.exports = {
     getShowDetails,
@@ -350,5 +379,7 @@ module.exports = {
     getEpisodeDetails,
     fetchSeries,
     fetchGenreSeries,
-    fetchSeriesDetails
+    fetchSeriesDetails,
+    fetchSeasonDetails,
+    fetchEpisodeDetails
 };

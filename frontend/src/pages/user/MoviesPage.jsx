@@ -16,10 +16,10 @@ function MoviesPage() {
       <div className="col-span-8">
         <div className="w-auto m-2">
           {genresArray.map((movieGenre) => (
-            <>
+            <div key={movieGenre}>
               <strong className="text-white">{movieGenre}</strong>
               <MovieCarousal genre={movieGenre} />
-            </>
+            </div>
           ))}
         </div>
       </div>

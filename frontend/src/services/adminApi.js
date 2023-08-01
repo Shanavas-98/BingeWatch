@@ -11,7 +11,7 @@ export const addMovie = (movieId) => adminInstance.get(`/movies/add-movie/${movi
 export const editMovie = (values) => adminInstance.post(`/movies/edit-movie/${values.id}`, { ...values });
 export const fetchMovie = (movieId) => adminInstance.get(`/movies/view-movie/${movieId}`);
 export const fetchGenres = () => adminInstance.get('/genres');
-export const fetchActors = () => adminInstance.get('/actors');
+export const fetchActors = (page, limit, search, field, order, gender) => adminInstance.get(`/actors?page=${page}&limit=${limit}&search=${search}&field=${field}&order=${order}&gender=${gender}`);
 export const fetchCrews = () => adminInstance.get('/crews');
 export const fetchSeries = () => adminInstance.get('/series');
 export const addShow = (showId) => adminInstance.get(`/series/add-series/${showId}`);

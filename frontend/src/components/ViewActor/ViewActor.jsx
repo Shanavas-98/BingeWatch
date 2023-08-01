@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
-import { fetchActorDetails, fetchCrewDetails } from '../../services/userApi';
+import { fetchActor, fetchCrew } from '../../services/userApi';
 import CardCarousal from '../CardCarousal/CardCarousal';
 import { IMG_URL } from '../../axios/apiUrls';
 import PersonBar from '../NavigationBar/PersonBar';
@@ -13,7 +13,7 @@ function ViewActor({ personId, type }) {
   useEffect(() => {
     if (type === 'cast') {
       const getActor = async (id) => {
-        await fetchActorDetails(id)
+        await fetchActor(id)
           .then((res) => {
             setPerson(res.data.actor);
             setKnownFor(res.data.knownFor);
@@ -27,7 +27,7 @@ function ViewActor({ personId, type }) {
     }
     if (type === 'crew') {
       const getCrew = async (id) => {
-        await fetchCrewDetails(id)
+        await fetchCrew(id)
           .then((res) => {
             setPerson(res.data.crew);
             setKnownFor(res.data.knownFor);

@@ -13,11 +13,10 @@ function CardCarousal({ cards, baseLink, style }) {
     <div className="flex">
       <div className="cards-carousal">
         {cards?.map((card) => (
-          <div className={`flex flex-col m-1 ${style.wd} rounded-md items-center`}>
+          <div key={card.key} className={`flex flex-col m-1 ${style.wd} rounded-md items-center`}>
             <img
               src={IMG_URL + card.image}
               alt={card.title}
-              key={card.key}
               className={`${style.wd} ${style.ht} m-1 rounded-md hover:cursor-pointer hover:scale-110`}
               onClick={() => navigate(`${baseLink}/${card.id}`)}
             />

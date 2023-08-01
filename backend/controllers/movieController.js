@@ -8,6 +8,7 @@ const productionModel = require('../models/productionModel');
 const castModel = require('../models/castModel');
 const crewModel = require('../models/crewModel');
 const reviewModel = require('../models/reviewModel');
+const watchlistModel = require('../models/watchlistModel');
 const TMDB_KEY = process.env.TMDB_KEY;
 
 const addPlatform = async (platform) => {
@@ -497,11 +498,6 @@ const getMovieDetails = async (req, res) => {
     }
 };
 
-// const before = res.pagination.previous;
-// const current = res.pagination.current;
-// const after = res.pagination.next;
-// const pagination={before,current,after};
-
 const fetchMovies = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -543,7 +539,7 @@ const fetchMovies = async (req, res) => {
             .limit(limit)
             .exec();
         const pagination = {};
-        pagination.current = page;
+        pagination.current = {page,limit};
         if (start > 0) {
             pagination.previous = page - 1;
         }
@@ -634,8 +630,44 @@ const fetchGenres = async (req, res) => {
 
 const fetchActors = async (req, res) => {
     try {
-        const actors = await castModel.find().lean();
-        res.json(actors);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const start = (page - 1) * limit;
+        const end = page * limit;
+        const search = req.query.search;
+        const field = req.query.field;
+        const order = JSON.parse(req.query.order);
+        const sortObj = {};
+        sortObj[field] = (order ? 1 : -1);
+        const gender = req.query.gender;
+        const count = await castModel
+            .find({
+                $and: [
+                    { name: { $regex: search, $options: 'i' } },
+                    (gender&&{gender:gender})
+                ]
+            })
+            .countDocuments().exec();
+        const actors = await castModel
+            .find({
+                $and: [
+                    { name: { $regex: search, $options: 'i' } },
+                    (gender&&{gender:gender})
+                ]
+            })
+            .sort(sortObj)
+            .skip(start)
+            .limit(limit)
+            .exec();
+        const pagination = {};
+        pagination.current = {page,limit};
+        if (start > 0) {
+            pagination.previous = page - 1;
+        }
+        if (end < count) {
+            pagination.next = page + 1;
+        }
+        res.json({actors,pagination});
     } catch (err) {
         console.error(err);
         res.json(err);
@@ -673,7 +705,7 @@ const addRating = async (req, res) => {
         const movieId = req.params.movieId;
         const user = req.userId;
         const rating = req.query.rating;
-        const exist = await reviewModel.findOne({ movie: movieId, user: user });
+        const exist = await reviewModel.findOne({ user: user, movie: movieId });
         if (!exist) {
             await reviewModel.create({
                 movie: movieId,
@@ -691,6 +723,46 @@ const addRating = async (req, res) => {
         console.error('Error rating movie:', error);
         res.json({ success: false, message: 'error while rating' });
     }
+};
+
+const addToWatchlist = async (req, res) => {
+    try {
+        const movieId = req.params.movieId;
+        const userId = req.userId;
+        const watchlist = await watchlistModel.findOne({ user: userId });
+        if(watchlist){
+            const isMovie = await watchlistModel.findOneAndUpdate({
+                $and:[
+                    {user:userId},
+                    {movies:movieId}
+                ]
+            },{
+                $pull:{movies:movieId}
+            });
+            if(!isMovie){
+                console.log('add to watchlist');
+                await watchlistModel.findOneAndUpdate(
+                    { user: userId },
+                    {
+                        $push:{movies:movieId}
+                    }
+                );
+                res.json({ success: true, message: 'movie added to watchlist' });
+            }else{
+                console.log('remove from watchlist');
+                res.json({ success: true, message: 'movie removed from watchlist' });
+            }
+        }else{
+            await watchlistModel.create({
+                user: userId,
+                movies:[movieId]
+            });
+            res.json({ success: true, message: 'movie added to watchlist' });
+        }
+    } catch (error) {
+        console.error('Error adding to watchlist:', error);
+        res.json({ success: false, message: 'error while adding to watchlist' });
+    }
 
 };
 
@@ -698,9 +770,19 @@ const fetchReview = async (req, res) => {
     try {
         const movieId = req.params.movieId;
         const userId = req.userId;
-        const review = await reviewModel.findOne({ movie: movieId, user: userId });
-        if (review) {
-            res.json(review);
+        const reviewData = await reviewModel.findOne({ movie: movieId, user: userId });
+        const isMovie = await watchlistModel.findOne({
+            $and:[
+                {user:userId},
+                {movies:movieId}
+            ]
+        });
+        let inList=false;
+        if(isMovie){
+            inList=true;
+        }
+        if (reviewData) {
+            res.json({reviewData,inList});
         } else {
             res.json({ success: true, message: 'review not posted' });
         }
@@ -839,6 +921,7 @@ module.exports = {
     fetchGenreMovies,
     fetchMovieDetails,
     addRating,
+    addToWatchlist,
     fetchReview,
     addReview,
     fetchActorDetails,

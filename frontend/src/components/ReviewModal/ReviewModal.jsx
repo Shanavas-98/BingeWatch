@@ -1,7 +1,7 @@
-/* eslint-disable react/prop-types */
 import { Button } from 'flowbite-react';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import PropTypes from 'prop-types';
 import CloseIcon from '@mui/icons-material/Close';
 
 import './ReviewModal.css';
@@ -27,6 +27,7 @@ function ReviewModal({ movieId, reviewData, closeModal }) {
 
   const handleSubmit = () => {
     reviewSubmit(review);
+    setReview(review);
     closeModal();
   };
 
@@ -52,5 +53,15 @@ function ReviewModal({ movieId, reviewData, closeModal }) {
     </div>
   );
 }
+
+ReviewModal.propTypes = {
+  movieId: PropTypes.string.isRequired,
+  reviewData: PropTypes.string,
+  closeModal: PropTypes.func.isRequired,
+};
+
+ReviewModal.defaultProps = {
+  reviewData: '',
+};
 
 export default ReviewModal;
