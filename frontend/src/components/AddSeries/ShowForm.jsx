@@ -1,15 +1,12 @@
-/* eslint-disable camelcase */
-/* eslint-disable react/prop-types */
-/* eslint-disable no-underscore-dangle */
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import YouTube from 'react-youtube';
 import {
   Button, Label, TextInput, Textarea,
 } from 'flowbite-react';
-import YouTube from 'react-youtube';
-import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { StarRateRounded } from '@mui/icons-material';
 
-// import { number } from 'prop-types';
 import { IMG_URL } from '../../axios/apiUrls';
 import CardCarousal from '../CardCarousal/CardCarousal';
 import { addShow } from '../../services/adminApi';
@@ -262,5 +259,28 @@ function ShowForm({ show, onSeasonSelect }) {
     </>
   );
 }
+
+ShowForm.propTypes = {
+  show: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    language: PropTypes.string.isRequired,
+    rating: PropTypes.number.isRequired,
+    airDate: PropTypes.string.isRequired,
+    summary: PropTypes.string.isRequired,
+    genres: PropTypes.string.isRequired,
+    endDate: PropTypes.string.isRequired,
+    totalEpisodes: PropTypes.number.isRequired,
+    totalSeasons: PropTypes.number.isRequired,
+    poster: PropTypes.string.isRequired,
+    images: PropTypes.arrayOf(PropTypes.string),
+    videos: PropTypes.arrayOf(PropTypes.string),
+    seasons: PropTypes.arrayOf(PropTypes.shape),
+    platforms: PropTypes.arrayOf(PropTypes.shape),
+    casts: PropTypes.arrayOf(PropTypes.shape),
+    crews: PropTypes.arrayOf(PropTypes.shape),
+  }).isRequired,
+  onSeasonSelect: PropTypes.func.isRequired,
+};
 
 export default ShowForm;

@@ -62,14 +62,14 @@ function ViewSeason(props) {
         </div>
         <div className="col-span-2 ml-2">
           <Label htmlFor="episodes" value="Episodes" className="text-white" />
-          <div className="cards-carousal">
+          <div className="cards-carousal my-2">
             {episodes?.map((episode) => (
               <div key={episode.id} className="flex">
                 <div>
                   <img
                     src={IMG_URL + episode.poster}
                     alt="poster"
-                    className="h-48 w-32 mx-2 rounded-md"
+                    className="h-36 w-auto mx-2 rounded-md"
                   />
                 </div>
                 <div className="flex flex-col justify-between">

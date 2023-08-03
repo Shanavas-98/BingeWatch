@@ -1,8 +1,7 @@
-/* eslint-disable camelcase */
-/* eslint-disable max-len */
-/* eslint-disable react/prop-types */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Button } from 'flowbite-react';
+
 import { IMG_URL } from '../../axios/apiUrls';
 import { movieInstance } from '../../axios/axiosInstance';
 
@@ -25,7 +24,9 @@ function MovieResults({ results, onMovieSelect }) {
     await movieInstance.get(`/${movieId}?api_key=${TMDB_KEY}&append_to_response=videos,images,credits`)
       .then((res) => {
         const {
-          id, title, original_title, original_language, vote_average, release_date, overview, genres, runtime, images, videos, credits,
+          id, title, original_language,
+          vote_average, release_date, overview, genres,
+          runtime, images, videos, credits,
         } = res.data;
         const genreNames = genres.map((genre) => genre.name);
         const hour = Math.floor(runtime / 60);
@@ -82,7 +83,7 @@ function MovieResults({ results, onMovieSelect }) {
           .slice(0, 20);
         const movie = {
           id,
-          title: title || original_title,
+          title,
           language: original_language,
           rating: vote_average,
           releaseDate: release_date,
@@ -120,5 +121,10 @@ function MovieResults({ results, onMovieSelect }) {
     </div>
   );
 }
+
+MovieResults.propTypes = {
+  results: PropTypes.arrayOf(PropTypes.shape).isRequired,
+  onMovieSelect: PropTypes.func.isRequired,
+};
 
 export default MovieResults;

@@ -1,7 +1,5 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable react/prop-types */
-
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 
 import { fetchMovie } from '../../services/userApi';
 import NavigBar from '../NavigationBar/NavigBar';
@@ -104,5 +102,9 @@ function ViewMovie({ movieId }) {
     );
   }
 }
+
+ViewMovie.propTypes = {
+  movieId: PropTypes.string.isRequired,
+};
 
 export default ViewMovie;

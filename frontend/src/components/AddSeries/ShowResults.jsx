@@ -1,7 +1,7 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable camelcase */
-import { Button } from 'flowbite-react';
 import React from 'react';
+import PropTypes from 'prop-types';
+import { Button } from 'flowbite-react';
+
 import { IMG_URL } from '../../axios/apiUrls';
 import { showInstance } from '../../axios/axiosInstance';
 
@@ -103,5 +103,10 @@ function ShowResults({ results, onShowSelect }) {
     </div>
   );
 }
+
+ShowResults.propTypes = {
+  results: PropTypes.arrayOf(PropTypes.shape).isRequired,
+  onShowSelect: PropTypes.func.isRequired,
+};
 
 export default ShowResults;

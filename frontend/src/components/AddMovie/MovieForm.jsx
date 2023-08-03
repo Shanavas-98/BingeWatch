@@ -1,11 +1,11 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable react/prop-types */
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import {
   Button, Label, TextInput, Textarea,
 } from 'flowbite-react';
-import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import YouTube from 'react-youtube';
+
 import { addMovie } from '../../services/adminApi';
 import { IMG_URL } from '../../axios/apiUrls';
 import CardCarousal from '../CardCarousal/CardCarousal';
@@ -173,5 +173,23 @@ function MovieForm({ movie }) {
     </>
   );
 }
+
+MovieForm.propTypes = {
+  movie: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    language: PropTypes.string.isRequired,
+    rating: PropTypes.number.isRequired,
+    releaseDate: PropTypes.string.isRequired,
+    summary: PropTypes.string,
+    genres: PropTypes.string.isRequired,
+    duration: PropTypes.string.isRequired,
+    images: PropTypes.arrayOf(PropTypes.string),
+    videos: PropTypes.arrayOf(PropTypes.string),
+    platforms: PropTypes.arrayOf(PropTypes.shape),
+    cast: PropTypes.arrayOf(PropTypes.shape),
+    crew: PropTypes.arrayOf(PropTypes.shape),
+  }).isRequired,
+};
 
 export default MovieForm;

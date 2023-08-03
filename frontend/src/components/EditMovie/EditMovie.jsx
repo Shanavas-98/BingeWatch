@@ -1,14 +1,13 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable react/prop-types */
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import YouTube from 'react-youtube';
+import * as Yup from 'yup';
+import { useFormik } from 'formik';
+import { toast } from 'react-toastify';
 import {
   Button, Label, TextInput, Textarea,
 } from 'flowbite-react';
-import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import YouTube from 'react-youtube';
-import { useNavigate } from 'react-router-dom';
-import * as Yup from 'yup';
-import { useFormik } from 'formik';
 
 import { editMovie, fetchMovie } from '../../services/adminApi';
 import { IMG_URL } from '../../axios/apiUrls';
@@ -318,5 +317,9 @@ function EditMovie({ movieId }) {
     </div>
   );
 }
+
+EditMovie.propTypes = {
+  movieId: PropTypes.string.isRequired,
+};
 
 export default EditMovie;

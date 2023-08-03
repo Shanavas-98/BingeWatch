@@ -1,6 +1,7 @@
-/* eslint-disable react/prop-types */
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import PropTypes from 'prop-types';
+
 import SideBar from '../../components/SideBar/SideBar';
 import ViewActor from '../../components/ViewActor/ViewActor';
 
@@ -17,5 +18,9 @@ function ActorDetailsPage({ type }) {
     </div>
   );
 }
+
+ActorDetailsPage.propTypes = {
+  type: PropTypes.string.isRequired,
+};
 
 export default ActorDetailsPage;

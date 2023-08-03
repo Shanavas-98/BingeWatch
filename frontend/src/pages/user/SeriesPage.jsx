@@ -3,7 +3,7 @@ import SideBar from '../../components/SideBar/SideBar';
 import SeriesCarousal from '../../components/SeriesCarousal/SeriesCarousal';
 
 function SeriesPage() {
-  const genresArray = ['Action', 'Thriller', 'Science Fiction', 'Drama', 'Comedy', 'Romance'];
+  const genresArray = ['Drama'];
   return (
     <div className="grid grid-cols-10">
       <div className="col-span-2">

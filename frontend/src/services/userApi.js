@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { userInstance } from '../axios/axiosInstance';
 
 export const userLogin = (values) => userInstance.post('/login', { ...values });
@@ -19,3 +18,4 @@ export const fetchGenreSeries = (genreName) => userInstance.get(`/series/${genre
 export const fetchSeries = (showId) => userInstance.get(`/series/view-series/${showId}`);
 export const fetchSeason = (seasonId) => userInstance.get(`/series/view-season/${seasonId}`);
 export const fetchEpisode = (episodeId) => userInstance.get(`/series/view-episode/${episodeId}`);
+export const fetchWatchlist = () => userInstance.get('/watchlist');

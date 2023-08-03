@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
 import { Button, Select, TextInput } from 'flowbite-react';
 import {

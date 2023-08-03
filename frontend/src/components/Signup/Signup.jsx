@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { Button, Label, TextInput } from 'flowbite-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -66,6 +64,13 @@ function Signup() {
     onSubmit,
     validationSchema,
   });
+
+  const goToLogin = () => navigate('/login');
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      goToLogin();
+    }
+  };
 
   return (
     <div className="grid h-screen place-items-center">
@@ -159,12 +164,15 @@ function Signup() {
         </form>
         <div className="flex justify-between text-sm font-medium text-gray-200">
           Already registered?&nbsp;
-          <p
+          <div
+            role="button"
+            tabIndex={0}
             className=" hover:underline cursor-pointer text-cyan-400 "
-            onClick={() => navigate('/login')}
+            onClick={goToLogin}
+            onKeyDown={handleKeyPress}
           >
             Login
-          </p>
+          </div>
         </div>
       </div>
     </div>

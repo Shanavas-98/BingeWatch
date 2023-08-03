@@ -1,12 +1,11 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
-import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
+import { useFormik } from 'formik';
 import { Button, Label, TextInput } from 'flowbite-react';
 import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
+
 import { adminAuth, adminLogin } from '../../services/adminApi';
 import { userAuth, userLogin } from '../../services/userApi';
 import { setUserDetails } from '../../redux/features/userSlice';
@@ -69,6 +68,11 @@ function Login({ userType }) {
     initialValues,
     onSubmit,
   });
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      navigate('/register');
+    }
+  };
   return (
     <div className="grid h-screen place-items-center">
       <div className=" border-2 border-white m-2 p-5 rounded-lg">
@@ -105,16 +109,23 @@ function Login({ userType }) {
         </form>
         <div className="flex justify-between text-sm font-medium text-gray-300">
           Not registered?&nbsp;
-          <p
+          <div
+            role="button"
+            tabIndex={0}
             className=" hover:underline cursor-pointer text-cyan-500 "
             onClick={() => navigate('/register')}
+            onKeyDown={handleKeyPress}
           >
             Register now
-          </p>
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
+Login.propTypes = {
+  userType: PropTypes.string.isRequired,
+};
 
 export default Login;

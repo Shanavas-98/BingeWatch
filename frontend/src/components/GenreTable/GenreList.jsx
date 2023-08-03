@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
 
 import { fetchGenres } from '../../services/adminApi';

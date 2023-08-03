@@ -1,7 +1,8 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
-import './SideBar.css';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 import { Sidebar } from 'flowbite-react';
 import {
   ArrowLeftOnRectangleIcon,
@@ -13,9 +14,8 @@ import {
   TvIcon, UserGroupIcon,
   UserIcon, UserPlusIcon, UsersIcon,
 } from '@heroicons/react/24/outline';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
+
+import './SideBar.css';
 import { setUserDetails, setUserLogout } from '../../redux/features/userSlice';
 import { setAdminDetails, setAdminLogout } from '../../redux/features/adminSlice';
 import { userAuth } from '../../services/userApi';
@@ -126,7 +126,7 @@ function SideBar({ userType }) {
               <Sidebar.Item icon={TvIcon} onClick={() => navigate('/series')}>
                 <p>Series</p>
               </Sidebar.Item>
-              <Sidebar.Item icon={BookmarkSquareIcon}>
+              <Sidebar.Item icon={BookmarkSquareIcon} onClick={() => navigate('/watchlist')}>
                 <p>Watchlist</p>
               </Sidebar.Item>
               <Sidebar.Item icon={UserIcon}>
@@ -154,5 +154,9 @@ function SideBar({ userType }) {
     </Sidebar>
   );
 }
+
+SideBar.propTypes = {
+  userType: PropTypes.string.isRequired,
+};
 
 export default SideBar;

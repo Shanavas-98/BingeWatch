@@ -1,6 +1,6 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+
 import { fetchActor, fetchCrew } from '../../services/userApi';
 import CardCarousal from '../CardCarousal/CardCarousal';
 import { IMG_URL } from '../../axios/apiUrls';
@@ -95,5 +95,10 @@ function ViewActor({ personId, type }) {
     );
   }
 }
+
+ViewActor.propTypes = {
+  personId: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+};
 
 export default ViewActor;

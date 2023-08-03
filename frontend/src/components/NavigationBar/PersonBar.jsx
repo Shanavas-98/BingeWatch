@@ -1,5 +1,5 @@
-/* eslint-disable react/prop-types */
 import React from 'react';
+import PropTypes from 'prop-types';
 
 function PersonBar({ data }) {
   const { name, gender, department } = data;
@@ -18,5 +18,13 @@ function PersonBar({ data }) {
     </nav>
   );
 }
+
+PersonBar.propTypes = {
+  data: PropTypes.shape({
+    name: PropTypes.string,
+    gender: PropTypes.string,
+    department: PropTypes.string,
+  }).isRequired,
+};
 
 export default PersonBar;

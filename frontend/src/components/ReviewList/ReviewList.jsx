@@ -1,6 +1,5 @@
-/* eslint-disable max-len */
-/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { Rating, Stack } from '@mui/material';
 
 import { fetchUserReviews } from '../../services/userApi';
@@ -53,6 +52,10 @@ function ReviewList({ movieId }) {
     </div>
   );
 }
+
+ReviewList.propTypes = {
+  movieId: PropTypes.string.isRequired,
+};
 
 export default ReviewList;
 

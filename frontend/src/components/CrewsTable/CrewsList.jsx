@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
 import { fetchCrews } from '../../services/adminApi';
 import { IMG_URL } from '../../axios/apiUrls';

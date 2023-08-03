@@ -1,21 +1,18 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
-
 import SideBar from '../../components/SideBar/SideBar';
-import ViewMovie from '../../components/ViewMovie/ViewMovie';
+import Watchlist from '../../components/Watchlist/Watchlist';
 
-function ViewMoviePage() {
-  const { movieId } = useParams();
+function WatchlistPage() {
   return (
     <div className="grid grid-cols-10">
       <div className="col-span-2">
         <SideBar userType="user" />
       </div>
       <div className="col-span-8">
-        <ViewMovie movieId={movieId} />
+        <Watchlist />
       </div>
     </div>
   );
 }
 
-export default ViewMoviePage;
+export default WatchlistPage;

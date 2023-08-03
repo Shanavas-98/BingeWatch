@@ -12,6 +12,7 @@ import SeriesPage from '../pages/user/SeriesPage';
 import ViewSeriesPage from '../pages/user/ViewSeriesPage';
 import ViewSeasonPage from '../pages/user/ViewSeasonPage';
 import ViewEpisodePage from '../pages/user/ViewEpisodePage';
+import WatchlistPage from '../pages/user/WatchlistPage';
 
 function UserRouter() {
   return (
@@ -29,6 +30,7 @@ function UserRouter() {
       <Route path="/series/view-series/:showId" element={<ViewSeriesPage />} />
       <Route path="/series/view-season/:seasonId" element={<ViewSeasonPage />} />
       <Route path="/series/view-episode/:episodeId" element={<ViewEpisodePage />} />
+      <Route path="/watchlist" element={<WatchlistPage />} />
     </Routes>
   );
 }

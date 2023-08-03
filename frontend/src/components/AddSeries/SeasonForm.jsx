@@ -1,12 +1,12 @@
-/* eslint-disable max-len */
-/* eslint-disable react/prop-types */
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import YouTube from 'react-youtube';
+import { StarRateRounded } from '@mui/icons-material';
 import {
   Button, Label, TextInput, Textarea,
 } from 'flowbite-react';
-import React, { useState } from 'react';
-import { StarRateRounded } from '@mui/icons-material';
-import YouTube from 'react-youtube';
 import { toast } from 'react-toastify';
+
 import { IMG_URL } from '../../axios/apiUrls';
 import { addEpisode, addSeason } from '../../services/adminApi';
 
@@ -101,31 +101,33 @@ function SeasonForm({ season }) {
       </div>
       <Label htmlFor="seasons" value="Episodes" className="text-white" />
       <div className="cards-carousal">
-        {season.episodes.map((episode) => (
-          <div key={episode.id} className="flex flex-col mx-2">
+        {season.episodes.map((ep) => (
+          <div key={ep.id} className="flex flex-col mx-2">
             <div>
               <img
-                src={IMG_URL + episode.poster}
+                src={IMG_URL + ep.poster}
                 alt="poster"
                 className="h-44 w-64 rounded-md"
               />
             </div>
             <div className="flex justify-between">
               <div className="w-36 h-20 overflow-hidden">
-                <h2 className="text-white">{episode.title}</h2>
-                <h4 className="text-white">{episode.airDate}</h4>
+                <h2 className="text-white">{ep.title}</h2>
+                <h4 className="text-white">{ep.airDate}</h4>
               </div>
               <div>
                 <h4 className="text-yellow-400">
                   <StarRateRounded />
-                  {`${episode.rating.toFixed(1)}/10`}
+                  {`${ep.rating.toFixed(1)}/10`}
                 </h4>
-                <h4 className="text-white">{`${episode.duration} min`}</h4>
+                <h4 className="text-white">{`${ep.duration} min`}</h4>
               </div>
             </div>
             <Button
-              key={episode.id}
-              onClick={() => addEpisodeDetails(episode.showId, season.id, episode.id, episode.seasonNum, episode.episodeNum)}
+              key={ep.id}
+              onClick={() => (
+                addEpisodeDetails(ep.showId, season.id, ep.id, ep.seasonNum, ep.episodeNum)
+              )}
               className="mr-2 w-20"
             >
               Add
@@ -149,5 +151,20 @@ function SeasonForm({ season }) {
     </>
   );
 }
+
+SeasonForm.propTypes = {
+  season: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    showId: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    airDate: PropTypes.string.isRequired,
+    summary: PropTypes.string,
+    poster: PropTypes.string.isRequired,
+    seasonNum: PropTypes.number.isRequired,
+    rating: PropTypes.number.isRequired,
+    episodes: PropTypes.arrayOf(PropTypes.shape),
+    videos: PropTypes.arrayOf(PropTypes.string),
+  }).isRequired,
+};
 
 export default SeasonForm;

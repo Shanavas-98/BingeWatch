@@ -1,7 +1,7 @@
-/* eslint-disable no-underscore-dangle */
-import { Button } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Button } from 'flowbite-react';
+
 import { fetchSeries } from '../../services/adminApi';
 import { IMG_URL } from '../../axios/apiUrls';
 

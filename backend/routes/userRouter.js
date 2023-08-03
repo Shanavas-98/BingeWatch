@@ -1,7 +1,7 @@
 const express = require('express');
 const router=express.Router();
 const authUser = require('../middlewares/authUser');
-const {register, home, verifyOtp, login, userAuth}=require('../controllers/userController');
+const {register, home, verifyOtp, login, userAuth, fetchUserWatchlist}=require('../controllers/userController');
 const { fetchMovies, fetchGenreMovies, fetchMovieDetails, addRating, fetchReview, addReview, fetchActorDetails, fetchCrewDetails, fetchUserReviews, fetchRelatedMovies, addToWatchlist }=require('../controllers/movieController');
 const { fetchGenreSeries, fetchSeriesDetails, fetchSeasonDetails, fetchEpisodeDetails } = require('../controllers/seriesController');
 
@@ -25,7 +25,6 @@ router.get('/series/:genreName',fetchGenreSeries);
 router.get('/series/view-series/:showId',fetchSeriesDetails);
 router.get('/series/view-season/:seasonId',fetchSeasonDetails);
 router.get('/series/view-episode/:episodeId',fetchEpisodeDetails);
-
-
+router.get('/watchlist',authUser,fetchUserWatchlist);
 
 module.exports = router;

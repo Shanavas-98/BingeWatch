@@ -1,10 +1,7 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
-import { Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { Stack } from '@mui/material';
 
 import { fetchRelatedMovies } from '../../services/userApi';
 import { IMG_URL } from '../../axios/apiUrls';
@@ -24,13 +21,25 @@ function RelatedMovies({ movieId }) {
     };
     getRelatedMovies(movieId);
   }, [movieId]);
+  const viewMovie = (id) => navigate(`/movies/view-movie/${id}`);
+  const handleKeyPress = (event, id) => {
+    if (event.key === 'Enter') {
+      viewMovie(id);
+    }
+  };
   return (
     <div className="m-1">
       <h1 className="text-white">RelatedMovies</h1>
       {relatedMovies.length > 0
       && relatedMovies?.map((movie) => (
         <div className="flex justify-between m-2 border border-white p-2">
-          <div className="flex" onClick={() => navigate(`/movies/view-movie/${movie._id}`)}>
+          <div
+            role="button"
+            tabIndex={0}
+            className="flex"
+            onClick={() => viewMovie(movie._id)}
+            onKeyDown={(e) => handleKeyPress(e, movie._id)}
+          >
             <img src={IMG_URL + movie.images[0]} alt="" className="w-15 h-20" />
             <Stack spacing={1} className="ml-2">
               <h3 className="text-white">{movie.title}</h3>
@@ -43,5 +52,9 @@ function RelatedMovies({ movieId }) {
     </div>
   );
 }
+
+RelatedMovies.propTypes = {
+  movieId: PropTypes.string.isRequired,
+};
 
 export default RelatedMovies;

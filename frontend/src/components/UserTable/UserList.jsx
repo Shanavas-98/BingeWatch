@@ -1,9 +1,8 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { Button } from 'flowbite-react';
-
 import { toast } from 'react-toastify';
+
 import { blockUser, fetchUsers } from '../../services/adminApi';
 import { IMG_URL } from '../../axios/apiUrls';
 
@@ -90,5 +89,12 @@ function UserList() {
     </>
   );
 }
+
+BlockButton.propTypes = {
+  user: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    blocked: PropTypes.bool.isRequired,
+  }).isRequired,
+};
 
 export default UserList;

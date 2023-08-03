@@ -7,6 +7,7 @@ const authToken = process.env.TWILIO_TOKEN;
 const verifySid = process.env.TWILIO_VERIFY;
 const client = require('twilio')(accountSid, authToken);
 const bcrypt = require('bcrypt');
+const watchlistModel = require('../models/watchlistModel');
 
 let newUser;
 
@@ -125,10 +126,24 @@ const home = async (req, res) => {
     }
 };
 
+const fetchUserWatchlist = async (req,res) => {
+    try {
+        const userId = req.userId;
+        const watchlist = await watchlistModel
+            .find({user:userId})
+            .populate('movies')
+            .populate('series')
+            .exec();
+        res.json(watchlist);
+    } catch (error) {
+        res.json(error);
+    }
+};
+
 // const movies = async(req,res)=>{
 //     try{
 
 //     }
 // }
 
-module.exports = { register, verifyOtp, login, home, userAuth };
+module.exports = { register, verifyOtp, login, home, userAuth, fetchUserWatchlist };

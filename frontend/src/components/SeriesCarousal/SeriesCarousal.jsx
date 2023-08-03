@@ -1,6 +1,6 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+
 import CardCarousal from '../CardCarousal/CardCarousal';
 import { fetchGenreSeries } from '../../services/userApi';
 
@@ -44,5 +44,9 @@ function SeriesCarousal({ genre }) {
     );
   }
 }
+
+SeriesCarousal.propTypes = {
+  genre: PropTypes.string.isRequired,
+};
 
 export default SeriesCarousal;

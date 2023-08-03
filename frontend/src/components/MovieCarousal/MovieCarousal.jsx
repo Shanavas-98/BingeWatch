@@ -1,6 +1,6 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+
 import { fetchGenreMovies } from '../../services/userApi';
 import CardCarousal from '../CardCarousal/CardCarousal';
 
@@ -44,4 +44,9 @@ function MovieCarousal({ genre }) {
     );
   }
 }
+
+MovieCarousal.propTypes = {
+  genre: PropTypes.string.isRequired,
+};
+
 export default MovieCarousal;
