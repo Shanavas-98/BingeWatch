@@ -1,33 +1,42 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
 import { Button, Label, TextInput } from 'flowbite-react';
 import { toast } from 'react-toastify';
 
-import { adminAuth, adminLogin } from '../../services/adminApi';
-import { userAuth, userLogin } from '../../services/userApi';
+import useAuth from '../../hooks/useAuth';
+import { adminLogin } from '../../services/adminApi';
+import { userLogin } from '../../services/userApi';
 import { setUserDetails } from '../../redux/features/userSlice';
 import { setAdminDetails } from '../../redux/features/adminSlice';
 
 function Login({ userType }) {
+  Login.propTypes = {
+    userType: PropTypes.string.isRequired,
+  };
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const location = useLocation();
+  const {
+    user, setUser, admin, setAdmin,
+  } = useAuth();
+  const from = location.state?.from?.pathname;
+  // if (user || admin) {
+  //   if (from) {
+  //     navigate(from);
+  //   } else if (userType === 'user') {
+  //     navigate('/');
+  //   } else if (userType === 'admin') {
+  //     navigate('/admin/dashboard');
+  //   }
+  // }
   useEffect(() => {
-    if (userType === 'admin') {
-      adminAuth().then((res) => {
-        if (res.data.success) {
-          navigate('/admin/dashboard');
-        }
-      });
-    } else if (userType === 'user') {
-      userAuth().then((res) => {
-        if (res.data.success) {
-          navigate('/');
-        }
-      });
+    if (userType === 'user' && user) {
+      navigate(from || '/');
+    } else if (userType === 'admin' && admin) {
+      navigate(from || '/admin/dashboard');
     }
   }, []);
 
@@ -35,27 +44,39 @@ function Login({ userType }) {
     email: '',
     password: '',
   };
+
   const onSubmit = async (values) => {
     try {
       if (userType === 'user') {
         const { data } = await userLogin(values);
-        const { token, user } = data;
-        if (token) {
-          localStorage.setItem('userJwt', token);
-          dispatch(setUserDetails({ ...user }));
-          navigate('/');
-        } else {
+        if (data.error) {
           throw Error(data.error);
+        } else {
+          localStorage.setItem('userJwt', data.token);
+          localStorage.setItem('userInfo', JSON.stringify(data));
+          setUser(data);
+          dispatch(setUserDetails(data));
+          if (from) {
+            navigate(from, { replace: true });
+          } else {
+            navigate('/');
+          }
         }
       } else if (userType === 'admin') {
         const { data } = await adminLogin(values);
-        const { token, admin } = data;
-        if (token) {
-          localStorage.setItem('adminJwt', token);
-          dispatch(setAdminDetails({ ...admin }));
-          navigate('/admin/dashboard');
-        } else {
+        // const { id, email, token } = data;
+        if (data.error) {
           throw Error(data.error);
+        } else {
+          localStorage.setItem('adminJwt', data.token);
+          localStorage.setItem('adminInfo', JSON.stringify(data));
+          setAdmin(data);
+          dispatch(setAdminDetails(data));
+          if (from) {
+            navigate(from, { replace: true });
+          } else {
+            navigate('/admin/dashboard');
+          }
         }
       }
     } catch (err) {
@@ -108,7 +129,7 @@ function Login({ userType }) {
           </div>
         </form>
         <div className="flex justify-between text-sm font-medium text-gray-300">
-          Not registered?&nbsp;
+          Not registered?
           <div
             role="button"
             tabIndex={0}
@@ -123,9 +144,5 @@ function Login({ userType }) {
     </div>
   );
 }
-
-Login.propTypes = {
-  userType: PropTypes.string.isRequired,
-};
 
 export default Login;

@@ -1,17 +1,8 @@
 
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const maxAge = 3 * 24 * 60 * 60;
 const adminModel = require('../models/adminModel');
 const userModel = require('../models/userModel');
-
-
-const createToken = (id) => {
-    // eslint-disable-next-line no-undef
-    return jwt.sign({ id }, process.env.JWT_KEY, {
-        expiresIn: maxAge
-    });
-};
+const createToken = require('../config/createToken');
 
 const login = async (req, res) => {
     try {
@@ -25,7 +16,7 @@ const login = async (req, res) => {
             throw Error('wrong password');
         }
         const token = createToken(admin._id);
-        res.json({ admin, token });
+        res.json({ id:admin._id,email:admin.email, token });
     } catch (error) {
         res.json({ error });
     }
@@ -45,16 +36,17 @@ const adminAuth = async (req, res) => {
             if (err) {
                 res.json({ success: false, message: 'Admin unauthorized' });
             } else {
-                const admin = await adminModel.findById(decoded.id);
+                const admin = await adminModel.findById(decoded.id,{password:0});
+                const adminData = {id:admin._id,email:admin.email,token};
                 if (admin) {
-                    res.json({ success: true, message: 'Authorised', admin });
+                    res.json({ success: true, message: 'Authorised', adminData });
                 } else {
                     res.json({ success: false, message: 'Admin not exists' });
                 }
             }
         });
     } catch (err) {
-        res.json({ error: 'Request is not authorized' });
+        res.json({ success: false, message: 'error while admin authorization',err });
     }
 };
 
@@ -68,8 +60,35 @@ const dashboard = async (req, res) => {
 
 const fetchUsers = async(req,res)=>{
     try {
-        const users = await userModel.find().lean();
-        res.json(users);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const start = (page - 1) * limit;
+        const end = page * limit;
+        const search = req.query.search;
+        const field = req.query.field;
+        const order = JSON.parse(req.query.order);
+        const sortObj = {};
+        sortObj[field] = (order ? 1 : -1);
+        const count = await userModel
+            .find({fullName: { $regex: search, $options: 'i' }})
+            .countDocuments()
+            .exec();
+        const users = await userModel
+            .find({fullName: { $regex: search, $options: 'i' }})
+            .sort(sortObj)
+            .skip(start)
+            .limit(limit)
+            .exec();
+        const pagination = {};
+        pagination.current = page;
+        pagination.limit = limit;
+        if (start > 0) {
+            pagination.previous = page - 1;
+        }
+        if (end < count) {
+            pagination.next = page + 1;
+        }
+        res.json({ users, pagination });
     } catch (err) {
         res.json(err);
     }

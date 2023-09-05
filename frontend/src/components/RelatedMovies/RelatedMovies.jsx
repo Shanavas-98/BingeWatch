@@ -32,7 +32,7 @@ function RelatedMovies({ movieId }) {
       <h1 className="text-white">RelatedMovies</h1>
       {relatedMovies.length > 0
       && relatedMovies?.map((movie) => (
-        <div className="flex justify-between m-2 border border-white p-2">
+        <div key={movie._id} className="flex justify-between m-2 border border-white rounded-md p-2">
           <div
             role="button"
             tabIndex={0}

@@ -1,11 +1,12 @@
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   id: '',
-  fullName: '',
+  name: '',
   email: '',
+  picture: '',
+  token: '',
 };
 
 const userSlice = createSlice({
@@ -13,14 +14,16 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUserDetails: (state, action) => {
-      state.id = action.payload._id;
-      state.fullName = action.payload.fullName;
+      state.id = action.payload.id;
+      state.name = action.payload.name;
       state.email = action.payload.email;
+      state.picture = action.payload.picture;
+      state.token = action.payload.token;
     },
     setUserLogout: () => initialState,
   },
 });
 
 export const { setUserDetails, setUserLogout } = userSlice.actions;
-
 export default userSlice.reducer;
+export const selectUser = (state) => state.user;

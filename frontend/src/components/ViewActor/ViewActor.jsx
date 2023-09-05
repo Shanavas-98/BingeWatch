@@ -66,8 +66,8 @@ function ViewActor({ personId, type }) {
       ht: 'h-44',
     };
     return (
-      <div className="grid grid-cols-3">
-        <div className="col-span-3">
+      <div className="grid grid-cols-4">
+        <div className="col-span-4">
           <PersonBar
             key={actorId || crewId}
             data={{ name, gender, department }}
@@ -76,7 +76,7 @@ function ViewActor({ personId, type }) {
         <div className="col-span-1 mt-2 ml-3">
           <img src={IMG_URL + profile} alt="" />
         </div>
-        <div className="col-span-2 mx-2">
+        <div className="col-span-3 mx-2">
           <h2 className="text-white text-xl font-bold mb-2">Biography</h2>
           <p className="text-gray-200 mb-2 text-lg">{biography}</p>
           <p className="text-gray-200 mb-2 text-lg">
@@ -87,7 +87,7 @@ function ViewActor({ personId, type }) {
             {`Born at : ${placeOfBirth}`}
           </p>
         </div>
-        <div className="col-span-2 ml-2">
+        <div className="col-span-4 ml-2">
           <h2 className="text-white text-lg font-bold mb-2">Popular for</h2>
           <CardCarousal cards={movieCards} baseLink="/movies/view-movie" style={cardStyle} />
         </div>

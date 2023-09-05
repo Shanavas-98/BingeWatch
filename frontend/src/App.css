@@ -36,3 +36,7 @@
     transform: rotate(360deg);
   }
 }
+
+.custom-toast{
+  background-color: rgb(31 41 55);
+}

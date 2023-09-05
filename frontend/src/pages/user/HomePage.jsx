@@ -1,15 +1,17 @@
 import React from 'react';
-import SideBar from '../../components/SideBar/SideBar';
+import MovieCarousal from '../../components/MovieCarousal/MovieCarousal';
 
 function HomePage() {
+  const genresArray = ['Drama', 'Comedy', 'Action', 'Thriller', 'Romance'];
   return (
-    <div className="grid grid-cols-10">
-      <div className="col-span-2">
-        <SideBar userType="user" />
-      </div>
-      <div className="col-span-8">
-        <h1 className="text-white">Home Page Contents</h1>
-      </div>
+    <div className="w-auto h-screen m-2">
+      <h2 className="text-lg text-white font-bold py-2">Home</h2>
+      {genresArray.map((movieGenre) => (
+        <div key={movieGenre}>
+          <strong className="text-white">{movieGenre}</strong>
+          <MovieCarousal genre={movieGenre} />
+        </div>
+      ))}
     </div>
   );
 }

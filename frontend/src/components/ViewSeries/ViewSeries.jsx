@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import { StarRateRounded } from '@mui/icons-material';
 import { Button, Label } from 'flowbite-react';
 
-import NavigBar from '../NavigationBar/NavigBar';
 import VideoPlay from '../VideoPlay/VideoPlay';
 import { IMG_URL } from '../../axios/apiUrls';
 import CardCarousal from '../CardCarousal/CardCarousal';
 import { fetchSeries } from '../../services/userApi';
+import ShowBar from '../NavigationBar/ShowBar';
 
 function ViewSeries({ showId }) {
   const navigate = useNavigate();
@@ -67,7 +67,7 @@ function ViewSeries({ showId }) {
     return (
       <div className="grid grid-cols-2">
         <div className="col-span-2">
-          <NavigBar
+          <ShowBar
             key={_id}
             data={{
               title, tagline, start, end, rating, id: _id,

@@ -3,24 +3,28 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const path = require('path');
-const userRouter = require('./routes/userRouter');
-const adminRouter = require('./routes/adminRouter');
+const userRoute = require('./routes/userRouter');
+const adminRoute = require('./routes/adminRouter');
+const chatRoutes = require('./routes/chatRoutes');
+const messageRoutes = require('./routes/messageRoutes');
+const connectDB = require('./config/db');
 
-mongoose.set('strictQuery', true);
-mongoose.connect(process.env.MONGO_URI).then(()=>{
-    console.log('DB connection successfull');
-}).catch((err)=>{
-    console.error(err.message);
-});
+// mongoose.set('strictQuery', true);
+// mongoose.connect(process.env.MONGO_URI).then(()=>{
+//     console.log('DB connection successfull');
+// }).catch((err)=>{
+//     console.error(err.message);
+// });
+connectDB();
 
 app.use(cors({
     origin:process.env.CLIENT_URL,
-    methods:['GET','POST'],
+    methods:['GET','POST','PATCH'],
     credentials:true
 }));
 
@@ -39,9 +43,51 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/',userRouter);
-app.use('/admin',adminRouter);
+app.use('/',userRoute);
+app.use('/admin',adminRoute);
+app.use('/api/chat',chatRoutes);
+app.use('/api/message',messageRoutes);
 
-app.listen(process.env.PORT,()=>{
-    console.log('Server Started on PORT ',process.env.PORT);
+const server = app.listen(process.env.PORT,console.log('Server Started on PORT ',process.env.PORT));
+
+const io = require('socket.io')(server,{
+    pingTimeout:60000,
+    cors:{
+        origin:'http://localhost:3000'
+    }
+});
+
+io.on('connection',(socket)=>{
+    console.log('connected socket.io');
+    socket.on('setup',(userData)=>{
+        socket.join(userData.id);
+        console.log('chat userid',userData.id);
+        socket.emit('connected');
+    });
+
+    socket.on('join chat',(room)=>{
+        socket.join(room);
+        console.log('user joined room:',room);
+    });
+
+    socket.on('typing',(room)=>socket.in(room).emit('typing'));
+    socket.on('stop typing',(room)=>socket.in(room).emit('stop typing'));
+
+    socket.on('new message',(newMsgRecieved)=>{
+        let chat = newMsgRecieved.chat;
+        if(!chat.users){
+            return console.log('chat.users not defined');
+        }
+        chat.users.forEach(user => {
+            if(user._id==newMsgRecieved.sender._id){
+                return;
+            }
+            socket.in(user._id).emit('message recieved',newMsgRecieved);
+        });
+    });
+
+    socket.off('setup',()=>{
+        console.log('socket disconnected');
+        socket.leave(userData.id);
+    });
 });

@@ -13,24 +13,45 @@ import ViewSeriesPage from '../pages/user/ViewSeriesPage';
 import ViewSeasonPage from '../pages/user/ViewSeasonPage';
 import ViewEpisodePage from '../pages/user/ViewEpisodePage';
 import WatchlistPage from '../pages/user/WatchlistPage';
+import UserLayout from '../layouts/UserLayout';
+import MoviesLayout from '../layouts/MoviesLayout';
+import NotFound from '../pages/NotFound';
+import RequireAuth from '../utils/RequireAuth';
+import ProfilePage from '../pages/user/ProfilePage';
+import ChatPage from '../pages/user/ChatPage';
 
 function UserRouter() {
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/login" element={<Login userType="user" />} />
-      <Route path="/register" element={<Signup />} />
-      <Route path="/verify" element={<Otp />} />
-      <Route path="/movies" element={<MoviesPage />} />
-      <Route path="/movies/view-movie/:movieId" element={<ViewMoviePage />} />
-      <Route path="/movies/view-movie/actor/:personId" element={<ActorDetailsPage type="cast" />} />
-      <Route path="/movies/view-movie/crew/:personId" element={<ActorDetailsPage type="crew" />} />
-      <Route path="/movies/view-movie/reviews/:movieId" element={<ReviewsPage />} />
-      <Route path="/series" element={<SeriesPage />} />
-      <Route path="/series/view-series/:showId" element={<ViewSeriesPage />} />
-      <Route path="/series/view-season/:seasonId" element={<ViewSeasonPage />} />
-      <Route path="/series/view-episode/:episodeId" element={<ViewEpisodePage />} />
-      <Route path="/watchlist" element={<WatchlistPage />} />
+      <Route path="/" element={<UserLayout />}>
+        <Route index element={<HomePage />} />
+        <Route path="login" element={<Login userType="user" />} />
+        <Route path="register" element={<Signup />} />
+        <Route path="verify" element={<Otp />} />
+        <Route path="movies" element={<MoviesLayout />}>
+          <Route index element={<MoviesPage />} />
+          <Route path="view-movie">
+            <Route path=":movieId" element={<ViewMoviePage />} />
+            <Route element={<RequireAuth link="/login" userType="user" />}>
+              <Route path="reviews/:movieId" element={<ReviewsPage />} />
+            </Route>
+          </Route>
+          <Route path="actor/:personId" element={<ActorDetailsPage type="cast" />} />
+          <Route path="crew/:personId" element={<ActorDetailsPage type="crew" />} />
+        </Route>
+        <Route path="series" element={<MoviesLayout />}>
+          <Route index element={<SeriesPage />} />
+          <Route path="view-series/:showId" element={<ViewSeriesPage />} />
+          <Route path="view-season/:seasonId" element={<ViewSeasonPage />} />
+          <Route path="view-episode/:episodeId" element={<ViewEpisodePage />} />
+        </Route>
+        <Route element={<RequireAuth link="/login" userType="user" />}>
+          <Route path="watchlist" element={<WatchlistPage />} />
+          <Route path="profile" element={<ProfilePage />} />
+          <Route path="chats" element={<ChatPage />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
+      </Route>
     </Routes>
   );
 }

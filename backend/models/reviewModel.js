@@ -6,9 +6,8 @@ const reviewSchema = new mongoose.Schema({
         type: ObjectId,
         ref: 'user'
     },
-    movie:{
-        type:ObjectId,
-        ref: 'movie'
+    content:{
+        type:ObjectId
     },
     rating:Number,
     review:String,

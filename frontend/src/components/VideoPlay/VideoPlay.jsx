@@ -29,11 +29,11 @@ function VideoPlay({ videos }) {
             onClick={() => setKey(videoKey)}
             onKeyDown={(e) => handleKeyPress(e, videoKey)}
             className="flex mr-1 h-24 w-40 hover:cursor-pointer"
+            key={videoKey}
           >
             <img
               src={`${YT_IMG_URL}/${videoKey}/mqdefault.jpg`}
               alt="Video Thumbnail"
-              key={videoKey}
             />
           </div>
         ))}

@@ -10,19 +10,19 @@ import CardCarousal from '../CardCarousal/CardCarousal';
 function ViewMovie({ movieId }) {
   const [loading, setLoading] = useState(true);
   const [movie, setMovie] = useState({});
-
+  const getMovie = async (id) => {
+    await fetchMovie(id)
+      .then((res) => {
+        console.log('movie', res.data);
+        setMovie(res.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching movie:', error);
+        setLoading(false);
+      });
+  };
   useEffect(() => {
-    const getMovie = async (id) => {
-      await fetchMovie(id)
-        .then((res) => {
-          setMovie(res.data);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error('Error fetching movie:', error);
-          setLoading(false);
-        });
-    };
     getMovie(movieId);
   }, [movieId]);
   if (loading) {
@@ -34,9 +34,18 @@ function ViewMovie({ movieId }) {
   }
   if (movie) {
     const {
-      title, releaseDate, duration, rating,
-      _id, videos, summary, genres, id,
-      platforms, casts, crews,
+      title,
+      releaseDate,
+      duration,
+      rating,
+      _id,
+      videos,
+      summary,
+      genres,
+      id,
+      platforms,
+      casts,
+      crews,
     } = movie;
     const year = releaseDate?.slice(0, 4);
     const castCards = casts?.map((person) => ({
@@ -63,7 +72,11 @@ function ViewMovie({ movieId }) {
           <NavigBar
             key={_id}
             data={{
-              title, year, duration, rating, id: _id,
+              title,
+              year,
+              duration,
+              rating,
+              id: _id,
             }}
           />
         </div>
@@ -75,7 +88,12 @@ function ViewMovie({ movieId }) {
           <p className="text-gray-200 mb-2">{summary}</p>
           <div className="flex mb-2">
             {genres?.map((item) => (
-              <div className="text-white border-2 border-gray-300 rounded-full px-2 py-1 mr-2" key={item.genreId}>{item.genreName}</div>
+              <div
+                className="text-white border-2 border-gray-300 rounded-full px-2 py-1 mr-2"
+                key={item.genreId}
+              >
+                {item.genreName}
+              </div>
             ))}
           </div>
           <h2 className="text-white text-lg mb-2">Platforms</h2>
@@ -94,9 +112,19 @@ function ViewMovie({ movieId }) {
         </div>
         <div className="col-span-2 ml-2">
           <h2 className="text-white text-lg mb-2">Casts</h2>
-          <CardCarousal key={castCards[0].key} cards={castCards} baseLink="/movies/view-movie/actor" style={cardStyle} />
+          <CardCarousal
+            key={castCards[0].key}
+            cards={castCards}
+            baseLink="/movies/actor"
+            style={cardStyle}
+          />
           <h2 className="text-white text-lg mb-2">Crews</h2>
-          <CardCarousal key={crewCards[0].key} cards={crewCards} baseLink="/movies/view-movie/crew" style={cardStyle} />
+          <CardCarousal
+            key={crewCards[0].key}
+            cards={crewCards}
+            baseLink="/movies/crew"
+            style={cardStyle}
+          />
         </div>
       </div>
     );

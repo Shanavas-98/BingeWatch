@@ -27,7 +27,6 @@ function ShowForm({ show, onSeasonSelect }) {
     try {
       setLoading(!loading);
       const { data } = await addShow(id);
-      console.log(data);
       if (data.success) {
         setLoading(false);
         toast.success(data.message, { position: 'top-right' });

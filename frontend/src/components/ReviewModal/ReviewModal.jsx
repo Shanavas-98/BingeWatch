@@ -7,11 +7,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import './ReviewModal.css';
 import { addReview } from '../../services/userApi';
 
-function ReviewModal({ movieId, reviewData, closeModal }) {
+function ReviewModal({ contentId, reviewData, closeModal }) {
   const [review, setReview] = useState(reviewData);
   const reviewSubmit = async (movReview) => {
     try {
-      const { data } = await addReview(movieId, movReview);
+      const { data } = await addReview(contentId, movReview);
       const { success, message } = data;
       if (success) {
         setReview(movReview);
@@ -55,7 +55,7 @@ function ReviewModal({ movieId, reviewData, closeModal }) {
 }
 
 ReviewModal.propTypes = {
-  movieId: PropTypes.string.isRequired,
+  contentId: PropTypes.string.isRequired,
   reviewData: PropTypes.string,
   closeModal: PropTypes.func.isRequired,
 };

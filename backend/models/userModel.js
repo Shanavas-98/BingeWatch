@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
+const ObjectId = mongoose.Schema.Types.ObjectId;
 const bcrypt = require('bcrypt');
+
 const userSchema = new mongoose.Schema({
     fullName:{
         type:String,
@@ -19,6 +21,14 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    friends: {
+        type: [ObjectId],
+        default: [],
+    },
+    picture:{
+        file:String,
+        url:String
+    },
     verified:{
         type:Boolean,
         default:false
@@ -27,6 +37,8 @@ const userSchema = new mongoose.Schema({
         type:Boolean,
         default:false
     }
+},{
+    timestamps:true
 });
 
 userSchema.pre('save',async function(next) {

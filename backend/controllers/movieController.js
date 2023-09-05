@@ -511,7 +511,7 @@ const fetchMovies = async (req, res) => {
         const sortObj = {};
         sortObj[field] = (order ? 1 : -1);
         const genreId = req.query.genre;
-        const genres = await genreModel.find();
+        const genres = await genreModel.find().sort({ genreName: 1 });
         const count = await movieModel
             .find({
                 $and: [
@@ -522,7 +522,8 @@ const fetchMovies = async (req, res) => {
                         : [])
                 ]
             })
-            .countDocuments().exec();
+            .countDocuments()
+            .exec();
         const movies = await movieModel
             .find({
                 $and: [
@@ -539,7 +540,8 @@ const fetchMovies = async (req, res) => {
             .limit(limit)
             .exec();
         const pagination = {};
-        pagination.current = {page,limit};
+        pagination.current = page;
+        pagination.limit = limit;
         if (start > 0) {
             pagination.previous = page - 1;
         }
@@ -620,8 +622,35 @@ const editMovie = async (req, res) => {
 
 const fetchGenres = async (req, res) => {
     try {
-        const genres = await genreModel.find().lean();
-        res.json(genres);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const start = (page - 1) * limit;
+        const end = page * limit;
+        const search = req.query.search;
+        const field = req.query.field;
+        const order = JSON.parse(req.query.order);
+        const sortObj = {};
+        sortObj[field] = (order ? 1 : -1);
+        const count = await genreModel
+            .find({ genreName: { $regex: search, $options: 'i' } })
+            .countDocuments()
+            .exec();
+        const genres = await genreModel
+            .find({ genreName: { $regex: search, $options: 'i' } })
+            .sort(sortObj)
+            .skip(start)
+            .limit(limit)
+            .exec();
+        const pagination = {};
+        pagination.current = page;
+        pagination.limit = limit;
+        if (start > 0) {
+            pagination.previous = page - 1;
+        }
+        if (end < count) {
+            pagination.next = page + 1;
+        }
+        res.json({ genres, pagination });
     } catch (err) {
         console.error(err);
         res.json(err);
@@ -644,15 +673,16 @@ const fetchActors = async (req, res) => {
             .find({
                 $and: [
                     { name: { $regex: search, $options: 'i' } },
-                    (gender&&{gender:gender})
+                    (gender ? { gender: gender } : {})
                 ]
             })
-            .countDocuments().exec();
+            .countDocuments()
+            .exec();
         const actors = await castModel
             .find({
                 $and: [
                     { name: { $regex: search, $options: 'i' } },
-                    (gender&&{gender:gender})
+                    (gender ? { gender: gender } : {})
                 ]
             })
             .sort(sortObj)
@@ -660,14 +690,15 @@ const fetchActors = async (req, res) => {
             .limit(limit)
             .exec();
         const pagination = {};
-        pagination.current = {page,limit};
+        pagination.current = page;
+        pagination.limit = limit;
         if (start > 0) {
             pagination.previous = page - 1;
         }
         if (end < count) {
             pagination.next = page + 1;
         }
-        res.json({actors,pagination});
+        res.json({ actors, pagination });
     } catch (err) {
         console.error(err);
         res.json(err);
@@ -676,8 +707,46 @@ const fetchActors = async (req, res) => {
 
 const fetchCrews = async (req, res) => {
     try {
-        const crews = await crewModel.find().lean();
-        res.json(crews);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const start = (page - 1) * limit;
+        const end = page * limit;
+        const search = req.query.search;
+        const field = req.query.field;
+        const order = JSON.parse(req.query.order);
+        const sortObj = {};
+        sortObj[field] = (order ? 1 : -1);
+        const gender = req.query.gender;
+        const count = await crewModel
+            .find({
+                $and: [
+                    { name: { $regex: search, $options: 'i' } },
+                    (gender ? { gender: gender } : {})
+                ]
+            })
+            .countDocuments()
+            .exec();
+        const crews = await crewModel
+            .find({
+                $and: [
+                    { name: { $regex: search, $options: 'i' } },
+                    (gender ? { gender: gender } : {})
+                ]
+            })
+            .sort(sortObj)
+            .skip(start)
+            .limit(limit)
+            .exec();
+        const pagination = {};
+        pagination.current = page;
+        pagination.limit = limit;
+        if (start > 0) {
+            pagination.previous = page - 1;
+        }
+        if (end < count) {
+            pagination.next = page + 1;
+        }
+        res.json({ crews, pagination });
     } catch (err) {
         console.error(err);
         res.json(err);
@@ -702,13 +771,13 @@ const fetchMovieDetails = async (req, res) => {
 
 const addRating = async (req, res) => {
     try {
-        const movieId = req.params.movieId;
+        const contentId = req.params.contentId;
         const user = req.userId;
         const rating = req.query.rating;
-        const exist = await reviewModel.findOne({ user: user, movie: movieId });
+        const exist = await reviewModel.findOne({ user: user, content: contentId });
         if (!exist) {
             await reviewModel.create({
-                movie: movieId,
+                content: contentId,
                 user: user,
                 rating: rating
             });
@@ -727,37 +796,37 @@ const addRating = async (req, res) => {
 
 const addToWatchlist = async (req, res) => {
     try {
-        const movieId = req.params.movieId;
+        const contentId = req.params.contentId;
+        const type = req.query.type;
         const userId = req.userId;
         const watchlist = await watchlistModel.findOne({ user: userId });
-        if(watchlist){
-            const isMovie = await watchlistModel.findOneAndUpdate({
-                $and:[
-                    {user:userId},
-                    {movies:movieId}
-                ]
-            },{
-                $pull:{movies:movieId}
-            });
-            if(!isMovie){
-                console.log('add to watchlist');
-                await watchlistModel.findOneAndUpdate(
-                    { user: userId },
-                    {
-                        $push:{movies:movieId}
-                    }
-                );
-                res.json({ success: true, message: 'movie added to watchlist' });
-            }else{
-                console.log('remove from watchlist');
-                res.json({ success: true, message: 'movie removed from watchlist' });
+        if (watchlist) {
+            const query = {
+                user: userId,
+                ...(type === 'movie' ? { movies: contentId } : {}),
+                ...(type === 'show' ? { series: contentId } : {})
+            };
+            const remove = {
+                ...(type === 'movie' ? { $pull: { movies: contentId } } : {}),
+                ...(type === 'show' ? { $pull: { series: contentId } } : {})
+            };
+            const update =                  {
+                ...(type === 'movie' ? { $push: { movies: contentId } } : {}),
+                ...(type === 'show' ? { $push: { series: contentId } } : {})
+            };
+            const isMovie = await watchlistModel.findOneAndUpdate(query, remove);
+            if (!isMovie) {
+                await watchlistModel.findOneAndUpdate({ user: userId }, update);
+                res.json({ success: true, message: 'added to watchlist' });
+            }else {
+                res.json({ success: true, message: 'removed from watchlist' });
             }
-        }else{
+        }else {
             await watchlistModel.create({
                 user: userId,
-                movies:[movieId]
-            });
-            res.json({ success: true, message: 'movie added to watchlist' });
+                ...(type === 'movie' ? { movies: [contentId] } : type === 'show' ? { series: [contentId] } : {})
+            });            
+            res.json({ success: true, message: 'added to watchlist' });
         }
     } catch (error) {
         console.error('Error adding to watchlist:', error);
@@ -770,19 +839,19 @@ const fetchReview = async (req, res) => {
     try {
         const movieId = req.params.movieId;
         const userId = req.userId;
-        const reviewData = await reviewModel.findOne({ movie: movieId, user: userId });
+        const reviewData = await reviewModel.findOne({ content: movieId, user: userId });
         const isMovie = await watchlistModel.findOne({
-            $and:[
-                {user:userId},
-                {movies:movieId}
+            $and: [
+                { user: userId },
+                { movies: movieId }
             ]
         });
-        let inList=false;
-        if(isMovie){
-            inList=true;
+        let inList = false;
+        if (isMovie) {
+            inList = true;
         }
         if (reviewData) {
-            res.json({reviewData,inList});
+            res.json({ reviewData, inList });
         } else {
             res.json({ success: true, message: 'review not posted' });
         }
@@ -794,13 +863,13 @@ const fetchReview = async (req, res) => {
 
 const addReview = async (req, res) => {
     try {
-        const movieId = req.params.movieId;
+        const contentId = req.params.contentId;
         const userId = req.userId;
         const review = req.body.review;
-        const exist = await reviewModel.findOne({ movie: movieId, user: userId });
+        const exist = await reviewModel.findOne({ content: contentId, user: userId });
         if (!exist) {
             await reviewModel.create({
-                movie: movieId,
+                content: contentId,
                 user: userId,
                 review: review
             });
@@ -866,17 +935,23 @@ const fetchCrewDetails = async (req, res) => {
     }
 };
 
-const fetchUserReviews = async (req, res) => {
+const fetchAllReviews = async (req, res) => {
     try {
         const movieId = req.params.movieId;
         const userId = req.userId;
         const reviews = await reviewModel
-            .find({ movie: movieId, user: { $ne: userId } })
-            .populate('user')
+            .find({ content: movieId, user: { $ne: userId } })
+            .populate({
+                path:'user',
+                select:'_id fullName picture'
+            })
             .exec();
         const userReview = await reviewModel
-            .findOne({ user: userId, movie: movieId })
-            .populate('user')
+            .findOne({ user: userId, content: movieId })
+            .populate({
+                path:'user',
+                select:'_id fullName picture'
+            })
             .exec();
         if (reviews || userReview) {
             return res.json({ reviews, userReview });
@@ -891,13 +966,10 @@ const fetchUserReviews = async (req, res) => {
 const fetchRelatedMovies = async (req, res) => {
     try {
         const movieId = req.params.movieId;
-        console.log('related movies of', movieId);
         const genresData = await movieModel.findById(movieId, { genres: 1, movieCollection: 1 });
         if (genresData) {
             const relatedMovies = await movieModel.find({ genres: { $in: genresData.genres } }).limit(10);
             res.json(relatedMovies);
-        } else {
-            console.log('Genres not found');
         }
     } catch (error) {
         res.json(error);
@@ -926,7 +998,7 @@ module.exports = {
     addReview,
     fetchActorDetails,
     fetchCrewDetails,
-    fetchUserReviews,
+    fetchAllReviews,
     fetchRelatedMovies
 };
 

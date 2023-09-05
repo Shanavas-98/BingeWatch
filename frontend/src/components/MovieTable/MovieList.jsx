@@ -5,9 +5,6 @@ import {
   ArrowBackIos, ArrowForwardIos, KeyboardArrowDown, KeyboardArrowUp, Search,
 } from '@mui/icons-material';
 
-import {
-  Box, FormControl, InputLabel, MenuItem, Select,
-} from '@mui/material';
 import { fetchMovies } from '../../services/adminApi';
 import { IMG_URL } from '../../axios/apiUrls';
 
@@ -39,7 +36,6 @@ export default function MovieTable() {
     setOrder(!order);
   };
   useEffect(() => {
-    console.log('fetching movies', genreId);
     const getMovies = async () => {
       try {
         const { data } = await fetchMovies(page, limit, search, year, field, order, genreId);
@@ -48,7 +44,7 @@ export default function MovieTable() {
         setPrev(data?.pagination?.previous);
         setPage(data?.pagination?.current);
         setNext(data?.pagination?.next);
-        setLimit(data?.pagination?.current?.limit);
+        setLimit(data?.pagination?.limit);
         setLoading(false);
       } catch (err) {
         console.error('Error fetching movies:', err);
@@ -66,7 +62,7 @@ export default function MovieTable() {
   }
   return (
     <>
-      <div className="flex justify-between">
+      <div className="flex justify-between bg-slate-900 text-white">
         <Button
           type="button"
           className="dark m-2"
@@ -74,7 +70,8 @@ export default function MovieTable() {
         >
           Add Movie
         </Button>
-        <div className="flex self-center">
+        <span className="self-center text-lg font-bold">Movies Table</span>
+        <div className="flex self-center pr-2">
           <TextInput
             name="movie"
             type="text"
@@ -89,7 +86,7 @@ export default function MovieTable() {
           <TextInput
             name="year"
             type="text"
-            className="dark"
+            className="dark w-28"
             placeholder="Release Year"
             onChange={(e) => {
               setYear(e.target.value);
@@ -105,12 +102,9 @@ export default function MovieTable() {
           </Button>
         </div>
       </div>
-      {movies?.length > 0
-      && (
       <>
-        <h1 className="text-white p-2 text-xl font-bold bg-black text-center">Movies List</h1>
-        <table className="table-fixed w-full mx-1">
-          <thead className="text-white text-justify bg-slate-700">
+        <table className="w-full text-white">
+          <thead className=" text-justify bg-slate-700">
             <tr>
               <th className="flex justify-between">
                 ID
@@ -138,42 +132,19 @@ export default function MovieTable() {
                 </Button>
               </th>
               <th>
-                <Box sx={{ minWidth: 120 }}>
-                  <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label" sx={{ color: 'white' }}>Genre</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      label="Genre"
-                      onChange={(e) => {
-                        setGenreId(e.target.value);
-                        setPage(1);
-                      }}
-                      sx={{ color: 'white' }}
-                    >
-                      {genres && genres.map((item) => (
-                        <MenuItem
-                          value={item._id}
-                          sx={{
-                            color: 'white',
-                            backgroundColor: 'black',
-                            '&:hover': {
-                              backgroundColor: 'grey', // Change hovering color to grey
-                            },
-                            '&.Mui-selected': {
-                              backgroundColor: 'grey', // Change selected item background to grey
-                            },
-                            '&.Mui-selected:hover': {
-                              backgroundColor: 'grey', // Change selected item background when hovered to grey
-                            },
-                          }}
-                        >
-                          {item.genreName}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Box>
+                <select
+                  name="genre"
+                  className="bg-slate-700 border-0 max-h-60"
+                  onChange={(e) => {
+                    setGenreId(e.target.value);
+                    setPage(1);
+                  }}
+                >
+                  <option value="" selected>Genres</option>
+                  {genres && genres.map((item) => (
+                    <option value={item._id}>{item.genreName}</option>
+                  ))}
+                </select>
               </th>
               <th>Duration</th>
               <th>Language</th>
@@ -192,102 +163,108 @@ export default function MovieTable() {
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody className="text-white">
-            {movies?.map((item) => {
-              const genreNames = item.genres?.map((obj) => obj.genreName).join(', ');
-              return (
-                <tr key={item.id}>
-                  <td>{item.id}</td>
-                  <td><img src={IMG_URL + item.images[0]} alt="" className="w-15 h-20" /></td>
-                  <td>{item.title}</td>
-                  <td>{genreNames}</td>
-                  <td>{item.duration}</td>
-                  <td>{item.language}</td>
-                  <td>{item.releaseDate}</td>
-                  <td>
-                    <Button
-                      key={item.id}
-                      variant="outlined"
-                      color="primary"
-                      size="medium"
-                      onClick={() => viewMovie(item._id)}
-                    >
-                      View
-                    </Button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-        <div className="flex justify-center">
-          {prev
+          {movies?.length > 0
             ? (
-              <>
+              <tbody>
+                {movies?.map((item) => {
+                  const genreNames = item.genres?.map((obj) => obj.genreName).join(', ');
+                  return (
+                    <tr key={item.id}>
+                      <td>{item.id}</td>
+                      <td><img src={IMG_URL + item.images[0]} alt="" className="w-15 h-20" /></td>
+                      <td>{item.title}</td>
+                      <td>{genreNames}</td>
+                      <td>{item.duration}</td>
+                      <td>{item.language}</td>
+                      <td>{item.releaseDate}</td>
+                      <td>
+                        <Button
+                          key={item.id}
+                          variant="outlined"
+                          color="primary"
+                          size="medium"
+                          onClick={() => viewMovie(item._id)}
+                        >
+                          View
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            ) : (
+              <div className="text-lg font-bold w-full justify-center p-5">Movie Not found !</div>
+            )}
+        </table>
+        {movies?.length > 0
+          && (
+          <div className="flex justify-center">
+            {prev
+              ? (
+                <>
+                  <Button
+                    type="button"
+                    className="dark w-10 h-10"
+                    onClick={() => handlePrevPage(page)}
+                  >
+                    <ArrowBackIos fontSize="small" />
+                  </Button>
+                  <Button
+                    type="button"
+                    className="dark w-10 h-10 hover:cursor-default"
+                  >
+                    {prev}
+                  </Button>
+
+                </>
+              )
+              : (
                 <Button
                   type="button"
                   className="dark w-10 h-10"
-                  onClick={() => handlePrevPage(page)}
+                  disabled
                 >
                   <ArrowBackIos fontSize="small" />
                 </Button>
-                <Button
-                  type="button"
-                  className="dark w-10 h-10 hover:cursor-default"
-                >
-                  {prev}
-                </Button>
+              )}
+            <Button
+              type="button"
+              className="dark bg-green-950 w-10 h-10 hover:cursor-default"
+            >
+              {page}
+            </Button>
 
-              </>
-            )
-            : (
-              <Button
-                type="button"
-                className="dark w-10 h-10"
-                disabled
-              >
-                <ArrowBackIos fontSize="small" />
-              </Button>
-            )}
-          <Button
-            type="button"
-            className="dark bg-green-950 w-10 h-10 hover:cursor-default"
-          >
-            {page}
-          </Button>
+            {next
+              ? (
+                <>
+                  <Button
+                    type="button"
+                    className="dark w-10 h-10 hover:cursor-default"
+                  >
+                    {next}
+                  </Button>
+                  <Button
+                    type="button"
+                    className="dark w-10 h-10"
+                    onClick={() => handleNextPage(page)}
+                  >
+                    <ArrowForwardIos fontSize="small" />
+                  </Button>
 
-          {next
-            ? (
-              <>
-                <Button
-                  type="button"
-                  className="dark w-10 h-10 hover:cursor-default"
-                >
-                  {next}
-                </Button>
+                </>
+              )
+              : (
                 <Button
                   type="button"
                   className="dark w-10 h-10"
-                  onClick={() => handleNextPage(page)}
+                  disabled
                 >
                   <ArrowForwardIos fontSize="small" />
                 </Button>
-
-              </>
-            )
-            : (
-              <Button
-                type="button"
-                className="dark w-10 h-10"
-                disabled
-              >
-                <ArrowForwardIos fontSize="small" />
-              </Button>
-            )}
-        </div>
-
+              )}
+          </div>
+          )}
       </>
-      )}
     </>
   );
 }

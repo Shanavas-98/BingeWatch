@@ -1,10 +1,10 @@
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   id: '',
   email: '',
+  token: '',
 };
 
 const adminSlice = createSlice({
@@ -12,8 +12,9 @@ const adminSlice = createSlice({
   initialState,
   reducers: {
     setAdminDetails: (state, action) => {
-      state.id = action.payload._id;
+      state.id = action.payload.id;
       state.email = action.payload.email;
+      state.token = action.payload.token;
     },
     setAdminLogout: () => initialState,
   },
@@ -22,3 +23,5 @@ const adminSlice = createSlice({
 export const { setAdminDetails, setAdminLogout } = adminSlice.actions;
 
 export default adminSlice.reducer;
+
+export const selectAdmin = (state) => state.admin;

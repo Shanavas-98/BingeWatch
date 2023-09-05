@@ -11,21 +11,31 @@ import ActorsPage from '../pages/admin/ActorsPage';
 import CrewsPage from '../pages/admin/CrewsPage';
 import AddSeriesPage from '../pages/admin/AddSeriesPage';
 import SeriesPage from '../pages/admin/SeriesPage';
+import AdminLayout from '../layouts/AdminLayout';
+import NotFound from '../pages/NotFound';
+import RequireAuth from '../utils/RequireAuth';
 
 function AdminRouter() {
   return (
     <Routes>
-      <Route path="/dashboard" element={<HomePage />} />
-      <Route path="/" element={<Login userType="admin" />} />
-      <Route path="/users" element={<UsersPage />} />
-      <Route path="/movies" element={<MoviesPage />} />
-      <Route path="/movies/add-movie" element={<AddMoviePage />} />
-      <Route path="/series" element={<SeriesPage />} />
-      <Route path="/series/add-series" element={<AddSeriesPage />} />
-      <Route path="/movies/view-movie/:movieId" element={<EditMoviePage />} />
-      <Route path="/genres" element={<GenresPage />} />
-      <Route path="/actors" element={<ActorsPage />} />
-      <Route path="/crews" element={<CrewsPage />} />
+      <Route path="/" element={<AdminLayout />}>
+        <Route index element={<Login userType="admin" />} />
+        <Route element={<RequireAuth link="/admin" userType="admin" />}>
+          <Route path="dashboard" element={<HomePage />} />
+          <Route path="users" element={<UsersPage />} />
+          <Route path="movies" element={<MoviesPage />}>
+            <Route path="add-movie" element={<AddMoviePage />} />
+            <Route path="view-movie/:movieId" element={<EditMoviePage />} />
+          </Route>
+          <Route path="series" element={<SeriesPage />}>
+            <Route path="add-series" element={<AddSeriesPage />} />
+          </Route>
+          <Route path="genres" element={<GenresPage />} />
+          <Route path="actors" element={<ActorsPage />} />
+          <Route path="crews" element={<CrewsPage />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
+      </Route>
     </Routes>
   );
 }

@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 const { tmdbInstance } = require('../axios/tmdbInstance');
 const episodeModel = require('../models/episodeModel');
+const genreModel = require('../models/genreModel');
 const seasonModel = require('../models/seasonModel');
 const seriesModel = require('../models/seriesModel');
 const { getPlatformDetails, getCastAndCrew, addGenres, addProductions, addCrewDetails, addCastDetails } = require('./movieController');
@@ -8,8 +9,55 @@ const TMDB_KEY = process.env.TMDB_KEY;
 
 const fetchSeries = async (req, res) => {
     try {
-        const shows = await seriesModel.find().populate('genres').exec();
-        res.json(shows);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const start = (page - 1) * limit;
+        const end = page * limit;
+        const search = req.query.search;
+        const year = req.query.year;
+        const field = req.query.field;
+        const order = JSON.parse(req.query.order);
+        const sortObj = {};
+        sortObj[field] = (order ? 1 : -1);
+        const genreId = req.query.genre;
+        const genres = await genreModel.find();
+        const count = await seriesModel
+            .find({
+                $and: [
+                    { title: { $regex: search, $options: 'i' } },
+                    { airDate: { $regex: year, $options: 'i' } },
+                    ...(genreId
+                        ? [{ genres: { $elemMatch: { $eq: genreId } } }]
+                        : [])
+                ]
+            })
+            .countDocuments()
+            .exec();
+        const shows = await seriesModel
+            .find({
+                $and: [
+                    { title: { $regex: search, $options: 'i' } },
+                    { airDate: { $regex: year, $options: 'i' } },
+                    ...(genreId
+                        ? [{ genres: { $elemMatch: { $eq: genreId } } }]
+                        : [])
+                ]
+            })
+            .populate('genres')
+            .sort(sortObj)
+            .skip(start)
+            .limit(limit)
+            .exec();
+        const pagination = {};
+        pagination.current = page;
+        pagination.limit = limit;
+        if (start > 0) {
+            pagination.previous = page - 1;
+        }
+        if (end < count) {
+            pagination.next = page + 1;
+        }
+        res.json({ shows, pagination, genres });
     } catch (err) {
         console.error(err);
         res.json(err);
@@ -214,7 +262,6 @@ const getSeasonDetails = async(req,res)=>{
             episodes: episodesDetails,
             videos: trailers,
         };
-        console.log('season details',season);
         const { success, message } = await addSeason(season);
         res.json({ success, message });
     } catch (error) {
@@ -349,7 +396,6 @@ const fetchSeasonDetails = async(req,res)=>{
         const season = await seasonModel
             .findOne({id:seasonId})
             .exec();
-        console.log('season details',season);
         res.json(season);
     } catch (error) {
         console.error(error);
@@ -359,12 +405,10 @@ const fetchSeasonDetails = async(req,res)=>{
 
 const fetchEpisodeDetails = async(req,res)=>{
     try {
-        console.log('fetching episode details');
         const episodeId = req.params?.episodeId;
         const episode = await episodeModel
             .findOne({id:episodeId})
             .exec();
-        console.log('season details',episode);
         res.json(episode);
     } catch (error) {
         console.error(error);

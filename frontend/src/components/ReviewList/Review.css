@@ -1,0 +1,30 @@
+.review-box{
+    width:100%;
+    color: white;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid rgb(185, 185, 185);
+    border-radius: 5px;
+}
+.review-head{
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgb(185, 185, 185);
+}
+.review-profile{
+    display: flex;
+}
+.review-rating{
+    color: rgb(233, 170, 10);
+    font-size: large;
+}
+.review-date{
+    color: rgb(170, 170, 170);
+    font-size: small;
+    right: 0;
+}
+.review-text{
+    margin-top: 10px;
+    font-size: 15px;
+}

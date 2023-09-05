@@ -8,6 +8,7 @@ const SEARCH_SHOW_URL = 'https://api.themoviedb.org/3/search/tv';
 
 const IMG_URL = 'https://image.tmdb.org/t/p/original';
 const YT_IMG_URL = 'https://img.youtube.com/vi';
+const AVATAR = 'https://www.clipartmax.com/png/small/97-978328_avatar-icon-free-fa-user-circle-o.png';
 
 // search `?api_key=${TMDB_KEY}&include_adult=false&page=1&query=`;
 
@@ -16,7 +17,7 @@ const YT_IMG_URL = 'https://img.youtube.com/vi';
 export {
   USER_URL, ADMIN_URL, TMDB_URL, IMG_URL,
   SEARCH_MOVIE_URL, MOVIE_URL, SHOW_URL,
-  SEARCH_SHOW_URL, YT_IMG_URL,
+  SEARCH_SHOW_URL, YT_IMG_URL, AVATAR,
 };
 
 // ?query=money&first_air_date_year=2015&include_adult=false&page=1';

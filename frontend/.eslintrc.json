@@ -10,6 +10,7 @@
   },
   "rules": {
     "no-underscore-dangle": ["error", { "allow": ["_id"] }],
+    "no-restricted-syntax": ["error", "WithStatement", "BinaryExpression[operator='in']"],
     "camelcase": ["error", {
         "ignoreDestructuring": true,
         "properties": "never",

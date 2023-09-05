@@ -11,18 +11,18 @@ function Watchlist() {
   const [loading, setLoading] = useState(true);
   const [movies, setMovies] = useState([]);
   const [series, setSeries] = useState([]);
+  const [trigger, setTrigger] = useState(false);
   useEffect(() => {
     const getWatchlist = async () => {
       await fetchWatchlist()
         .then((res) => {
-          console.log('watchlist', res.data);
           setMovies(res.data[0].movies);
           setSeries(res.data[0].series);
           setLoading(false);
         });
     };
     getWatchlist();
-  });
+  }, [trigger]);
   const goToMovie = (movieId) => {
     navigate(`/movies/view-movie/${movieId}`);
   };
@@ -33,11 +33,12 @@ function Watchlist() {
       goToMovie(focusedItem._id);
     }
   };
-  const handleWatchlist = async (movieId) => {
-    await addToWatchlist(movieId)
+  const handleWatchlist = async (contentId, type) => {
+    await addToWatchlist(contentId, type)
       .then((res) => {
         const { success, message } = res.data;
         if (success) {
+          setTrigger(!trigger);
           toast.success(message, {
             position: 'top-center',
           });
@@ -48,7 +49,6 @@ function Watchlist() {
         }
       });
   };
-  console.log('movies', movies);
   if (loading) {
     return (
       <div>
@@ -57,48 +57,51 @@ function Watchlist() {
     );
   }
   return (
-    <div>
-      <h1 className="text-xl font-bold text-white my-2">Watchlist</h1>
-      <div className="flex w-full">
-        {movies && movies?.map((item) => (
-          <>
-            <div
-              role="button"
-              tabIndex={0}
-              className="flex flex-col"
-              onClick={() => goToMovie(item._id)}
-              onKeyDown={handleKeyPress}
-            >
-              <img
-                src={IMG_URL + item.images[0]}
-                alt={item.title}
-                className="w-36 h-60 rounded-md mx-1"
-              />
-              <span className="text-white self-center">{item.title}</span>
-            </div>
-            <Close
-              onClick={() => handleWatchlist(item._id)}
-              className="text-white hover:cursor-pointer"
-            />
-          </>
-        ))}
-        {series && series?.map((item) => (
+    <div className="flex w-full text-white">
+      {movies.length > 0 && movies?.map((item) => (
+        <div key={item._id} className="relative w-36 mx-2">
           <div
             role="button"
             tabIndex={0}
-            className="flex flex-col"
+            className="flex flex-col flex-shrink-0"
+            onClick={() => goToMovie(item._id)}
+            onKeyDown={handleKeyPress}
+          >
+            <img
+              src={IMG_URL + item.images[0]}
+              alt={item.title}
+              className="w-36 h-60 rounded-md"
+            />
+            <span>{item.title}</span>
+          </div>
+          <Close
+            onClick={() => handleWatchlist(item._id, 'movie')}
+            className="hover:cursor-pointer absolute top-0 right-0"
+          />
+        </div>
+      ))}
+      {series && series?.map((item) => (
+        <div key={item._id} className="relative w-36 mx-2">
+          <div
+            role="button"
+            tabIndex={0}
+            className="flex flex-col flex-shrink-0"
             onClick={() => goToMovie(item._id)}
             onKeyDown={handleKeyPress}
           >
             <img
               src={IMG_URL + item.poster}
               alt={item.title}
-              className="w-36 h-60 rounded-sm"
+              className="w-36 h-60 rounded-md"
             />
-            <span className="text-white">{item.title}</span>
+            <span>{item.title}</span>
           </div>
-        ))}
-      </div>
+          <Close
+            onClick={() => handleWatchlist(item._id, 'show')}
+            className="hover:cursor-pointer absolute top-0 right-0"
+          />
+        </div>
+      ))}
     </div>
   );
 }
