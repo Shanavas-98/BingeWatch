@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import YouTube from 'react-youtube';
 import {
-  Button, Label, TextInput, Textarea,
-} from 'flowbite-react';
+  Button, FormLabel, Input, Textarea,
+} from '@chakra-ui/react';
 import { toast } from 'react-toastify';
 import { StarRateRounded } from '@mui/icons-material';
 
@@ -102,9 +102,9 @@ function ShowForm({ show, onSeasonSelect }) {
       <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
         <div className="col-span-1 w-auto">
           <div className="mb-1 block">
-            <Label htmlFor="title" value="Title" className="text-white" />
+            <FormLabel>Title</FormLabel>
           </div>
-          <TextInput
+          <Input
             name="title"
             type="text"
             className="dark"
@@ -114,9 +114,10 @@ function ShowForm({ show, onSeasonSelect }) {
         </div>
         <div className="col-span-1 w-auto">
           <div className="mb-1 block">
-            <Label htmlFor="language" value="Language" className="text-white" />
+            <FormLabel htmlFor="language" value="Language" className="text-white" />
+            <FormLabel>Language</FormLabel>
           </div>
-          <TextInput
+          <Input
             name="language"
             type="text"
             className="dark"
@@ -126,9 +127,9 @@ function ShowForm({ show, onSeasonSelect }) {
         </div>
         <div className="col-span-1 w-auto">
           <div className="mb-1 block">
-            <Label htmlFor="date" value="Release Date" className="text-white" />
+            <FormLabel>Release Date</FormLabel>
           </div>
-          <TextInput
+          <Input
             name="date"
             type="text"
             className="dark"
@@ -137,9 +138,9 @@ function ShowForm({ show, onSeasonSelect }) {
         </div>
         <div className="col-span-1 w-auto">
           <div className="mb-1 block">
-            <Label htmlFor="duration" value="End Date" className="text-white" />
+            <FormLabel>End Date</FormLabel>
           </div>
-          <TextInput
+          <Input
             name="duration"
             type="text"
             className="dark"
@@ -149,9 +150,9 @@ function ShowForm({ show, onSeasonSelect }) {
         </div>
         <div className="col-span-1 w-auto">
           <div className="mb-1 block">
-            <Label htmlFor="rating" value="Rating" className="text-white" />
+            <FormLabel>Rating</FormLabel>
           </div>
-          <TextInput
+          <Input
             name="rating"
             type="text"
             className="dark"
@@ -160,9 +161,9 @@ function ShowForm({ show, onSeasonSelect }) {
         </div>
         <div className="col-span-1 w-auto">
           <div className="mb-1 block">
-            <Label htmlFor="genres" value="Genres" className="text-white" />
+            <FormLabel>Genres</FormLabel>
           </div>
-          <TextInput
+          <Input
             name="genres"
             type="text"
             className="dark"
@@ -171,7 +172,7 @@ function ShowForm({ show, onSeasonSelect }) {
         </div>
         <div className="col-span-1 w-auto">
           <div className="mb-1 block">
-            <Label htmlFor="summary" value="Summary" className="text-white" />
+            <FormLabel>Summary</FormLabel>
           </div>
           <Textarea
             name="summary"
@@ -182,7 +183,7 @@ function ShowForm({ show, onSeasonSelect }) {
           />
         </div>
         <div className="col-span-1 w-auto">
-          <Label htmlFor="platforms" value="Platforms" className="text-white" />
+          <FormLabel>Title</FormLabel>
           <div className="cards-carousal">
             {show.platforms.map((platform, index = 1) => (
               <img
@@ -196,7 +197,7 @@ function ShowForm({ show, onSeasonSelect }) {
         </div>
       </div>
 
-      <Label htmlFor="seasons" value="Seasons" className="text-white" />
+      <FormLabel>Seasons</FormLabel>
       <div className="cards-carousal">
         {show.seasons.map((season) => (
           <div key={season.id} className="flex">
@@ -228,7 +229,7 @@ function ShowForm({ show, onSeasonSelect }) {
           </div>
         ))}
       </div>
-      <Label htmlFor="images" value="Images" className="text-white" />
+      <FormLabel>Images</FormLabel>
       <div className="cards-carousal">
         <img
           src={IMG_URL + show.poster}
@@ -243,7 +244,7 @@ function ShowForm({ show, onSeasonSelect }) {
           />
         ))}
       </div>
-      <Label htmlFor="trailer" value="Videos" className="text-white" />
+      <FormLabel>Videos</FormLabel>
       <div className="cards-carousal">
         {show?.videos?.map((key) => (
           <div className="m-1">
@@ -251,9 +252,9 @@ function ShowForm({ show, onSeasonSelect }) {
           </div>
         ))}
       </div>
-      <Label htmlFor="cast" value="Casts" className="text-white" />
+      <FormLabel>Casts</FormLabel>
       <CardCarousal cards={castCards} baseLink="" style={cardStyle} />
-      <Label htmlFor="crew" value="Crews" className="text-white" />
+      <FormLabel>Crews</FormLabel>
       <CardCarousal cards={crewCards} baseLink="" style={cardStyle} />
     </>
   );

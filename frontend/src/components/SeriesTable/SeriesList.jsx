@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, TextInput } from 'flowbite-react';
+import { Button, Input } from '@chakra-ui/react';
 import {
   ArrowBackIos, ArrowForwardIos, KeyboardArrowDown, KeyboardArrowUp, Search,
 } from '@mui/icons-material';
@@ -72,7 +72,7 @@ function SeriesList() {
         </Button>
         <span className="self-center text-lg font-bold">Series Table</span>
         <div className="flex self-center pr-2">
-          <TextInput
+          <Input
             name="movie"
             type="text"
             className="dark w-auto md:w-52"
@@ -83,7 +83,7 @@ function SeriesList() {
             }}
             value={search}
           />
-          <TextInput
+          <Input
             name="year"
             type="text"
             className="dark w-28"

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import './style.css';
 import {
   Box, Button, Stack, Text,
 } from '@chakra-ui/react';
-import { useToast } from '@chakra-ui/toast';
 import { AddIcon } from '@chakra-ui/icons';
 import { getSender } from '../utils/ChatLogic';
 import ChatLoading from './ChatLoading';
@@ -21,21 +21,13 @@ export default function MyChats({ fetchAgain }) {
     selectedChat, setSelectedChat, chats, setChats,
   } = useChat();
   const [loggedUser, setLoggedUser] = useState('');
-  const toast = useToast();
   const fetchChats = async () => {
     try {
       const { data } = await getChats();
       setChats(data);
+      console.log('chats', data);
     } catch (error) {
       console.error('Error:', error.message);
-      toast({
-        title: 'Error occured!',
-        description: 'failed to load search results',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-        position: 'bottom-center',
-      });
     }
   };
   useEffect(() => {
@@ -48,7 +40,6 @@ export default function MyChats({ fetchAgain }) {
       flexDirection="column"
       alignItems="center"
       p={3}
-      bg="#282c34"
       w={{ base: '100%', md: '30%' }}
       borderRadius="lg"
       borderWidth="1px"
@@ -86,7 +77,7 @@ export default function MyChats({ fetchAgain }) {
       >
         {chats ? (
           <Stack overflowY="scroll">
-            {chats.map((chat) => (
+            {chats?.map((chat) => (
               <Box
                 onClick={() => setSelectedChat(chat)}
                 cursor="pointer"

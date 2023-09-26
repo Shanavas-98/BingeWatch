@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { StarRateRounded } from '@mui/icons-material';
-import { Button, Label } from 'flowbite-react';
+import { Button, FormLabel } from '@chakra-ui/react';
 
 import VideoPlay from '../VideoPlay/VideoPlay';
 import { IMG_URL } from '../../axios/apiUrls';
@@ -106,7 +106,7 @@ function ViewSeries({ showId }) {
           </div>
         </div>
         <div className="col-span-2 ml-2">
-          <Label htmlFor="seasons" value="Seasons" className="text-white" />
+          <FormLabel>Seasons</FormLabel>
           <div className="cards-carousal">
             {seasons?.map((season) => (
               <div key={season.id} className="flex">

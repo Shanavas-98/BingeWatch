@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   ArrowBackIos, ArrowForwardIos, KeyboardArrowDown, KeyboardArrowUp, Search,
 } from '@mui/icons-material';
-import { Button, TextInput } from 'flowbite-react';
+import { Button, Input } from '@chakra-ui/react';
 
 import { fetchGenres } from '../../services/adminApi';
 
@@ -55,7 +55,7 @@ function GenreList() {
       <div className="flex p-2 justify-between bg-slate-900 text-white">
         <span className="self-center text-lg font-bold">Genres Table</span>
         <div className="flex">
-          <TextInput
+          <Input
             name="actor"
             type="text"
             className="dark w-auto md:w-60"

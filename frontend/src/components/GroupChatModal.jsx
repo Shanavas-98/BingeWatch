@@ -31,13 +31,6 @@ export default function GroupChatModal({ children }) {
     setSearch(query);
     try {
       setLoading(true);
-      // const config = {
-      //   headers: {
-      //     'Content-type': 'application/json',
-      //     Authorization: `Bearer ${user.token}`,
-      //   },
-      // };
-      // const { data } = await axios.get(`/api/user?search=${search}`, config);
       const { data } = await fetchAllUsers(search);
       setSearchResult(data);
       setLoading(false);
@@ -64,20 +57,6 @@ export default function GroupChatModal({ children }) {
       return;
     }
     try {
-      // const config = {
-      //   headers: {
-      //     'Content-type': 'application/json',
-      //     Authorization: `Bearer ${user.token}`,
-      //   },
-      // };
-      // const { data } = await axios.post(
-      //   '/api/chat/group',
-      //   {
-      //     name: groupName,
-      //     users: JSON.stringify(selectedUsers.map((u) => (u._id))),
-      //   },
-      //   config,
-      // );
       const { data } = await newGroupChat(
         {
           name: groupName,
@@ -195,7 +174,7 @@ export default function GroupChatModal({ children }) {
             )))}
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" onClick={handleSubmit}>
+            <Button onClick={handleSubmit}>
               Create Chat
             </Button>
           </ModalFooter>

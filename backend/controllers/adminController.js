@@ -18,7 +18,7 @@ const login = async (req, res) => {
         const token = createToken(admin._id);
         res.json({ id:admin._id,email:admin.email, token });
     } catch (error) {
-        res.json({ error });
+        res.json({ error: error.message });
     }
 };
 

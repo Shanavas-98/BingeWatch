@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'flowbite-react';
+import { Button } from '@chakra-ui/react';
 
 import { IMG_URL } from '../../axios/apiUrls';
 import { showInstance } from '../../axios/axiosInstance';

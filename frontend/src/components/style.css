@@ -7,3 +7,24 @@
 .messages::-webkit-scrollbar{
     display: none;
 }
+
+.chat-box{
+    display: 'flex';
+    flex-direction: column;
+    align-items: center;
+    padding: '3px';
+    background-color: '#282c34';
+    color: 'black';
+    width: '100%';
+    border-radius: '5px';
+    border: solid 1px transparent;
+}
+
+.my-chats{
+    display: flex;
+    align-items: center;
+    padding: 3px;
+    background-color:'#282c34';
+    border-radius: 10px;
+    border: solid 1px;
+}

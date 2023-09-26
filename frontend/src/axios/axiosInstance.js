@@ -5,6 +5,7 @@ import {
 } from './apiUrls';
 
 const USER_TOKEN = localStorage.getItem('userJwt');
+console.log('user token', USER_TOKEN);
 const ADMIN_TOKEN = localStorage.getItem('adminJwt');
 const TMDB_TOKEN = process.env.REACT_APP_TMDB_ACCESS_TOKEN;
 const TMDB_KEY = process.env.REACT_APP_TMDB_KEY;

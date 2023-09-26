@@ -6,8 +6,8 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import {
-  Button, Label, TextInput, Textarea,
-} from 'flowbite-react';
+  Button, FormLabel, Input, Textarea,
+} from '@chakra-ui/react';
 
 import { editMovie, fetchMovie } from '../../services/adminApi';
 import { IMG_URL } from '../../axios/apiUrls';
@@ -116,13 +116,13 @@ function EditMovie({ movieId }) {
         <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
           <div className="col-span-1 w-auto">
             <div className="mb-1 block">
-              <Label htmlFor="title" value="Movie Title" className="text-white" />
+              <FormLabel>Movie Title</FormLabel>
             </div>
             {formik.touched.title && formik.errors.title
               ? <p>{formik.errors.title}</p> : null}
             {edit
               ? (
-                <TextInput
+                <Input
                   name="title"
                   type="text"
                   className="dark"
@@ -132,7 +132,7 @@ function EditMovie({ movieId }) {
                 />
               )
               : (
-                <TextInput
+                <Input
                   name="title"
                   type="text"
                   className="dark"
@@ -143,13 +143,13 @@ function EditMovie({ movieId }) {
           </div>
           <div className="col-span-1 w-auto">
             <div className="mb-1 block">
-              <Label htmlFor="language" value="Language" className="text-white" />
+              <FormLabel>Language</FormLabel>
             </div>
             {formik.touched.language && formik.errors.language
               ? <p>{formik.errors.language}</p> : null}
             {edit
               ? (
-                <TextInput
+                <Input
                   name="language"
                   type="text"
                   className="dark"
@@ -159,7 +159,7 @@ function EditMovie({ movieId }) {
                 />
               )
               : (
-                <TextInput
+                <Input
                   name="language"
                   type="text"
                   className="dark"
@@ -170,13 +170,13 @@ function EditMovie({ movieId }) {
           </div>
           <div className="col-span-1 w-auto">
             <div className="mb-1 block">
-              <Label htmlFor="duration" value="Duration" className="text-white" />
+              <FormLabel>Duration</FormLabel>
             </div>
             {formik.touched.duration && formik.errors.duration
               ? <p>{formik.errors.duration}</p> : null}
             {edit
               ? (
-                <TextInput
+                <Input
                   name="duration"
                   type="text"
                   className="dark"
@@ -186,7 +186,7 @@ function EditMovie({ movieId }) {
                 />
               )
               : (
-                <TextInput
+                <Input
                   name="duration"
                   type="text"
                   className="dark"
@@ -197,13 +197,13 @@ function EditMovie({ movieId }) {
           </div>
           <div className="col-span-1 w-auto">
             <div className="mb-1 block">
-              <Label htmlFor="rating" value="Rating" className="text-white" />
+              <FormLabel>Rating</FormLabel>
             </div>
             {formik.touched.rating && formik.errors.rating
               ? <p>{formik.errors.rating}</p> : null}
             {edit
               ? (
-                <TextInput
+                <Input
                   name="rating"
                   type="text"
                   className="dark"
@@ -213,7 +213,7 @@ function EditMovie({ movieId }) {
                 />
               )
               : (
-                <TextInput
+                <Input
                   name="rating"
                   type="text"
                   className="dark"
@@ -224,13 +224,13 @@ function EditMovie({ movieId }) {
           </div>
           <div className="col-span-1 w-auto">
             <div className="mb-1 block">
-              <Label htmlFor="date" value="Release Date" className="text-white" />
+              <FormLabel>Release Date</FormLabel>
             </div>
             {formik.touched.releaseDate && formik.errors.releaseDate
               ? <p>{formik.errors.releaseDate}</p> : null}
             {edit
               ? (
-                <TextInput
+                <Input
                   name="releaseDate"
                   type="text"
                   className="dark"
@@ -240,7 +240,7 @@ function EditMovie({ movieId }) {
                 />
               )
               : (
-                <TextInput
+                <Input
                   name="date"
                   type="text"
                   className="dark"
@@ -252,11 +252,11 @@ function EditMovie({ movieId }) {
           {!edit && (
           <div className="col-span-1 w-auto">
             <div className="mb-1 block">
-              <Label htmlFor="genres" value="Genres" className="text-white" />
+              <FormLabel>Genres</FormLabel>
             </div>
             {formik.touched.genres && formik.errors.genres
               ? <p>{formik.errors.genres}</p> : null}
-            <TextInput
+            <Input
               name="genres"
               type="text"
               className="dark"
@@ -268,7 +268,7 @@ function EditMovie({ movieId }) {
 
           <div className="lg:col-span-2 w-auto">
             <div className="mb-1 block">
-              <Label htmlFor="summary" value="Summary" className="text-white" />
+              <FormLabel>Summary</FormLabel>
             </div>
             {formik.touched.summary && formik.errors.summary
               ? <p>{formik.errors.summary}</p> : null}
@@ -297,13 +297,13 @@ function EditMovie({ movieId }) {
           </div>
         </div>
       </form>
-      <Label htmlFor="posters" value="Posters" className="text-white" />
+      <FormLabel>Posters</FormLabel>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
         {movie?.images?.map((image, index = 1) => (
           <img key={index} src={IMG_URL + image} alt={`poster${index}`} className="h-60 w-36 m-2 rounded-md" />
         ))}
       </div>
-      <Label htmlFor="trailer" value="Videos" className="text-white" />
+      <FormLabel>Videos</FormLabel>
       {movie.videos
         && (
           <div className="grid lg:grid-cols-3">

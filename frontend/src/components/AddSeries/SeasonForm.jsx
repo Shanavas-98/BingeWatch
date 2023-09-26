@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import YouTube from 'react-youtube';
 import { StarRateRounded } from '@mui/icons-material';
-import {
-  Button, Label, TextInput, Textarea,
-} from 'flowbite-react';
 import { toast } from 'react-toastify';
+import {
+  Button, FormLabel, Input, Textarea,
+} from '@chakra-ui/react';
 
 import { IMG_URL } from '../../axios/apiUrls';
 import { addEpisode, addSeason } from '../../services/adminApi';
@@ -58,9 +58,9 @@ function SeasonForm({ season }) {
       <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
         <div className="col-span-1 w-auto">
           <div className="mb-1 block">
-            <Label htmlFor="title" value="Title" className="text-white" />
+            <FormLabel>Title</FormLabel>
           </div>
-          <TextInput
+          <Input
             name="title"
             type="text"
             className="dark"
@@ -68,18 +68,18 @@ function SeasonForm({ season }) {
             defaultValue={season ? season.title : ''}
           />
           <div className="mb-1 block">
-            <Label htmlFor="date" value="Release Date" className="text-white" />
+            <FormLabel>Release Date</FormLabel>
           </div>
-          <TextInput
+          <Input
             name="date"
             type="text"
             className="dark"
             defaultValue={season ? season.airDate : ''}
           />
           <div className="mb-1 block">
-            <Label htmlFor="rating" value="Rating" className="text-white" />
+            <FormLabel>Rating</FormLabel>
           </div>
-          <TextInput
+          <Input
             name="rating"
             type="text"
             className="dark"
@@ -88,7 +88,7 @@ function SeasonForm({ season }) {
         </div>
         <div className="col-span-1 w-auto">
           <div className="mb-1 block">
-            <Label htmlFor="summary" value="Summary" className="text-white" />
+            <FormLabel>Summary</FormLabel>
           </div>
           <Textarea
             name="summary"
@@ -99,7 +99,7 @@ function SeasonForm({ season }) {
           />
         </div>
       </div>
-      <Label htmlFor="seasons" value="Episodes" className="text-white" />
+      <FormLabel>Episodes</FormLabel>
       <div className="cards-carousal">
         {season.episodes.map((ep) => (
           <div key={ep.id} className="flex flex-col mx-2">
@@ -135,7 +135,7 @@ function SeasonForm({ season }) {
           </div>
         ))}
       </div>
-      <Label htmlFor="trailer" value="Poster & Videos" className="text-white" />
+      <FormLabel>Poster & Videos</FormLabel>
       <div className="cards-carousal">
         <img
           src={IMG_URL + season.poster}

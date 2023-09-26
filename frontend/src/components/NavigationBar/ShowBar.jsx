@@ -1,12 +1,13 @@
+/* eslint-disable max-len */
 import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
-import { Button } from 'flowbite-react';
+import { Button, Stack } from '@chakra-ui/react';
 import { BookmarkAddOutlined, BookmarkAdded } from '@mui/icons-material';
-import { Rating, Stack } from '@mui/material';
+// import { Rating } from '@mui/material';
 import useAuth from '../../hooks/useAuth';
-import { addRating, addToWatchlist, fetchReview } from '../../services/userApi';
+import { addToWatchlist, fetchReview } from '../../services/userApi';
 import ReviewModal from '../ReviewModal/ReviewModal';
 
 export default function ShowBar({ data }) {
@@ -23,7 +24,7 @@ export default function ShowBar({ data }) {
   const {
     title, tagline, start, end, rating, id,
   } = data;
-  const [rate, setRate] = useState(0);
+  // const [rate, setRate] = useState(0);
   const [added, setAdded] = useState(false);
   const [review, setReview] = useState('');
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
@@ -32,7 +33,7 @@ export default function ShowBar({ data }) {
   const getRating = async (show) => {
     await fetchReview(show).then((res) => {
       const { reviewData, inList } = res.data;
-      setRate(reviewData?.rating || 0);
+      // setRate(reviewData?.rating || 0);
       setReview(reviewData?.review);
       setAdded(inList);
     });
@@ -40,26 +41,26 @@ export default function ShowBar({ data }) {
   useEffect(() => {
     getRating(id);
   }, []);
-  const showRating = async (val, showId) => {
-    if (!user) {
-      navigate('/login');
-    } else if (val) {
-      setRate(val);
-      await addRating(val, showId)
-        .then((res) => {
-          const { success, message } = res.data;
-          if (success) {
-            toast.success(message, {
-              position: 'top-center',
-            });
-          } else {
-            toast.error(message, {
-              position: 'top-center',
-            });
-          }
-        });
-    }
-  };
+  // const showRating = async (val, showId) => {
+  //   if (!user) {
+  //     navigate('/login');
+  //   } else if (val) {
+  //     setRate(val);
+  //     await addRating(val, showId)
+  //       .then((res) => {
+  //         const { success, message } = res.data;
+  //         if (success) {
+  //           toast.success(message, {
+  //             position: 'top-center',
+  //           });
+  //         } else {
+  //           toast.error(message, {
+  //             position: 'top-center',
+  //           });
+  //         }
+  //       });
+  //   }
+  // };
   const handleReviewModal = () => {
     if (!user) {
       navigate('/login');
@@ -114,15 +115,15 @@ export default function ShowBar({ data }) {
               ? <BookmarkAdded />
               : <BookmarkAddOutlined />}
           </Button>
-          <Stack spacing={1}>
+          <Stack m={1}>
             <span className="text-gray-400 text-sm self-center">Rating</span>
             <span className="text-yellow-400">{`${rating?.toFixed(1)}/10`}</span>
           </Stack>
-          <Stack spacing={1}>
+          <Stack m={1}>
             <span className="text-slate-400 text-sm self-center">Your rating</span>
-            <Rating name="half-rating" value={rate} precision={0.5} onClick={(e) => showRating(e.target.value, id)} />
+            {/* <Rating name="half-rating" value={rate} precision={0.5} onClick={(e) => showRating(e.target.value, id)} /> */}
           </Stack>
-          <Stack spacing={1}>
+          <Stack m={1}>
             <NavLink to={`/series/view-series/reviews/${id}`}>
               <span
                 className="text-slate-400 text-sm self-center hover:cursor-pointer"

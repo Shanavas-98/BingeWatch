@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Button, TextInput,
-} from 'flowbite-react';
+import { Button, Input } from '@chakra-ui/react';
 import { toast } from 'react-toastify';
 import { ArrowForwardIos, ArrowBackIos } from '@mui/icons-material';
 
@@ -50,7 +48,7 @@ function AddMovie() {
         Add Movie
       </h3>
       <div className="flex gap-3 mb-2">
-        <TextInput
+        <Input
           name="movie"
           type="text"
           className="dark w-auto md:w-60"
@@ -58,7 +56,7 @@ function AddMovie() {
           onChange={(e) => setQuery(e.target.value)}
           value={query}
         />
-        <TextInput
+        <Input
           name="year"
           type="text"
           className="dark"

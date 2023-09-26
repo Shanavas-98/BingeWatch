@@ -77,8 +77,6 @@ export default function SideDrawer() {
         display="flex"
         justifyContent="space-between"
         alignItems="center"
-        bg="black"
-        color="white"
         w="100%"
         p="5px 10px 5px 10px"
       >

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
-import { Button, Label, TextInput } from 'flowbite-react';
+import { Button, FormLabel, Input } from '@chakra-ui/react';
 import { toast } from 'react-toastify';
 
 import useAuth from '../../hooks/useAuth';
@@ -49,6 +49,7 @@ function Login({ userType }) {
     try {
       if (userType === 'user') {
         const { data } = await userLogin(values);
+        console.log('user data', data);
         if (data.error) {
           throw Error(data.error);
         } else {
@@ -64,6 +65,7 @@ function Login({ userType }) {
         }
       } else if (userType === 'admin') {
         const { data } = await adminLogin(values);
+        console.log('admin data', data);
         // const { id, email, token } = data;
         if (data.error) {
           throw Error(data.error);
@@ -80,7 +82,7 @@ function Login({ userType }) {
         }
       }
     } catch (err) {
-      toast.error(err, {
+      toast.error(err.message, {
         position: 'top-center',
       });
     }
@@ -106,8 +108,8 @@ function Login({ userType }) {
           className="w-60 gap-4"
         >
 
-          <Label htmlFor="email" value="Email" className="text-white" />
-          <TextInput
+          <FormLabel>Email</FormLabel>
+          <Input
             type="text"
             name="email"
             className="dark"
@@ -115,8 +117,8 @@ function Login({ userType }) {
             onBlur={formik.handleBlur}
             value={formik.values.email}
           />
-          <Label htmlFor="password" value="Password" className="text-white" />
-          <TextInput
+          <FormLabel>Password</FormLabel>
+          <Input
             type="password"
             name="password"
             className="dark"

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Stack } from '@mui/material';
+import { Stack } from '@chakra-ui/react';
 
 import { fetchRelatedMovies } from '../../services/userApi';
 import { IMG_URL } from '../../axios/apiUrls';
@@ -41,7 +41,7 @@ function RelatedMovies({ movieId }) {
             onKeyDown={(e) => handleKeyPress(e, movie._id)}
           >
             <img src={IMG_URL + movie.images[0]} alt="" className="w-15 h-20" />
-            <Stack spacing={1} className="ml-2">
+            <Stack m={1} className="ml-2">
               <h3 className="text-white">{movie.title}</h3>
               <span className="text-slate-300 text-sm">{`${movie?.releaseDate?.slice(0, 4)} | ${movie?.duration}`}</span>
             </Stack>

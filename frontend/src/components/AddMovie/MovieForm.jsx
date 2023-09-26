@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button, Label, TextInput, Textarea,
-} from 'flowbite-react';
+  Button, FormLabel, Input, Textarea,
+} from '@chakra-ui/react';
 import { toast } from 'react-toastify';
 import YouTube from 'react-youtube';
 
@@ -62,9 +62,9 @@ function MovieForm({ movie }) {
       <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
         <div className="col-span-1 w-auto">
           <div className="mb-1 block">
-            <Label htmlFor="title" value="Movie Title" className="text-white" />
+            <FormLabel>Movie Title</FormLabel>
           </div>
-          <TextInput
+          <Input
             name="title"
             type="text"
             className="dark"
@@ -74,9 +74,9 @@ function MovieForm({ movie }) {
         </div>
         <div className="col-span-1 w-auto">
           <div className="mb-1 block">
-            <Label htmlFor="language" value="Language" className="text-white" />
+            <FormLabel>Language</FormLabel>
           </div>
-          <TextInput
+          <Input
             name="language"
             type="text"
             className="dark"
@@ -86,9 +86,9 @@ function MovieForm({ movie }) {
         </div>
         <div className="col-span-1 w-auto">
           <div className="mb-1 block">
-            <Label htmlFor="duration" value="Duration" className="text-white" />
+            <FormLabel>Duration</FormLabel>
           </div>
-          <TextInput
+          <Input
             name="duration"
             type="text"
             className="dark"
@@ -98,9 +98,9 @@ function MovieForm({ movie }) {
         </div>
         <div className="col-span-1 w-auto">
           <div className="mb-1 block">
-            <Label htmlFor="rating" value="Rating" className="text-white" />
+            <FormLabel>Rating</FormLabel>
           </div>
-          <TextInput
+          <Input
             name="rating"
             type="text"
             className="dark"
@@ -109,9 +109,9 @@ function MovieForm({ movie }) {
         </div>
         <div className="col-span-1 w-auto">
           <div className="mb-1 block">
-            <Label htmlFor="date" value="Release Date" className="text-white" />
+            <FormLabel>Release Date</FormLabel>
           </div>
-          <TextInput
+          <Input
             name="date"
             type="text"
             className="dark"
@@ -120,9 +120,9 @@ function MovieForm({ movie }) {
         </div>
         <div className="col-span-1 w-auto">
           <div className="mb-1 block">
-            <Label htmlFor="genres" value="Genres" className="text-white" />
+            <FormLabel>Genres</FormLabel>
           </div>
-          <TextInput
+          <Input
             name="genres"
             type="text"
             className="dark"
@@ -131,7 +131,7 @@ function MovieForm({ movie }) {
         </div>
         <div className="col-span-1 w-auto">
           <div className="mb-1 block">
-            <Label htmlFor="summary" value="Summary" className="text-white" />
+            <FormLabel>Summary</FormLabel>
           </div>
           <Textarea
             name="summary"
@@ -142,20 +142,19 @@ function MovieForm({ movie }) {
           />
         </div>
       </div>
-      <Label htmlFor="platforms" value="Platforms" className="text-white" />
+      <FormLabel>Platforms</FormLabel>
       <div className="w-full flex">
         {movie.platforms.map((platform, index = 1) => (
           <img key={index} src={IMG_URL + platform.logo_path} alt={platform.provider_name} className="h-20 w-20 m-2 rounded-lg" />
         ))}
       </div>
-      <Label htmlFor="posters" value="Posters" className="text-white" />
+      <FormLabel>Posters</FormLabel>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
         {movie?.images?.map((image, index = 1) => (
           <img key={index} src={IMG_URL + image} alt={`poster${index}`} className="h-60 w-36 m-2 rounded-md" />
         ))}
       </div>
-
-      <Label htmlFor="trailer" value="Videos" className="text-white" />
+      <FormLabel>Videos</FormLabel>
       {movie.videos
       && (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
@@ -166,9 +165,9 @@ function MovieForm({ movie }) {
         ))}
       </div>
       )}
-      <Label htmlFor="cast" value="Casts" className="text-white" />
+      <FormLabel>Casts</FormLabel>
       <CardCarousal cards={castCards} baseLink="" style={cardStyle} />
-      <Label htmlFor="crew" value="Crews" className="text-white" />
+      <FormLabel>Crews</FormLabel>
       <CardCarousal cards={crewCards} baseLink="" style={cardStyle} />
     </>
   );

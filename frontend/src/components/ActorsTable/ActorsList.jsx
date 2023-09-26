@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, TextInput } from 'flowbite-react';
+import { Button, Input } from '@chakra-ui/react';
 import {
   ArrowBackIos,
   ArrowForwardIos,
@@ -68,7 +68,7 @@ function ActorsList() {
       <div className="flex justify-between bg-slate-900 p-2 text-white">
         <span className="self-center text-lg font-bold">Actors Table</span>
         <div className="flex">
-          <TextInput
+          <Input
             name="actor"
             type="text"
             className="dark w-auto md:w-60"

@@ -1,6 +1,7 @@
 import React from 'react';
-import { Box } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
+import './style.css';
+import { Box } from '@chakra-ui/react';
 import SingleChat from './SingleChat';
 import useChat from '../hooks/useChat';
 
@@ -16,8 +17,6 @@ export default function ChatBox({ fetchAgain, setFetchAgain }) {
       alignItems="center"
       flexDir="column"
       p={3}
-      bg="#282c34"
-      color="black"
       w={{ base: '100%', md: '70%' }}
       borderRadius="lg"
       borderWidth="1px"

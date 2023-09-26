@@ -1,6 +1,6 @@
-import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
-import { Button, TextInput } from 'flowbite-react';
 import React, { useState } from 'react';
+import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
+import { Button, Input } from '@chakra-ui/react';
 import { toast } from 'react-toastify';
 import { searchShowInstance } from '../../axios/axiosInstance';
 import ShowResults from './ShowResults';
@@ -56,7 +56,7 @@ function AddSeries() {
         Add Series
       </h3>
       <div className="flex gap-3 mb-2">
-        <TextInput
+        <Input
           name="movie"
           type="text"
           className="dark w-auto md:w-60"
@@ -64,7 +64,7 @@ function AddSeries() {
           onChange={(e) => setQuery(e.target.value)}
           value={query}
         />
-        <TextInput
+        <Input
           name="year"
           type="text"
           className="dark"

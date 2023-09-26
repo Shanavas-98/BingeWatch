@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   ArrowBackIos, ArrowForwardIos, KeyboardArrowDown, KeyboardArrowUp, Search,
 } from '@mui/icons-material';
-import { Button, TextInput } from 'flowbite-react';
+import { Button, Input } from '@chakra-ui/react';
 
 import { IMG_URL } from '../../axios/apiUrls';
 import { fetchCrews } from '../../services/adminApi';
@@ -64,7 +64,7 @@ function CrewsList() {
       <div className="flex justify-between bg-slate-900 p-2 text-white">
         <span className="self-center text-lg font-bold">Crews Table</span>
         <div className="flex">
-          <TextInput
+          <Input
             name="crew"
             type="text"
             className="dark w-auto md:w-60"

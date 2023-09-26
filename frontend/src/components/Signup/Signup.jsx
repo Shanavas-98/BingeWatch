@@ -1,4 +1,4 @@
-import { Button, Label, TextInput } from 'flowbite-react';
+import { Button, FormLabel, Input } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
@@ -85,11 +85,11 @@ function Signup() {
         >
           <div>
             <div className="mb-1 block">
-              <Label htmlFor="fullName" value="Your full name" className="text-white" />
+              <FormLabel>Your full name</FormLabel>
             </div>
             {formik.touched.fullName && formik.errors.fullName
               ? <p>{formik.errors.fullName}</p> : null}
-            <TextInput
+            <Input
               name="fullName"
               type="text"
               className="dark"
@@ -100,10 +100,10 @@ function Signup() {
           </div>
           <div>
             <div className="mb-1 block">
-              <Label htmlFor="email" value="Your email" className="text-white" />
+              <FormLabel>Your Email</FormLabel>
             </div>
             {formik.touched.email && formik.errors.email ? <p>{formik.errors.email}</p> : null}
-            <TextInput
+            <Input
               name="email"
               type="email"
               className="dark"
@@ -115,10 +115,10 @@ function Signup() {
           </div>
           <div>
             <div className="mb-1 block">
-              <Label htmlFor="mobile" value="Your mobile" className="text-white" />
+              <FormLabel>Your Mobile</FormLabel>
             </div>
             {formik.touched.mobile && formik.errors.mobile ? <p>{formik.errors.mobile}</p> : null}
-            <TextInput
+            <Input
               name="mobile"
               type="tel"
               className="dark"
@@ -129,11 +129,11 @@ function Signup() {
           </div>
           <div>
             <div className="mb-1 block">
-              <Label htmlFor="password" value="Your password" className="text-white" />
+              <FormLabel>Your Password</FormLabel>
             </div>
             {formik.touched.password && formik.errors.password
               ? <p>{formik.errors.password}</p> : null}
-            <TextInput
+            <Input
               name="password"
               type="password"
               className="dark"
@@ -144,11 +144,11 @@ function Signup() {
           </div>
           <div>
             <div className="mb-1 block">
-              <Label htmlFor="confirmPassword" value="Confirm password" className="text-white" />
+              <FormLabel>Confirm Password</FormLabel>
             </div>
             {formik.touched.confirmPass && formik.errors.confirmPass
               ? <p>{formik.errors.confirmPass}</p> : null}
-            <TextInput
+            <Input
               name="confirmPass"
               type="password"
               className="dark"

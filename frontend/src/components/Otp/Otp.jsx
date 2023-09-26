@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Label, TextInput } from 'flowbite-react';
+import { Button, FormLabel, Input } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -53,10 +53,10 @@ function Otp() {
         >
           <div>
             <div className="mb-2 block">
-              <Label htmlFor="otp" value="Enter OTP" className="text-white" />
+              <FormLabel>Enter OTP</FormLabel>
             </div>
             {formik.touched.otp && formik.errors.otp ? <p className="text-red-500">{formik.errors.otp}</p> : null}
-            <TextInput
+            <Input
               name="otp"
               type="tel"
               className="dark"

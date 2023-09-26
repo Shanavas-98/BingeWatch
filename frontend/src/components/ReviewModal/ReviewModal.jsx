@@ -1,4 +1,4 @@
-import { Button } from 'flowbite-react';
+import { Button } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';

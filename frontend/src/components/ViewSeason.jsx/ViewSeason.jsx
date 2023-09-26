@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StarRateRounded } from '@mui/icons-material';
-import { Button, Label } from 'flowbite-react';
+import { Button, FormLabel } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
@@ -61,7 +61,7 @@ function ViewSeason(props) {
           <p className="text-gray-200 mb-2">{summary}</p>
         </div>
         <div className="col-span-2 ml-2">
-          <Label htmlFor="episodes" value="Episodes" className="text-white" />
+          <FormLabel>Episodes</FormLabel>
           <div className="cards-carousal my-2">
             {episodes?.map((episode) => (
               <div key={episode.id} className="flex">

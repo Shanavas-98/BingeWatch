@@ -76,10 +76,10 @@ const login = async (req, res) => {
         if(user.blocked){
             throw Error('user is temporarily blocked');
         }
-        const token = createToken(user._id);
+        const token = await createToken(user._id);
         res.json({ id:user._id, name:user.fullName, email:user.email, picture:user.picture.url, token });
     } catch (error) {
-        res.json({ error });
+        res.json({error: error.message});
     }
 };
 
