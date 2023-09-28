@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button } from '@chakra-ui/button';
+import { toast } from 'react-toastify';
 
 import { IMG_URL } from '../../axios/apiUrls';
 import { movieInstance } from '../../axios/axiosInstance';
@@ -98,7 +99,9 @@ function MovieResults({ results, onMovieSelect }) {
         };
         onMovieSelect(movie);
       }).catch((err) => {
-        console.error(err);
+        toast.error(err.message, {
+          position: 'top-center',
+        });
       });
   };
   return (

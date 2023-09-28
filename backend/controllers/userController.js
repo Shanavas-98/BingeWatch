@@ -84,8 +84,8 @@ const login = async (req, res) => {
 };
 
 const userAuth = async(req,res)=>{
+    console.log('token', req.headers.authorization);
     if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
-        console.log('auth middleware working');
         try {
             let token=req.headers.authorization.split(' ')[1];
             if(!token || token==='null'){
@@ -94,48 +94,13 @@ const userAuth = async(req,res)=>{
             const decoded = jwt.verify(token,process.env.JWT_SECRET);
             const user = await userModel.findById(decoded.id).select('-password');
             const userData = { id:user._id, name:user.fullName, email:user.email, picture:user.picture.url, token };
-            console.log('user',userData);
             return res.json({ success: true, message: 'Authorised', userData });
         } catch (error) {
-            // res.status(401);
-            // throw new Error('Not authorized');
             return res.json({ success: false, message: 'Unauthorized' });
-
         }
     }
 
 };
-
-// const userAuth = async (req, res) => {
-//     try {
-//         //verify user authentication
-//         const { authorization } = req.headers;
-//         console.log('headers',req.headers);
-//         const token = authorization.split(' ')[1];
-//         console.log('token',token);
-//         if(token){
-//             jwt.verify(token, process.env.JWT_KEY, async (err, decoded) => {
-//                 if (err) {
-//                     console.log('jwt error',err);
-//                     return res.json({ success: false, message: 'Unauthorized user' });
-//                 } else {
-//                     const user = await userModel.findOne({ _id: decoded.id },{password:0});
-//                     if (user) {
-//                         const userData = {  id:user._id, name:user.fullName, email:user.email, picture:user.picture?.url, token};
-//                         return res.json({ success: true, message: 'Authorised', user:userData });
-//                     } else {
-//                         return res.json({ success: false, message: 'User not exists' });
-//                     }
-//                 }
-//             });
-//         }else{
-//             return res.json({ success: false, message: 'authorization token required' });
-//         }
-//     } catch (err) {
-//         console.log('user auth error:',err);
-//         res.json({ success: false, message: 'error while user authorization',err });
-//     }
-// };
 
 const home = async (req, res) => {
     try {
@@ -192,7 +157,6 @@ const updateProfile = async(req,res)=>{
 
 const updateAvatar = async(req,res)=>{
     try{
-        console.log('cloudinary file',req.file);
         const { filename,path } = req.file;
         await userModel.updateOne({ _id: req.userId }, {
             $set: {
@@ -230,7 +194,6 @@ const addFriend = async (req, res) => {
 const allUsers = async(req,res)=>{
     try {
         const search = req.query?.search?.trim();
-        // console.log('search',search);
         const userId = req.userId;
         const keyword = search?{
             $or:[

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Stack } from '@chakra-ui/react';
+import { toast } from 'react-toastify';
 
 import { fetchRelatedMovies } from '../../services/userApi';
 import { IMG_URL } from '../../axios/apiUrls';
@@ -15,8 +16,10 @@ function RelatedMovies({ movieId }) {
         .then((res) => {
           setRelatedMovies(res.data);
         })
-        .catch((error) => {
-          console.error('error fetching related movies', error);
+        .catch((err) => {
+          toast.error(err.message, {
+            position: 'top-center',
+          });
         });
     };
     getRelatedMovies(movieId);

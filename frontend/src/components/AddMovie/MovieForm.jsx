@@ -23,6 +23,7 @@ function MovieForm({ movie }) {
     try {
       setLoading(!loading);
       const { data } = await addMovie(id);
+      console.log('addmovie data', data);
       if (data.success) {
         setLoading(false);
         toast.success(data.message, { position: 'top-right' });
@@ -31,6 +32,7 @@ function MovieForm({ movie }) {
         throw Error(data.message);
       }
     } catch (err) {
+      console.error(err);
       toast.error(err.message, { position: 'top-center' });
     }
   };
@@ -57,7 +59,7 @@ function MovieForm({ movie }) {
     <>
       <div className="w-full my-2">
         {loading ? <Button isProcessing type="button" className="dark">Add</Button>
-          : <Button type="button" className="dark" onClick={() => add(movie.id)}>Add</Button>}
+          : <Button type="button" className="dark" onClick={() => add(movie?.id)}>Add</Button>}
       </div>
       <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
         <div className="col-span-1 w-auto">

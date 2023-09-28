@@ -23,11 +23,13 @@ function AdminRouter() {
         <Route element={<RequireAuth link="/admin" userType="admin" />}>
           <Route path="dashboard" element={<HomePage />} />
           <Route path="users" element={<UsersPage />} />
-          <Route path="movies" element={<MoviesPage />}>
+          <Route path="movies/">
+            <Route index element={<MoviesPage />} />
             <Route path="add-movie" element={<AddMoviePage />} />
             <Route path="view-movie/:movieId" element={<EditMoviePage />} />
           </Route>
-          <Route path="series" element={<SeriesPage />}>
+          <Route path="series/">
+            <Route index element={<SeriesPage />} />
             <Route path="add-series" element={<AddSeriesPage />} />
           </Route>
           <Route path="genres" element={<GenresPage />} />

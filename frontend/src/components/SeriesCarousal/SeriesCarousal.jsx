@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 
 import CardCarousal from '../CardCarousal/CardCarousal';
 import { fetchGenreSeries } from '../../services/userApi';
@@ -14,7 +15,9 @@ function SeriesCarousal({ genre }) {
         setSeries(data);
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching series:', err);
+        toast.error(err.message, {
+          position: 'top-center',
+        });
         setLoading(false);
       }
     };

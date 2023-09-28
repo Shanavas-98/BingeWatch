@@ -24,8 +24,6 @@ export const isLastMessage = (messages, idx, userId) => {
 };
 
 export const isSameSenderMargin = (messages, msg, idx, userId) => {
-  // console.log(i === messages.length - 1);
-
   if (
     idx < messages.length - 1
       && messages[idx + 1].sender._id === msg.sender._id

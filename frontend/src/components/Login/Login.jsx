@@ -49,7 +49,6 @@ function Login({ userType }) {
     try {
       if (userType === 'user') {
         const { data } = await userLogin(values);
-        console.log('user data', data);
         if (data.error) {
           throw Error(data.error);
         } else {
@@ -65,7 +64,6 @@ function Login({ userType }) {
         }
       } else if (userType === 'admin') {
         const { data } = await adminLogin(values);
-        console.log('admin data', data);
         // const { id, email, token } = data;
         if (data.error) {
           throw Error(data.error);
@@ -127,7 +125,7 @@ function Login({ userType }) {
             value={formik.values.password}
           />
           <div className="w-full my-2">
-            <Button type="submit" gradientDuoTone="purpleToBlue" outline>Login</Button>
+            <Button type="submit" outline>Login</Button>
           </div>
         </form>
         <div className="flex justify-between text-sm font-medium text-gray-300">

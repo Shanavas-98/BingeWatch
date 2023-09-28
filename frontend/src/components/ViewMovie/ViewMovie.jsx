@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 
 import { fetchMovie } from '../../services/userApi';
 import NavigBar from '../NavigationBar/NavigBar';
@@ -13,12 +14,13 @@ function ViewMovie({ movieId }) {
   const getMovie = async (id) => {
     await fetchMovie(id)
       .then((res) => {
-        console.log('movie', res.data);
         setMovie(res.data);
         setLoading(false);
       })
-      .catch((error) => {
-        console.error('Error fetching movie:', error);
+      .catch((err) => {
+        toast.error(err.message, {
+          position: 'top-center',
+        });
         setLoading(false);
       });
   };

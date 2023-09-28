@@ -65,7 +65,7 @@ function Otp() {
               value={formik.values.otp}
             />
           </div>
-          <Button type="submit" gradientDuoTone="purpleToBlue" outline className="my-2">Submit</Button>
+          <Button type="submit" outline className="my-2">Submit</Button>
         </form>
       </div>
     </div>

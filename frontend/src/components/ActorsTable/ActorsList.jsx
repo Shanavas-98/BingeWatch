@@ -7,6 +7,7 @@ import {
   KeyboardArrowUp,
   Search,
 } from '@mui/icons-material';
+import { toast } from 'react-toastify';
 import { fetchActors } from '../../services/adminApi';
 import { IMG_URL } from '../../axios/apiUrls';
 
@@ -50,7 +51,9 @@ function ActorsList() {
         setLimit(data?.pagination?.limit);
         setLoading(false);
       } catch (err) {
-        console.error('Error while fetching actors', err);
+        toast.error(err.message, {
+          position: 'top-center',
+        });
         setLoading(false);
       }
     };

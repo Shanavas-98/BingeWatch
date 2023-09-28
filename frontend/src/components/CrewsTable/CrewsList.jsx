@@ -3,6 +3,7 @@ import {
   ArrowBackIos, ArrowForwardIos, KeyboardArrowDown, KeyboardArrowUp, Search,
 } from '@mui/icons-material';
 import { Button, Input } from '@chakra-ui/react';
+import { toast } from 'react-toastify';
 
 import { IMG_URL } from '../../axios/apiUrls';
 import { fetchCrews } from '../../services/adminApi';
@@ -39,7 +40,9 @@ function CrewsList() {
         setLimit(data?.pagination?.limit);
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching crews', err);
+        toast.error(err.message, {
+          position: 'top-center',
+        });
         setLoading(false);
       }
     };

@@ -140,7 +140,7 @@ const addCasts = async (casts) => {
         }
         return castsArray;
     } catch (err) {
-        console.errpr(err);
+        console.error(err);
     }
 };
 
@@ -457,6 +457,7 @@ const addMovieDetails = async (movieDetails) => {
 
 const getMovieDetails = async (req, res) => {
     try {
+        console.log('fetching movie details');
         const movieId = req.params?.movieId;
         const exist = await movieModel
             .findOne({ id: movieId })
@@ -491,10 +492,11 @@ const getMovieDetails = async (req, res) => {
                 console.error(err);
             });
         const { success, message } = await addMovieDetails(movieData);
+        console.log('error',message);
         res.json({ success, message });
     } catch (err) {
-        console.error(err);
-        res.json(err);
+        console.log(err);
+        res.json({ success:false, message:err.message });
     }
 };
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 
 import { fetchAllReviews } from '../../services/userApi';
 import Review from './Review';
@@ -17,8 +18,10 @@ export default function ReviewList({ movieId }) {
           setReviews(res.data.reviews);
           setUserReview(res.data.userReview);
         })
-        .catch((error) => {
-          console.error('error fetching user reviews', error);
+        .catch((err) => {
+          toast.error(err.message, {
+            position: 'top-center',
+          });
         });
     };
     getReviews(movieId);

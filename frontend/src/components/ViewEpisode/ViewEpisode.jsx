@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 
 import { fetchEpisode } from '../../services/userApi';
 import NavigBar from '../NavigationBar/NavigBar';
@@ -16,8 +17,10 @@ function ViewEpisode({ episodeId }) {
           setEpisode(res.data);
           setLoading(false);
         })
-        .catch((error) => {
-          console.error('Error fetching episode:', error);
+        .catch((err) => {
+          toast.error(err.message, {
+            position: 'top-center',
+          });
           setLoading(false);
         });
     };

@@ -21,7 +21,6 @@ const createChat = async (req, res) => {
             select: 'name picture email'
         });
         if (isChat.length > 0) {
-            // console.log('ischat',isChat);
             res.json(isChat[0]);
         } else {
             let chatData = {
@@ -30,7 +29,6 @@ const createChat = async (req, res) => {
                 users: [userId, friendId]
             };
             const createdChat = await chatModel.create(chatData);
-            // console.log('chat data',createdChat);
             const fullChat = await chatModel.findOne({ _id: createdChat._id })
                 .populate('users', '-password');
             res.status(200).json(fullChat);

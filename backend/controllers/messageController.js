@@ -35,7 +35,6 @@ const sendMessage = async(req,res)=>{
 const allMessages = async(req,res)=>{
     try {
         const chatId = req.params.chatId;
-        console.log('chat id',chatId);
         const messages = await messageModel
             .find({chat:chatId})
             .populate('sender','name pic email')

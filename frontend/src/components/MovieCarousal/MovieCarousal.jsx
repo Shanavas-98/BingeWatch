@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 
 import { fetchGenreMovies } from '../../services/userApi';
 import CardCarousal from '../CardCarousal/CardCarousal';
@@ -14,7 +15,9 @@ function MovieCarousal({ genre }) {
         setMovies(data);
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching movies:', err);
+        toast.error(err.message, {
+          position: 'top-center',
+        });
         setLoading(false);
       }
     };
@@ -28,7 +31,7 @@ function MovieCarousal({ genre }) {
       </div>
     );
   }
-  if (movies) {
+  if (Array.isArray(movies)) {
     const movieCards = movies?.map((movie) => ({
       id: movie._id,
       key: movie.id,
@@ -43,6 +46,9 @@ function MovieCarousal({ genre }) {
       <CardCarousal cards={movieCards} baseLink="/movies/view-movie" style={cardStyle} />
     );
   }
+  return (
+    <h1>movies is not an array</h1>
+  );
 }
 
 MovieCarousal.propTypes = {

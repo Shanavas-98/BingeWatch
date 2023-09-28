@@ -4,6 +4,7 @@ import { Button, Input } from '@chakra-ui/react';
 import {
   ArrowBackIos, ArrowForwardIos, KeyboardArrowDown, KeyboardArrowUp, Search,
 } from '@mui/icons-material';
+import { toast } from 'react-toastify';
 
 import { fetchSeries } from '../../services/adminApi';
 import { IMG_URL } from '../../axios/apiUrls';
@@ -47,7 +48,9 @@ function SeriesList() {
         setLimit(data?.pagination?.limit);
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching series:', err);
+        toast.error(err.message, {
+          position: 'top-center',
+        });
         setLoading(false);
       }
     };
@@ -139,7 +142,7 @@ function SeriesList() {
                   setPage(1);
                 }}
               >
-                <option value="" selected>Genres</option>
+                <option defaultValue="">Genres</option>
                 {genres && genres.map((item) => (
                   <option value={item._id}>{item.genreName}</option>
                 ))}

@@ -3,6 +3,7 @@ import {
   ArrowBackIos, ArrowForwardIos, KeyboardArrowDown, KeyboardArrowUp, Search,
 } from '@mui/icons-material';
 import { Button, Input } from '@chakra-ui/react';
+import { toast } from 'react-toastify';
 
 import { fetchGenres } from '../../services/adminApi';
 
@@ -37,7 +38,9 @@ function GenreList() {
         setLimit(data?.pagination?.limit);
         setLoading(false);
       } catch (err) {
-        console.error('Error while fetching genres', err);
+        toast.error(err.message, {
+          position: 'top-center',
+        });
         setLoading(false);
       }
     };

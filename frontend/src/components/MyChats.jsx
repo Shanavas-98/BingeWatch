@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import './style.css';
 import {
-  Box, Button, Stack, Text,
+  Box, Button, Stack, Text, useToast,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { getSender } from '../utils/ChatLogic';
@@ -17,6 +17,7 @@ export default function MyChats({ fetchAgain }) {
     fetchAgain: PropTypes.node.isRequired,
   };
   const { user } = useAuth();
+  const toast = useToast();
   const {
     selectedChat, setSelectedChat, chats, setChats,
   } = useChat();
@@ -25,9 +26,15 @@ export default function MyChats({ fetchAgain }) {
     try {
       const { data } = await getChats();
       setChats(data);
-      console.log('chats', data);
     } catch (error) {
-      console.error('Error:', error.message);
+      toast({
+        title: 'Error occured!',
+        description: 'failed to load chats',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'bottom-center',
+      });
     }
   };
   useEffect(() => {

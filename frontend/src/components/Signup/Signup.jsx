@@ -158,8 +158,8 @@ function Signup() {
             />
           </div>
           <div className="w-full my-2">
-            {loading ? <Button isProcessing type="submit" gradientDuoTone="purpleToBlue" outline>Signup</Button>
-              : <Button type="submit" gradientDuoTone="purpleToBlue" outline>Signup</Button>}
+            {loading ? <Button isProcessing type="submit" outline>Signup</Button>
+              : <Button type="submit" outline>Signup</Button>}
           </div>
         </form>
         <div className="flex justify-between text-sm font-medium text-gray-200">

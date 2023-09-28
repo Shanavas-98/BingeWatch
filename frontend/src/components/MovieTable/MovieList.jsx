@@ -4,6 +4,7 @@ import { Button, Input } from '@chakra-ui/react';
 import {
   ArrowBackIos, ArrowForwardIos, KeyboardArrowDown, KeyboardArrowUp, Search,
 } from '@mui/icons-material';
+import { toast } from 'react-toastify';
 
 import { fetchMovies } from '../../services/adminApi';
 import { IMG_URL } from '../../axios/apiUrls';
@@ -47,7 +48,9 @@ export default function MovieTable() {
         setLimit(data?.pagination?.limit);
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching movies:', err);
+        toast.error(err.message, {
+          position: 'top-center',
+        });
         setLoading(false);
       }
     };
@@ -140,7 +143,7 @@ export default function MovieTable() {
                     setPage(1);
                   }}
                 >
-                  <option value="" selected>Genres</option>
+                  <option defaultValue="">Genres</option>
                   {genres && genres.map((item) => (
                     <option value={item._id}>{item.genreName}</option>
                   ))}
@@ -193,7 +196,11 @@ export default function MovieTable() {
                 })}
               </tbody>
             ) : (
-              <div className="text-lg font-bold w-full justify-center p-5">Movie Not found !</div>
+              <tbody>
+                <tr>
+                  <td><div className="text-lg font-bold w-full justify-center p-5">Movie Not found !</div></td>
+                </tr>
+              </tbody>
             )}
         </table>
         {movies?.length > 0

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { StarRateRounded } from '@mui/icons-material';
 import { Button, FormLabel } from '@chakra-ui/react';
+import { toast } from 'react-toastify';
 
 import VideoPlay from '../VideoPlay/VideoPlay';
 import { IMG_URL } from '../../axios/apiUrls';
@@ -21,8 +22,10 @@ function ViewSeries({ showId }) {
           setSeries(res.data);
           setLoading(false);
         })
-        .catch((error) => {
-          console.error('Error fetching series:', error);
+        .catch((err) => {
+          toast.error(err.message, {
+            position: 'top-center',
+          });
           setLoading(false);
         });
     };

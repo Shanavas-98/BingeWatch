@@ -20,13 +20,12 @@ export default function UserSidebar() {
 
   useEffect(() => {
     userAuth().then((res) => {
-      const { success, message, userData } = res.data;
+      const { success, userData } = res.data;
       if (success) {
         setUser(userData);
         dispatch(setUserDetails(userData));
       } else {
         navigate('/login');
-        console.error(message);
       }
     });
   }, []);

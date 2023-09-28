@@ -1,5 +1,6 @@
-
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
 const adminModel = require('../models/adminModel');
 const userModel = require('../models/userModel');
 const createToken = require('../config/createToken');
@@ -26,6 +27,7 @@ const adminAuth = async (req, res) => {
     try {
         //verify user authentication
         const { authorization } = req.headers;
+        console.log('token',req.headers);
         if (!authorization) {
             return res.json({ success:false, message: 'Authorization token required' });
         }
@@ -46,6 +48,7 @@ const adminAuth = async (req, res) => {
             }
         });
     } catch (err) {
+        console.log('error',err);
         res.json({ success: false, message: 'error while admin authorization',err });
     }
 };
@@ -90,7 +93,7 @@ const fetchUsers = async(req,res)=>{
         }
         res.json({ users, pagination });
     } catch (err) {
-        res.json(err);
+        res.json(err.message);
     }
 };
 

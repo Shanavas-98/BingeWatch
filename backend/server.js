@@ -14,12 +14,6 @@ const chatRoutes = require('./routes/chatRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const connectDB = require('./config/db');
 
-// mongoose.set('strictQuery', true);
-// mongoose.connect(process.env.MONGO_URI).then(()=>{
-//     console.log('DB connection successfull');
-// }).catch((err)=>{
-//     console.error(err.message);
-// });
 connectDB();
 
 app.use(cors({
@@ -41,7 +35,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+// app.get('/*', function(req,res){
+//     res.sendFile(
+//         path.join(__dirname, '../frontend/build/index.html'),
+//         function(err){
+//             if(err){
+//                 res.status(500).send(err);
+//             }
+//         }
+//     );
+// });
 
 app.use('/',userRoute);
 app.use('/admin',adminRoute);
@@ -61,13 +68,11 @@ io.on('connection',(socket)=>{
     console.log('connected socket.io');
     socket.on('setup',(userData)=>{
         socket.join(userData.id);
-        console.log('chat userid',userData.id);
         socket.emit('connected');
     });
 
     socket.on('join chat',(room)=>{
         socket.join(room);
-        console.log('user joined room:',room);
     });
 
     socket.on('typing',(room)=>socket.in(room).emit('typing'));

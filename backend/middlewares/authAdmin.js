@@ -4,6 +4,7 @@ const adminModel = require('../models/adminModel');
 module.exports = async (req, res, next) => {
     try {
         //verify user authentication
+        console.log('admin auth middleware');
         const { authorization } = req.headers;
         if (!authorization) {
             return res.json({ error: 'Authorization token required' });
@@ -27,7 +28,7 @@ module.exports = async (req, res, next) => {
         });
 
     } catch (err) {
-        console.error(err);
+        console.log(err);
         res.json({ error: 'Request is not authorized' });
     }
 };

@@ -4,7 +4,7 @@ import {
   Home, Layers, LiveTv, Login, Logout, People, Theaters,
 } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
-// import { toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import Sidebar, { SidebarItem } from './Sidebar';
 import useAuth from '../hooks/useAuth';
 import { setAdminDetails, setAdminLogout } from '../redux/features/adminSlice';
@@ -27,7 +27,9 @@ export default function AdminSidebar() {
         dispatch(setAdminDetails(adminData));
       } else {
         navigate('/admin');
-        console.error(message);
+        toast.error(message, {
+          position: 'top-center',
+        });
       }
     });
   }, []);

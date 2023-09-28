@@ -19,9 +19,10 @@ function ReviewModal({ contentId, reviewData, closeModal }) {
       } else {
         throw Error(message);
       }
-    } catch (error) {
-      console.error('Error adding review', error);
-      toast.error(error.message);
+    } catch (err) {
+      toast.error(err.message, {
+        position: 'top-center',
+      });
     }
   };
 

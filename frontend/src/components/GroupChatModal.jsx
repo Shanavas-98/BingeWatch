@@ -73,7 +73,6 @@ export default function GroupChatModal({ children }) {
         position: 'bottom-center',
       });
     } catch (error) {
-      console.error('Error:', error.message);
       toast({
         title: 'Error occured!',
         description: 'failed to create group',

@@ -3,6 +3,7 @@ import { StarRateRounded } from '@mui/icons-material';
 import { Button, FormLabel } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import VideoPlay from '../VideoPlay/VideoPlay';
 import NavigBar from '../NavigationBar/NavigBar';
@@ -21,8 +22,10 @@ function ViewSeason(props) {
           setSeason(res.data);
           setLoading(false);
         })
-        .catch((error) => {
-          console.error('Error fetching season:', error);
+        .catch((err) => {
+          toast.error(err.message, {
+            position: 'top-center',
+          });
           setLoading(false);
         });
     };

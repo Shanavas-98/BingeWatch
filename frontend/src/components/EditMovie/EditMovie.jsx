@@ -90,7 +90,9 @@ function EditMovie({ movieId }) {
           summary: data?.summary || '',
         });
       } catch (err) {
-        console.error(err);
+        toast.error(err.message, {
+          position: 'top-center',
+        });
       }
     };
     getMovie(movieId);

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 
 // import { Rating } from '@mui/material';
 import './Review.css';
@@ -15,10 +16,11 @@ export default function Review({ review, friend }) {
   };
   const addFriend = async (friendId) => {
     try {
-      const { data } = await friendRequest(friendId);
-      console.log('data', data);
-    } catch (error) {
-      console.error(error);
+      await friendRequest(friendId);
+    } catch (err) {
+      toast.error(err.message, {
+        position: 'top-center',
+      });
     }
   };
   return (

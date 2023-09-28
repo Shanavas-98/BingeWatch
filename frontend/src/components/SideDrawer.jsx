@@ -47,7 +47,6 @@ export default function SideDrawer() {
       setSearchResult(data);
       setLoading(false);
     } catch (error) {
-      console.error('Error:', error.message);
       toast({
         title: 'Error occured!',
         description: 'failed to load search results',
@@ -68,7 +67,14 @@ export default function SideDrawer() {
       setSelectedChat(data);
       setLoadingChat(false);
     } catch (error) {
-      console.error('Error:', error);
+      toast({
+        title: 'Error occured!',
+        description: 'failed to create chat',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'bottom-center',
+      });
     }
   };
   return (

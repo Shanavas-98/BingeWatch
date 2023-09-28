@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Input } from '@chakra-ui/react';
@@ -60,8 +61,10 @@ function UserList() {
         setNext(data?.pagination?.next);
         setLimit(data?.pagination?.limit);
         setLoading(false);
-      } catch (error) {
-        console.error('Error fetching users:', error);
+      } catch (err) {
+        toast.error(err.message, {
+          position: 'top-center',
+        });
         setLoading(false);
       }
     };
@@ -143,10 +146,10 @@ function UserList() {
             <th className="flex justify-around w-full">Actions</th>
           </tr>
         </thead>
-        {users.length > 0 ? (
+        {users?.length > 0 ? (
           <tbody className="w-full">
             {users?.map((person, index) => (
-              <tr className="flex w-full">
+              <tr className="flex w-full" key={index}>
                 <td className="w-full pl-10">{index + 1}</td>
                 <td className="w-full pl-10"><img src={IMG_URL + person.profile} alt="" className="w-15 h-20" /></td>
                 <td className="w-full pl-10">{person.fullName}</td>
@@ -158,10 +161,14 @@ function UserList() {
             ))}
           </tbody>
         ) : (
-          <div className="text-lg font-bold w-full p-5 flex justify-center">User not found</div>
+          <tbody>
+            <tr>
+              <td><div className="text-lg font-bold w-full p-5 flex justify-center">User not found</div></td>
+            </tr>
+          </tbody>
         )}
       </table>
-      {users.length > 0 && (
+      {users?.length > 0 && (
       <div className="flex justify-center">
         {prev
           ? (

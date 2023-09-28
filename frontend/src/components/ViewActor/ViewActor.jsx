@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 
 import { fetchActor, fetchCrew } from '../../services/userApi';
 import CardCarousal from '../CardCarousal/CardCarousal';
@@ -19,8 +20,10 @@ function ViewActor({ personId, type }) {
             setKnownFor(res.data.knownFor);
             setLoading(false);
           })
-          .catch((error) => {
-            console.error('Error fetching actor', error);
+          .catch((err) => {
+            toast.error(err.message, {
+              position: 'top-center',
+            });
           });
       };
       getActor(personId);
@@ -33,8 +36,10 @@ function ViewActor({ personId, type }) {
             setKnownFor(res.data.knownFor);
             setLoading(false);
           })
-          .catch((error) => {
-            console.error('Error fetching crew', error);
+          .catch((err) => {
+            toast.error(err.message, {
+              position: 'top-center',
+            });
             setLoading(false);
           });
       };
