@@ -18,7 +18,7 @@ connectDB();
 
 app.use(cors({
     origin:process.env.CLIENT_URL,
-    methods:['GET','POST','PATCH'],
+    methods:['GET','POST','PUT','PATCH','DELETE'],
     credentials:true
 }));
 
@@ -35,20 +35,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(cookieParser());
-// app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(express.static(path.join(__dirname, '../frontend/build')));
+app.use(express.static(path.join(__dirname, 'public')));
 
-// app.get('/*', function(req,res){
-//     res.sendFile(
-//         path.join(__dirname, '../frontend/build/index.html'),
-//         function(err){
-//             if(err){
-//                 res.status(500).send(err);
-//             }
-//         }
-//     );
-// });
+// app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 app.use('/',userRoute);
 app.use('/admin',adminRoute);
@@ -60,7 +50,7 @@ const server = app.listen(process.env.PORT,console.log('Server Started on PORT '
 const io = require('socket.io')(server,{
     pingTimeout:60000,
     cors:{
-        origin:'http://localhost:3000'
+        origin: process.env.CLIENT_URL
     }
 });
 

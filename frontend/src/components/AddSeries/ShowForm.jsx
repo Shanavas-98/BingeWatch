@@ -96,7 +96,7 @@ function ShowForm({ show, onSeasonSelect }) {
   return (
     <>
       <div className="w-full my-2">
-        {loading ? <Button isProcessing type="button" className="dark">Add</Button>
+        {loading ? <Button isLoading type="button" className="dark">Add</Button>
           : <Button type="button" className="dark" onClick={() => addShowDetails(show.id)}>Add</Button>}
       </div>
       <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">

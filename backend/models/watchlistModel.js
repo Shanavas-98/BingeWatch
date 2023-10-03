@@ -14,6 +14,8 @@ const watchlistSchema = mongoose.Schema({
         type: ObjectId,
         ref: 'series'
     }]
+},{
+    timestamps:true
 });
 
 module.exports = mongoose.model('watchlist', watchlistSchema);

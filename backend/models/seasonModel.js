@@ -38,6 +38,8 @@ const seasonSchema = new mongoose.Schema({
         required: true
     },
     videos: [String]
+},{
+    timestamps:true
 });
 
 module.exports = new mongoose.model('season', seasonSchema);

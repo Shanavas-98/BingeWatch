@@ -71,6 +71,8 @@ const episodeSchema = new mongoose.Schema({
         job: String,
         profile:String
     }]
+},{
+    timestamps:true
 });
 
 module.exports = new mongoose.model('episode', episodeSchema);

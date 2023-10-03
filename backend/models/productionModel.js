@@ -11,6 +11,8 @@ const productionSchema = new mongoose.Schema({
     },
     logoPath:String,
     country:String
+},{
+    timestamps:true
 });
 
 module.exports = new mongoose.model('production',productionSchema);

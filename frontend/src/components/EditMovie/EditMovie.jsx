@@ -105,7 +105,7 @@ function EditMovie({ movieId }) {
         {edit && (
         <div className="w-full my-2">
           {loading ? (
-            <Button isProcessing type="button" className="dark">
+            <Button isLoading type="button" className="dark">
               Update
             </Button>
           ) : (

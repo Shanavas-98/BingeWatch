@@ -25,31 +25,25 @@ const login = async (req, res) => {
 
 const adminAuth = async (req, res) => {
     try {
-        //verify user authentication
-        const { authorization } = req.headers;
-        console.log('token',req.headers);
-        if (!authorization) {
-            return res.json({ success:false, message: 'Authorization token required' });
-        }
-
-        const token = authorization.split(' ')[1];
-        // eslint-disable-next-line no-undef
-        jwt.verify(token, process.env.JWT_KEY, async (err, decoded) => {
-            if (err) {
-                res.json({ success: false, message: 'Admin unauthorized' });
-            } else {
-                const admin = await adminModel.findById(decoded.id,{password:0});
-                const adminData = {id:admin._id,email:admin.email,token};
-                if (admin) {
-                    res.json({ success: true, message: 'Authorised', adminData });
-                } else {
-                    res.json({ success: false, message: 'Admin not exists' });
-                }
+        console.log('admin token', req.headers.authorization);
+        if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+            let token=req.headers.authorization.split(' ')[1];
+            if(!token || token==='null'){
+                return res.json({ success: false, message: 'Admin token required' });
             }
-        });
+            const decoded = jwt.verify(token,process.env.JWT_KEY);
+            const admin = await adminModel.findById(decoded.id).select('-password');
+            if(!admin){
+                return res.json({ success: false, message: 'Admin not exists' });
+            }
+            const adminData = {id:admin._id,email:admin.email,token};
+            res.json({ success: true, message: 'Admin authorised', adminData });
+        }else{
+            res.json({ success: false, message: 'Admin unauthorised' });
+        }
     } catch (err) {
         console.log('error',err);
-        res.json({ success: false, message: 'error while admin authorization',err });
+        res.json({ success: false, message: 'Admin unauthorised' });
     }
 };
 

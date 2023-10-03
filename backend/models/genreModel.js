@@ -9,6 +9,8 @@ const genreSchema = new mongoose.Schema({
         type:String,
         required:true
     }
+},{
+    timestamps:true
 });
 
 module.exports = new mongoose.model('genre',genreSchema);

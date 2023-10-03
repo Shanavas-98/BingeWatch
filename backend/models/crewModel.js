@@ -24,6 +24,8 @@ const crewSchema = new mongoose.Schema({
         required:true
     },
     knownFor:[Number]
+},{
+    timestamps:true
 });
 
 module.exports = new mongoose.model('crew',crewSchema);

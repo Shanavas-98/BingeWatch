@@ -3,32 +3,24 @@ const adminModel = require('../models/adminModel');
 
 module.exports = async (req, res, next) => {
     try {
-        //verify user authentication
-        console.log('admin auth middleware');
-        const { authorization } = req.headers;
-        if (!authorization) {
-            return res.json({ error: 'Authorization token required' });
-        }
-
-        const token = authorization.split(' ')[1];
-        // eslint-disable-next-line no-undef
-        jwt.verify(token, process.env.JWT_KEY, async (err, decoded) => {
-            if (err) {
-                res.json({ success: false, message: 'Admin unauthorized' });
-            } else {
-                // eslint-disable-next-line no-undef
-                const admin = await adminModel.findOne({ _id: decoded.id });
-                if (admin) {
-                    req.adminId=admin._id;
-                    next();
-                } else {
-                    res.json({ success: false, message: 'Admin not exists' });
-                }
+        console.log('admin token', req.headers.authorization);
+        if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+            let token=req.headers.authorization.split(' ')[1];
+            if(!token || token==='null'){
+                return res.json({ success: false, message: 'Admin token required' });
             }
-        });
-
+            const decoded = jwt.verify(token,process.env.JWT_KEY);
+            const admin = await adminModel.findById(decoded.id).select('-password');
+            if(!admin){
+                return res.json({ success: false, message: 'Admin not exists' });
+            }
+            req.adminId=admin._id;
+            next();
+        }else{
+            res.json({ success:false, message: 'Middleware: Admin unauthorized' });
+        }
     } catch (err) {
         console.log(err);
-        res.json({ error: 'Request is not authorized' });
+        res.json({ success: false, message: 'Middleware: Admin unauthorized' });
     }
 };

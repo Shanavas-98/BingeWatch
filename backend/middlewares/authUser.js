@@ -3,30 +3,24 @@ const userModel = require('../models/userModel');
 
 module.exports = async (req, res, next) => {
     try {
-        //verify user authentication
-        const { authorization } = req.headers;
-        if (!authorization) {
-            return res.json({ error: 'Authorization token required' });
-        }
-
-        const token = authorization.split(' ')[1];
-        // eslint-disable-next-line no-undef
-        jwt.verify(token, process.env.JWT_KEY, async (err, decoded) => {
-            if (err) {
-                res.json({ success: false, message: 'Middleware:User unauthorized' });
-            } else {
-                const user = await userModel.findOne({ _id: decoded.id });
-                if (user) {
-                    req.userId = user._id;
-                    next();
-                } else {
-                    res.json({ success: false, message: 'User not exists' });
-                }
+        console.log('user token', req.headers.authorization);
+        if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+            let token=req.headers.authorization.split(' ')[1];
+            if(!token || token==='null'){
+                return res.json({ success: false, message: 'User token required' });
             }
-        });
-
+            const decoded = jwt.verify(token,process.env.JWT_KEY);
+            const user = await userModel.findById(decoded.id).select('-password');
+            if(!user){
+                return res.json({ success: false, message: 'User not exists' });
+            }
+            req.userId=user._id;
+            next();
+        }else{
+            res.json({ success:false, message: 'Middleware: User unauthorized' });
+        }
     } catch (err) {
-        console.error(err);
-        res.json({ error: 'Request is not authorized' });
+        console.log(err);
+        res.json({ success: false, message: 'Middleware: User unauthorized' });
     }
 };

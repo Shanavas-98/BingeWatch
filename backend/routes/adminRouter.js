@@ -6,6 +6,7 @@ const { fetchMovies, fetchMovie, editMovie, fetchGenres, fetchActors, fetchCrews
 const { fetchSeries, getShowDetails, getSeasonDetails, getEpisodeDetails } = require('../controllers/seriesController');
 
 router.get('/dashboard',authAdmin,dashboard);
+// router.post('/register',register);
 router.post('/login',login);
 router.get('/auth-admin',adminAuth);
 router.get('/users',authAdmin,fetchUsers);

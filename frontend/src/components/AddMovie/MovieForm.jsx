@@ -58,7 +58,7 @@ function MovieForm({ movie }) {
   return (
     <>
       <div className="w-full my-2">
-        {loading ? <Button isProcessing type="button" className="dark">Add</Button>
+        {loading ? <Button isLoading type="button" className="dark">Add</Button>
           : <Button type="button" className="dark" onClick={() => add(movie?.id)}>Add</Button>}
       </div>
       <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">

@@ -84,22 +84,26 @@ const login = async (req, res) => {
 };
 
 const userAuth = async(req,res)=>{
-    console.log('token', req.headers.authorization);
-    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
-        try {
+    try {
+        console.log('user token', req.headers.authorization);
+        if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
             let token=req.headers.authorization.split(' ')[1];
             if(!token || token==='null'){
-                return res.json({ success: false, message: 'Token required' });
+                return res.json({ success: false, message: 'User token required' });
             }
-            const decoded = jwt.verify(token,process.env.JWT_SECRET);
+            const decoded = jwt.verify(token,process.env.JWT_KEY);
             const user = await userModel.findById(decoded.id).select('-password');
+            if(!user){
+                return res.json({ success: false, message: 'User not exists' });
+            }
             const userData = { id:user._id, name:user.fullName, email:user.email, picture:user.picture.url, token };
-            return res.json({ success: true, message: 'Authorised', userData });
-        } catch (error) {
-            return res.json({ success: false, message: 'Unauthorized' });
+            res.json({ success: true, message: 'User authorised', userData });
+        }else{
+            res.json({ success: false, message: 'User unauthorized' });
         }
+    } catch (error) {
+        res.json({ success: false, message: 'User unauthorized' });
     }
-
 };
 
 const home = async (req, res) => {

@@ -158,7 +158,7 @@ function Signup() {
             />
           </div>
           <div className="w-full my-2">
-            {loading ? <Button isProcessing type="submit" outline>Signup</Button>
+            {loading ? <Button isLoading type="submit" outline>Signup</Button>
               : <Button type="submit" outline>Signup</Button>}
           </div>
         </form>

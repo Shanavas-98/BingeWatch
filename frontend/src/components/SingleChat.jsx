@@ -17,7 +17,8 @@ import { chatMessages, sendMsg } from '../services/userApi';
 import useChat from '../hooks/useChat';
 import useAuth from '../hooks/useAuth';
 
-const ENDPOINT = 'http://localhost:5000';
+// const ENDPOINT = 'http://www.backend.bingewatch.fun/';
+const ENDPOINT = process.env.REACT_APP_SERVER_URL;
 let socket;
 let selectedChatCompare;
 

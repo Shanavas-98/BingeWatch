@@ -76,6 +76,8 @@ const movieSchema = new mongoose.Schema({
         job: String,
         profile:String
     }]
+},{
+    timestamps:true
 });
 
 module.exports = new mongoose.model('movie', movieSchema);

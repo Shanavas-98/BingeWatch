@@ -49,6 +49,7 @@ function Login({ userType }) {
     try {
       if (userType === 'user') {
         const { data } = await userLogin(values);
+        console.log('user login', data);
         if (data.error) {
           throw Error(data.error);
         } else {
@@ -64,6 +65,7 @@ function Login({ userType }) {
         }
       } else if (userType === 'admin') {
         const { data } = await adminLogin(values);
+        console.log('admin login', data);
         // const { id, email, token } = data;
         if (data.error) {
           throw Error(data.error);
