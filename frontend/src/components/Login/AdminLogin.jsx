@@ -24,14 +24,11 @@ function AdminLogin() {
     try {
       const { data } = await adminLogin(values);
       console.log('admin login', data);
-      // const { id, email, token } = data;
       if (data.error) {
         throw Error(data.error);
       } else {
-        localStorage.setItem('adminJwt', data.token);
         localStorage.setItem('adminInfo', JSON.stringify(data));
         setAdmin(data);
-        // dispatch(setAdminDetails(data));
         if (from) {
           navigate(from, { replace: true });
         } else {

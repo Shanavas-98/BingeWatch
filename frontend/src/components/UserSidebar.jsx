@@ -23,7 +23,7 @@ export default function UserSidebar() {
       <NavLink to="/">
         <SidebarItem icon={<Home />} text="Home" />
       </NavLink>
-      <NavLink to="/chats">
+      <NavLink to="/chat">
         <SidebarItem icon={<Forum />} text="Chats" />
       </NavLink>
       <NavLink to="/movies">

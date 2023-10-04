@@ -49,7 +49,7 @@ function UserRouter() {
         <Route element={<UserAuth />}>
           <Route path="watchlist" element={<WatchlistPage />} />
           <Route path="profile" element={<ProfilePage />} />
-          <Route path="chats" element={<ChatPage />} />
+          <Route path="chat" element={<ChatPage />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Route>

@@ -34,7 +34,6 @@ export default function AdminSidebar() {
   //   });
   // }, []);
   const adminLogout = () => {
-    localStorage.removeItem('adminJwt');
     localStorage.removeItem('adminInfo');
     setAdmin(null);
     // dispatch(setAdminLogout());

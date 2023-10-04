@@ -93,16 +93,6 @@ export default function SingleChat({ fetchAgain, setFetchAgain }) {
       socket.emit('stop typing', selectedChat._id);
       try {
         setNewMessage('');
-        // const config = {
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //     Authorization: `Bearer ${user.token}`,
-        //   },
-        // };
-        // const { data } = await axios.post('/api/message', {
-        //   content: newMessage,
-        //   chatId: selectedChat._id,
-        // }, config);
         const { data } = await sendMsg(
           {
             content: newMessage,

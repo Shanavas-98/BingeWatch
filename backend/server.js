@@ -3,7 +3,6 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
-// const mongoose = require('mongoose');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
@@ -28,22 +27,20 @@ app.use(cookieSession({
     maxAge:24*60*60*1000
 }));
 
-
-
 // Middleware to parse form data
 app.use(express.urlencoded({ extended: true }));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use(express.static(path.join(__dirname, '../frontend/build')));
+app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 app.use('/',userRoute);
 app.use('/admin',adminRoute);
-app.use('/api/chat',chatRoutes);
-app.use('/api/message',messageRoutes);
+app.use('/chat',chatRoutes);
+app.use('/message',messageRoutes);
 
 const server = app.listen(process.env.PORT,console.log('Server Started on PORT ',process.env.PORT));
 

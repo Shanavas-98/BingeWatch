@@ -38,16 +38,6 @@ export default function UpdateGroupChatModal({ fetchAgain, setFetchAgain, fetchM
     }
     try {
       setRenameLoading(true);
-      // const config = {
-      //   headers: {
-      //     'Content-type': 'application/json',
-      //     Authorization: `Bearer ${user.token}`,
-      //   },
-      // };
-      // const { data } = await axios.put('/api/chat/rename', {
-      //   chatId: selectedChat?._id,
-      //   chatName: groupName,
-      // }, config);
       const { data } = await chatRename({
         chatId: selectedChat?._id,
         chatName: groupName,
@@ -120,16 +110,6 @@ export default function UpdateGroupChatModal({ fetchAgain, setFetchAgain, fetchM
     }
     try {
       setLoading(true);
-      // const config = {
-      //   headers: {
-      //     'Content-type': 'application/json',
-      //     Authorization: `Bearer ${user.token}`,
-      //   },
-      // };
-      // const { data } = await axios.put('/api/chat/add', {
-      //   chatId: selectedChat?._id,
-      //   friendId: addUserId,
-      // }, config);
       const { data } = await addToGroup({
         chatId: selectedChat?._id,
         friendId: addUserId,
@@ -161,16 +141,6 @@ export default function UpdateGroupChatModal({ fetchAgain, setFetchAgain, fetchM
     }
     try {
       setLoading(true);
-      // const config = {
-      //   headers: {
-      //     'Content-type': 'application/json',
-      //     Authorization: `Bearer ${user.token}`,
-      //   },
-      // };
-      // const { data } = await axios.put('/api/chat/remove', {
-      //   chatId: selectedChat?._id,
-      //   friendId: delUserId,
-      // }, config);
       const { data } = await removeFromGroup({
         chatId: selectedChat?._id,
         friendId: delUserId,
