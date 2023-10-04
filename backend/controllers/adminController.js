@@ -16,7 +16,7 @@ const login = async (req, res) => {
         if (!auth) {
             throw Error('wrong password');
         }
-        const token = createToken(admin._id);
+        const token = await createToken(admin._id);
         res.json({ id:admin._id,email:admin.email, token });
     } catch (error) {
         res.json({ error: error.message });

@@ -58,7 +58,7 @@ function Watchlist() {
   }
   return (
     <div className="flex w-full text-white">
-      {movies.length > 0 && movies?.map((item) => (
+      {movies?.length > 0 && movies?.map((item) => (
         <div key={item._id} className="relative w-36 mx-2">
           <div
             role="button"
@@ -80,7 +80,7 @@ function Watchlist() {
           />
         </div>
       ))}
-      {series && series?.map((item) => (
+      {series?.length > 0 && series?.map((item) => (
         <div key={item._id} className="relative w-36 mx-2">
           <div
             role="button"

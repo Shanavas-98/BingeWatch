@@ -1,7 +1,7 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import HomePage from '../pages/admin/HomePage';
-import Login from '../components/Login/Login';
 import MoviesPage from '../pages/admin/MoviesPage';
 import AddMoviePage from '../pages/admin/AddMoviePage';
 import EditMoviePage from '../pages/admin/EditMoviePage';
@@ -13,14 +13,15 @@ import AddSeriesPage from '../pages/admin/AddSeriesPage';
 import SeriesPage from '../pages/admin/SeriesPage';
 import AdminLayout from '../layouts/AdminLayout';
 import NotFound from '../pages/NotFound';
-import RequireAuth from '../utils/RequireAuth';
+import AdminAuth from '../utils/AdminAuth';
+import AdminLogin from '../components/Login/AdminLogin';
 
 function AdminRouter() {
   return (
     <Routes>
       <Route path="/" element={<AdminLayout />}>
-        <Route index element={<Login userType="admin" />} />
-        <Route element={<RequireAuth link="/admin" userType="admin" />}>
+        <Route index element={<AdminLogin />} />
+        <Route element={<AdminAuth />}>
           <Route path="dashboard" element={<HomePage />} />
           <Route path="users" element={<UsersPage />} />
           <Route path="movies/">

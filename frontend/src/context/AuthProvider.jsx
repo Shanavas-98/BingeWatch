@@ -13,19 +13,14 @@ export function AuthProvider({ children }) {
   };
   // const userData = useSelector(selectUser);
   const navigate = useNavigate();
-  const [user, setUser] = useState({});
-  const [admin, setAdmin] = useState({});
+  const [user, setUser] = useState(null);
+  const [admin, setAdmin] = useState(null);
   useEffect(() => {
     localStorage.setItem('chakra-ui-color-mode', 'dark');
     const userInfo = JSON.parse(localStorage.getItem('userInfo'));
     setUser(userInfo);
     const adminInfo = JSON.parse(localStorage.getItem('adminInfo'));
     setAdmin(adminInfo);
-    // if (!userInfo) {
-    //   navigate('/login');
-    // } else if (!adminInfo) {
-    //   navigate('/admin');
-    // }
   }, [navigate]);
   const contextValue = useMemo(() => (
     {

@@ -29,7 +29,7 @@ function Otp() {
         if (!data.status) {
           throw Error(data.message);
         } else {
-          localStorage.setItem('userJwt', data.token);
+          localStorage.setItem('userInfo', data.userData);
           navigate('/');
         }
       } catch (error) {

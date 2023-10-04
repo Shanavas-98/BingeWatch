@@ -53,7 +53,8 @@ const verifyOtp = async (req, res) => {
                 }).save()
                     .then(async (user) => {
                         const token = await createToken(user._id);
-                        return res.json({ status: true, message: 'Verification successfull', token });
+                        const userData = {id:user._id, name:user.fullName, email:user.email, token:token};
+                        return res.json({ status: true, message: 'Verification successfull', userData });
                     });
             }
             if (verification_check.status === 429) {

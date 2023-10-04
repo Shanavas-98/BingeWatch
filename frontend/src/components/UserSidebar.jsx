@@ -1,39 +1,21 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React from 'react';
 import {
   Bookmarks, Forum, Home, LiveTv, Login, Logout, PersonAddAlt, Theaters,
 } from '@mui/icons-material';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Sidebar, { SidebarItem } from './Sidebar';
-import { setUserDetails, setUserLogout } from '../redux/features/userSlice';
 import useAuth from '../hooks/useAuth';
-import { userAuth } from '../services/userApi';
 import { AVATAR } from '../axios/apiUrls';
 import useExpand from '../hooks/useExpand';
 
 export default function UserSidebar() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  // const userData = useSelector(selectUser);
   const { user, setUser } = useAuth();
   const { expand } = useExpand();
 
-  useEffect(() => {
-    userAuth().then((res) => {
-      const { success, userData } = res.data;
-      if (success) {
-        setUser(userData);
-        dispatch(setUserDetails(userData));
-      } else {
-        navigate('/login');
-      }
-    });
-  }, []);
   const userLogout = () => {
-    localStorage.removeItem('userJwt');
     localStorage.removeItem('userInfo');
-    setUser({});
-    dispatch(setUserLogout());
+    setUser(null);
     navigate('/');
   };
   return (

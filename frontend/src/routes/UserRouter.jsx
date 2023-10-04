@@ -1,7 +1,7 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import HomePage from '../pages/user/HomePage';
-import Login from '../components/Login/Login';
 import Signup from '../components/Signup/Signup';
 import Otp from '../components/Otp/Otp';
 import MoviesPage from '../pages/user/MoviesPage';
@@ -16,23 +16,24 @@ import WatchlistPage from '../pages/user/WatchlistPage';
 import UserLayout from '../layouts/UserLayout';
 import MoviesLayout from '../layouts/MoviesLayout';
 import NotFound from '../pages/NotFound';
-import RequireAuth from '../utils/RequireAuth';
 import ProfilePage from '../pages/user/ProfilePage';
 import ChatPage from '../pages/user/ChatPage';
+import UserAuth from '../utils/UserAuth';
+import UserLogin from '../components/Login/UserLogin';
 
 function UserRouter() {
   return (
     <Routes>
       <Route path="/" element={<UserLayout />}>
         <Route index element={<HomePage />} />
-        <Route path="login" element={<Login userType="user" />} />
+        <Route path="login" element={<UserLogin />} />
         <Route path="register" element={<Signup />} />
         <Route path="verify" element={<Otp />} />
         <Route path="movies" element={<MoviesLayout />}>
           <Route index element={<MoviesPage />} />
           <Route path="view-movie">
             <Route path=":movieId" element={<ViewMoviePage />} />
-            <Route element={<RequireAuth link="/login" userType="user" />}>
+            <Route element={<UserAuth />}>
               <Route path="reviews/:movieId" element={<ReviewsPage />} />
             </Route>
           </Route>
@@ -45,7 +46,7 @@ function UserRouter() {
           <Route path="view-season/:seasonId" element={<ViewSeasonPage />} />
           <Route path="view-episode/:episodeId" element={<ViewEpisodePage />} />
         </Route>
-        <Route element={<RequireAuth link="/login" userType="user" />}>
+        <Route element={<UserAuth />}>
           <Route path="watchlist" element={<WatchlistPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="chats" element={<ChatPage />} />

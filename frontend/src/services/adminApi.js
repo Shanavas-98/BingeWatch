@@ -3,7 +3,7 @@ import { adminInstance } from '../axios/axiosInstance';
 export const adminLogin = (values) => adminInstance.post('/login', { ...values });
 export const adminSignup = (values) => adminInstance.post('/register', { ...values });
 export const verifyOtp = (otp) => adminInstance.post('/verify', { otp });
-export const adminAuth = () => adminInstance.get('/auth-admin');
+// export const adminAuth = () => adminInstance.get('/auth-admin');
 export const fetchUsers = (page, limit, search, field, order) => adminInstance.get(`/users?page=${page}&limit=${limit}&search=${search}&field=${field}&order=${order}`);
 export const blockUser = (userId) => adminInstance.get(`/users/block-user/${userId}`);
 export const fetchMovies = (page, limit, search, year, field, order, genreId) => adminInstance.get(`/movies?page=${page}&limit=${limit}&search=${search}&year=${year}&field=${field}&order=${order}&genre=${genreId}`);
