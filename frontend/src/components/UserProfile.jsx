@@ -1,23 +1,20 @@
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { DoneAll, Edit } from '@mui/icons-material';
 import { getUserDetails, updateUserAvatar, updateUserDetails } from '../services/userApi';
-import { setUserDetails } from '../redux/features/userSlice';
 
 export default function UserProfile() {
-  const [user, setUser] = useState(null);
+  const [userData, setUserData] = useState(null);
   const [image, setImage] = useState();
-  const dispatch = useDispatch();
   const initialValues = {};
 
   // fetching the user details
   useEffect(() => {
     getUserDetails()
       .then((res) => {
-        setUser(res.data);
+        setUserData(res.data);
         initialValues.fullName = res.data.fullName;
       })
       .catch((error) => {
@@ -42,7 +39,7 @@ export default function UserProfile() {
           toast.success(response.data.message, {
             position: 'top-center',
           });
-          setUser({ ...user, fullName: values.fullName });
+          setUserData({ ...userData, fullName: values.fullName });
         })
         .catch((error) => {
           toast.error(error.message, {
@@ -51,17 +48,6 @@ export default function UserProfile() {
         });
     },
   });
-  // const handleImage = (e) => {
-  //   const file = e.target.files[0];
-  //   setPreview(URL.createObjectURL(file));
-  //   const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/;
-  //   if (!allowedExtensions.exec(file?.name)) {
-  //     toast.error("Format is not supported");
-  //   } else {
-  //     setImage(file);
-  //   }
-  // };
-  // update user profile photo
   const handleImage = async (event) => {
     const file = event.target.files[0];
     const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/;
@@ -74,12 +60,6 @@ export default function UserProfile() {
       setImage(file);
       try {
         await updateUserAvatar(formData);
-        dispatch(setUserDetails({
-          name: user.firstName,
-          id: user._id,
-          email: user.email,
-          picture: URL.createObjectURL(file),
-        }));
       } catch (error) {
         toast.error(error.message, {
           position: 'top-center',
@@ -97,18 +77,18 @@ export default function UserProfile() {
             <img
               alt="profile"
               className="h-48 w-48 object-cover mx-auto rounded-full"
-              src={!image ? user?.picture?.url : URL.createObjectURL(image)}
+              src={!image ? userData?.picture?.url : URL.createObjectURL(image)}
             />
             <div className="ab bg-green-500 text-xs absolute bottom-1 right-4 font-bold  rounded-full w-10 h-10  text-white flex justify-center items-center   float-left hover:bg-gray-300 hover:text-gray-600  overflow-hidden cursor-pointer">
               <input type="file" name="photo" className="absolute inset-0  opacity-0 cursor-pointer" onChange={handleImage} />
               <Edit />
             </div>
           </div>
-          <h1 className="text-gray-100 font-bold text-xl leading-8 my-1">{user?.fullName}</h1>
+          <h1 className="text-gray-100 font-bold text-xl leading-8 my-1">{userData?.fullName}</h1>
           <ul className=" text-gray-100 hover:text-gray-700 hover:shadow py-2 px-3 mt-3 divide-y rounded shadow-sm">
             <li className="flex items-center py-3">
               <span>Status</span>
-              {user?.blocked
+              {userData?.blocked
                 ? <span className="ml-auto"><span className="bg-red-500 py-1 px-2 rounded text-white text-sm">Blocked</span></span>
                 : <span className="ml-auto"><span className="bg-green-500 py-1 px-2 rounded text-white text-sm">Active</span></span>}
             </li>
@@ -117,7 +97,7 @@ export default function UserProfile() {
 
             <li className="flex items-center py-3">
               <span>Member since</span>
-              <span className="ml-auto">{new Date(user?.createdAt).toString().slice(0, 16)}</span>
+              <span className="ml-auto">{new Date(userData?.createdAt).toString().slice(0, 16)}</span>
             </li>
           </ul>
         </div>
@@ -158,7 +138,7 @@ export default function UserProfile() {
                 <div className=" py-2  font-semibold">Email</div>
                 <div className="flex justify-between ">
                   <div>
-                    {user?.email}
+                    {userData?.email}
                   </div>
                   <div className="w-8 h-8 text-green-600 border-2 flex justify-center items-center rounded-full border-green-600">
                     <DoneAll />
@@ -170,7 +150,7 @@ export default function UserProfile() {
                 <div className=" py-2  font-semibold">Mobile</div>
                 <div className="flex justify-between ">
                   <div>
-                    {user?.mobile}
+                    {userData?.mobile}
                   </div>
                   <div className="w-8 h-8 text-green-600 border-2 flex justify-center items-center rounded-full border-green-600">
                     <DoneAll />

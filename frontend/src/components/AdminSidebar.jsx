@@ -3,36 +3,15 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import {
   Home, Layers, LiveTv, Login, Logout, People, Theaters,
 } from '@mui/icons-material';
-// import { useDispatch } from 'react-redux';
-// import { toast } from 'react-toastify';
 import Sidebar, { SidebarItem } from './Sidebar';
 import useAuth from '../hooks/useAuth';
-// import { setAdminDetails, setAdminLogout } from '../redux/features/adminSlice';
-// import { adminAuth } from '../services/adminApi';
 import { AVATAR } from '../axios/apiUrls';
 import useExpand from '../hooks/useExpand';
 
 export default function AdminSidebar() {
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
-  // const adminData = useSelector(selectAdmin);
   const { admin, setAdmin } = useAuth();
   const { expand } = useExpand();
-
-  // useEffect(() => {
-  //   adminAuth().then((res) => {
-  //     const { success, message, adminData } = res.data;
-  //     if (success) {
-  //       setAdmin(adminData);
-  //       dispatch(setAdminDetails(adminData));
-  //     } else {
-  //       navigate('/admin');
-  //       toast.error(message, {
-  //         position: 'top-center',
-  //       });
-  //     }
-  //   });
-  // }, []);
   const adminLogout = () => {
     localStorage.removeItem('adminInfo');
     setAdmin(null);
