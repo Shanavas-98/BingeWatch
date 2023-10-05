@@ -16,8 +16,8 @@ function Watchlist() {
     const getWatchlist = async () => {
       await fetchWatchlist()
         .then((res) => {
-          setMovies(res.data[0].movies);
-          setSeries(res.data[0].series);
+          setMovies(res?.data[0]?.movies);
+          setSeries(res?.data[0]?.series);
           setLoading(false);
         });
     };

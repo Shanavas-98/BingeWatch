@@ -29,7 +29,8 @@ function Otp() {
         if (!data.status) {
           throw Error(data.message);
         } else {
-          localStorage.setItem('userInfo', data.userData);
+          console.log('verified user', data);
+          localStorage.setItem('userInfo', JSON.stringify(data.userData));
           navigate('/');
         }
       } catch (error) {
