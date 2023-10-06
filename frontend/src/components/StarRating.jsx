@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Box, HStack, Radio } from '@chakra-ui/react';
 import { StarIcon } from '@chakra-ui/icons';
 
-function StarRating({ rating, setRating, count, size }) {
-    const [hover, setHover] = useState(null);
+function StarRating({
+  rating, setRating, count, size,
+}) {
+  StarRating.propTypes = {
+    rating: PropTypes.number.isRequired,
+    setRating: PropTypes.func.isRequired,
+    count: PropTypes.number.isRequired,
+    size: PropTypes.number.isRequired,
+  };
+  const [hover, setHover] = useState(null);
   return (
-    <HStack spacing="2px">
+    <HStack spacing="1px">
       {[...Array(count || 5)].map((star, index) => {
         const ratingValue = index + 1;
         return (
@@ -19,11 +28,11 @@ function StarRating({ rating, setRating, count, size }) {
               name="rating"
               onChange={() => setRating(ratingValue)}
               value={ratingValue}
-              d="none"
+              display="none"
             />
             <StarIcon
               cursor="pointer"
-              boxSize={size || 20}
+              boxSize={size || 5}
               transition="color 200ms"
             />
           </Box>

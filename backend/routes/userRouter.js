@@ -1,12 +1,12 @@
 const express = require('express');
 const router=express.Router();
 const authUser = require('../middlewares/authUser');
-const {register, home, verifyOtp, login, userAuth, fetchUserWatchlist, fetchUserDetails, updateProfile, updateAvatar, addFriend, allUsers}=require('../controllers/userController');
+const {register, verifyOtp, login, userAuth, fetchUserWatchlist, fetchUserDetails, updateProfile, updateAvatar, addFriend, allUsers}=require('../controllers/userController');
 const { fetchMovies, fetchGenreMovies, fetchMovieDetails, addRating, fetchReview, addReview, fetchActorDetails, fetchCrewDetails, fetchAllReviews, fetchRelatedMovies, addToWatchlist }=require('../controllers/movieController');
 const { fetchGenreSeries, fetchSeriesDetails, fetchSeasonDetails, fetchEpisodeDetails } = require('../controllers/seriesController');
 const uploadImage = require('../utils/imageUpload');
 
-router.get('/',home);
+// router.get('/',home);
 router.post('/register',register);
 router.post('/verifyotp',verifyOtp);
 router.post('/login',login);
