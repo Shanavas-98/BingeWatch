@@ -24,14 +24,14 @@ function AdminRouter() {
         <Route element={<AdminAuth />}>
           <Route path="dashboard" element={<HomePage />} />
           <Route path="users" element={<UsersPage />} />
-          <Route path="movies/">
-            <Route index element={<MoviesPage />} />
-            <Route path="add-movie" element={<AddMoviePage />} />
-            <Route path="view-movie/:movieId" element={<EditMoviePage />} />
+          <Route path="movies" element={<MoviesPage />} />
+          <Route path="movie">
+            <Route path="add" element={<AddMoviePage />} />
+            <Route path="view/:movieId" element={<EditMoviePage />} />
           </Route>
           <Route path="series/">
             <Route index element={<SeriesPage />} />
-            <Route path="add-series" element={<AddSeriesPage />} />
+            <Route path="add-show" element={<AddSeriesPage />} />
           </Route>
           <Route path="genres" element={<GenresPage />} />
           <Route path="actors" element={<ActorsPage />} />

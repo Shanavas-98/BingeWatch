@@ -12,7 +12,7 @@ import { IMG_URL } from '../../axios/apiUrls';
 export default function MovieTable() {
   const navigate = useNavigate();
   const viewMovie = (movieId) => {
-    navigate(`/admin/movies/view-movie/${movieId}`);
+    navigate(`/admin/movie/view/${movieId}`);
   };
   const [loading, setLoading] = useState(true);
   const [movies, setMovies] = useState([]);
@@ -69,7 +69,7 @@ export default function MovieTable() {
         <Button
           type="button"
           className="dark m-2"
-          onClick={() => navigate('/admin/movies/add-movie')}
+          onClick={() => navigate('/admin/movie/add')}
         >
           Add Movie
         </Button>

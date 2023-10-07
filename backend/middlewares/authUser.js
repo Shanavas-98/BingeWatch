@@ -3,7 +3,6 @@ const userModel = require('../models/userModel');
 
 module.exports = async (req, res, next) => {
     try {
-        console.log('user token', req.headers.authorization);
         if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
             let token=req.headers.authorization.split(' ')[1];
             if(!token || token==='null'){

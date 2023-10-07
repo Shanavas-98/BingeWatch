@@ -117,14 +117,14 @@ function ViewMovie({ movieId }) {
           <CardCarousal
             key={castCards[0].key}
             cards={castCards}
-            baseLink="/movies/actor"
+            baseLink="/actor"
             style={cardStyle}
           />
           <h2 className="text-white text-lg mb-2">Crews</h2>
           <CardCarousal
             key={crewCards[0].key}
             cards={crewCards}
-            baseLink="/movies/crew"
+            baseLink="/crew"
             style={cardStyle}
           />
         </div>

@@ -31,15 +31,15 @@ export default function ShowBar({ data }) {
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
-  const getRating = async (show) => {
-    await fetchReview(show).then((res) => {
-      const { reviewData, inList } = res.data;
-      setRate(reviewData?.rating || 0);
-      setReview(reviewData?.review);
-      setAdded(inList);
-    });
-  };
   useEffect(() => {
+    const getRating = async (show) => {
+      await fetchReview(show).then((res) => {
+        const { reviewData, inList } = res.data;
+        setRate(reviewData?.rating || 0);
+        setReview(reviewData?.review);
+        setAdded(inList);
+      });
+    };
     getRating(id);
   }, []);
   const showRating = async (val) => {
@@ -125,7 +125,7 @@ export default function ShowBar({ data }) {
             <StarRating rating={rate} setRating={showRating} />
           </Stack>
           <Stack m={1}>
-            <NavLink to={`/series/view-series/reviews/${id}`}>
+            <NavLink to={`/reviews/${id}`}>
               <span
                 className="text-slate-400 text-sm self-center hover:cursor-pointer"
               >

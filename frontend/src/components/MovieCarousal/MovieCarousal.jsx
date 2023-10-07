@@ -43,7 +43,7 @@ function MovieCarousal({ genre }) {
       ht: 'h-60',
     };
     return (
-      <CardCarousal cards={movieCards} baseLink="/movies/view-movie" style={cardStyle} />
+      <CardCarousal cards={movieCards} baseLink="/movie" style={cardStyle} />
     );
   }
   return (

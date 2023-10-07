@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Bookmarks, Forum, Home, LiveTv, Login, Logout, PersonAddAlt, Theaters,
+  Bookmarks, Forum, Home, LiveTv, Login, Logout, PersonAddAlt, Search, Theaters,
 } from '@mui/icons-material';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Sidebar, { SidebarItem } from './Sidebar';
@@ -22,6 +22,9 @@ export default function UserSidebar() {
     <Sidebar>
       <NavLink to="/">
         <SidebarItem icon={<Home />} text="Home" />
+      </NavLink>
+      <NavLink to="/search">
+        <SidebarItem icon={<Search />} text="Search" />
       </NavLink>
       <NavLink to="/chat">
         <SidebarItem icon={<Forum />} text="Chats" />
@@ -59,14 +62,14 @@ export default function UserSidebar() {
       <NavLink to="/profile">
         <div className="border-t flex justify-center py-2 text-white">
           <img
-            src={user?.picture?.url || AVATAR}
+            src={user?.picture || AVATAR}
             alt=""
             className="w-10 h-10 rounded-md"
           />
           <div
             className={`
               flex justify-between items-center
-              overflow-hidden transition-all ${expand ? 'w-32 ml-3' : 'w-0'}
+              overflow-hidden transition-all ${expand ? 'w-32 ml-3' : 'w-0 hidden'}
           `}
           >
             <div className="leading-4">

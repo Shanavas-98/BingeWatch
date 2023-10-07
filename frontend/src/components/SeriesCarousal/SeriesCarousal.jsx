@@ -43,7 +43,7 @@ function SeriesCarousal({ genre }) {
       ht: 'h-60',
     };
     return (
-      <CardCarousal cards={showCards} baseLink="/series/view-series" style={cardStyle} />
+      <CardCarousal cards={showCards} baseLink="/series/show" style={cardStyle} />
     );
   }
 }

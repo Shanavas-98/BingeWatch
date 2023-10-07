@@ -118,7 +118,7 @@ function NavigBar({ data }) {
             {/* <Rating onClick={(e) => movieRating(e.target.value, id)} /> */}
           </Stack>
           <Stack m={1}>
-            <NavLink to={`/movies/view-movie/reviews/${id}`}>
+            <NavLink to={`/reviews/${id}`}>
               <span
                 className="text-slate-400 text-sm self-center hover:cursor-pointer"
               >

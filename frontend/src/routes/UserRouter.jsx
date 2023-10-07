@@ -20,6 +20,7 @@ import ProfilePage from '../pages/user/ProfilePage';
 import ChatPage from '../pages/user/ChatPage';
 import UserAuth from '../utils/UserAuth';
 import UserLogin from '../components/Login/UserLogin';
+import Search from '../components/Search/Search';
 
 function UserRouter() {
   return (
@@ -29,24 +30,23 @@ function UserRouter() {
         <Route path="login" element={<UserLogin />} />
         <Route path="register" element={<Signup />} />
         <Route path="verify" element={<Otp />} />
+        <Route path="search" element={<Search />} />
         <Route path="movies" element={<MoviesLayout />}>
           <Route index element={<MoviesPage />} />
-          <Route path="view-movie">
-            <Route path=":movieId" element={<ViewMoviePage />} />
-            <Route element={<UserAuth />}>
-              <Route path="reviews/:movieId" element={<ReviewsPage />} />
-            </Route>
-          </Route>
-          <Route path="actor/:personId" element={<ActorDetailsPage type="cast" />} />
-          <Route path="crew/:personId" element={<ActorDetailsPage type="crew" />} />
         </Route>
+        <Route path="movie" element={<MoviesLayout />}>
+          <Route path=":movieId" element={<ViewMoviePage />} />
+        </Route>
+        <Route path="actor/:personId" element={<ActorDetailsPage type="cast" />} />
+        <Route path="crew/:personId" element={<ActorDetailsPage type="crew" />} />
         <Route path="series" element={<MoviesLayout />}>
           <Route index element={<SeriesPage />} />
-          <Route path="view-series/:showId" element={<ViewSeriesPage />} />
-          <Route path="view-season/:seasonId" element={<ViewSeasonPage />} />
-          <Route path="view-episode/:episodeId" element={<ViewEpisodePage />} />
+          <Route path="show/:showId" element={<ViewSeriesPage />} />
+          <Route path="season/:seasonId" element={<ViewSeasonPage />} />
+          <Route path="episode/:episodeId" element={<ViewEpisodePage />} />
         </Route>
         <Route element={<UserAuth />}>
+          <Route path="reviews/:contentId" element={<ReviewsPage />} />
           <Route path="watchlist" element={<WatchlistPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="chat" element={<ChatPage />} />

@@ -29,7 +29,6 @@ function Otp() {
         if (!data.status) {
           throw Error(data.message);
         } else {
-          console.log('verified user', data);
           localStorage.setItem('userInfo', JSON.stringify(data.userData));
           navigate('/');
         }

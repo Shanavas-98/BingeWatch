@@ -12,7 +12,7 @@ import { IMG_URL } from '../../axios/apiUrls';
 function SeriesList() {
   const navigate = useNavigate();
   const viewSeries = (seriesId) => {
-    navigate(`/admin/series/view-series/${seriesId}`);
+    navigate(`/admin/series/show/${seriesId}`);
   };
   const [loading, setLoading] = useState(true);
   const [series, setSeries] = useState([]);
@@ -69,7 +69,7 @@ function SeriesList() {
         <Button
           type="button"
           className="dark m-2"
-          onClick={() => navigate('/admin/series/add-series')}
+          onClick={() => navigate('/admin/series/add-show')}
         >
           Add Series
         </Button>

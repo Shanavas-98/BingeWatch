@@ -32,7 +32,7 @@ function ViewSeason(props) {
     getSeason(seasonId);
   }, [seasonId]);
   const viewEpisode = async (episodeId) => {
-    navigate(`/series/view-episode/${episodeId}`);
+    navigate(`/series/episode/${episodeId}`);
   };
   if (loading) {
     return (

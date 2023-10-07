@@ -94,7 +94,7 @@ function ViewActor({ personId, type }) {
         </div>
         <div className="col-span-4 ml-2">
           <h2 className="text-white text-lg font-bold mb-2">Popular for</h2>
-          <CardCarousal cards={movieCards} baseLink="/movies/view-movie" style={cardStyle} />
+          <CardCarousal cards={movieCards} baseLink="/movie" style={cardStyle} />
         </div>
       </div>
     );

@@ -26,7 +26,6 @@ function UserLogin() {
   const onSubmit = async (values) => {
     try {
       const { data } = await userLogin(values);
-      console.log('user login', data);
       if (data.error) {
         throw Error(data.error);
       } else {

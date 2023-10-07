@@ -9,7 +9,10 @@ const reviewSchema = new mongoose.Schema({
     content:{
         type:ObjectId
     },
-    rating:Number,
+    rating:{
+        type:Number,
+        default:0
+    },
     review:String,
     likeCount:{
         type:Number,

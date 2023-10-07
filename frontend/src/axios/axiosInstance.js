@@ -24,7 +24,6 @@ userInstance.interceptors.request.use(
     if (userData?.token) {
       config.headers.Authorization = `Bearer ${userData?.token}`;
     }
-    console.log('interceptor config', config);
     return config;
   },
   (error) => {

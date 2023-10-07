@@ -23,7 +23,6 @@ function AdminLogin() {
   const onSubmit = async (values) => {
     try {
       const { data } = await adminLogin(values);
-      console.log('admin login', data);
       if (data.error) {
         throw Error(data.error);
       } else {

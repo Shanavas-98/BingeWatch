@@ -16,13 +16,13 @@ export default function Sidebar({ children }) {
   return (
     <aside className="h-screen">
       <nav className="h-full flex flex-col bg-gray-800 border-r shadow-sm">
-        <div className="p-4 flex items-center">
+        <div className="p-4 flex justify-between">
           <div className="px-2">
             <img src="/images/bingewatch_logo.png" alt="" className="w-7 h-7" />
           </div>
           <span
             className={`font-bold overflow-hidden transition-all text-white ${
-              expand ? 'w-24' : 'w-0'
+              expand ? 'w-24' : 'w-0 hidden'
             }`}
           >
             BingeWatch
@@ -74,7 +74,7 @@ export function SidebarItem({
       {icon}
       <span
         className={`overflow-hidden transition-all ${
-          expand ? 'w-28 ml-3' : 'w-0'
+          expand ? 'w-28 ml-3' : 'w-0 hidden'
         }`}
       >
         {text}

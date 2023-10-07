@@ -23,7 +23,6 @@ function MovieForm({ movie }) {
     try {
       setLoading(!loading);
       const { data } = await addMovie(id);
-      console.log('addmovie data', data);
       if (data.success) {
         setLoading(false);
         toast.success(data.message, { position: 'top-right' });

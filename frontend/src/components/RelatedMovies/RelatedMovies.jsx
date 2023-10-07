@@ -24,7 +24,7 @@ function RelatedMovies({ movieId }) {
     };
     getRelatedMovies(movieId);
   }, [movieId]);
-  const viewMovie = (id) => navigate(`/movies/view-movie/${id}`);
+  const viewMovie = (id) => navigate(`/movie/${id}`);
   const handleKeyPress = (event, id) => {
     if (event.key === 'Enter') {
       viewMovie(id);

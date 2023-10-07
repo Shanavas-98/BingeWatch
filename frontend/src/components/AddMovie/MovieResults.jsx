@@ -109,7 +109,7 @@ function MovieResults({ results, onMovieSelect }) {
       {results && results.map((movie) => (
         <div className="flex justify-between col-span-2 lg:col-span-1">
           <div className="flex">
-            <img className="w-32 h-16 m-2" src={IMG_URL + movie.poster_path} alt="" />
+            <img className="w-32 h-20 m-2" src={IMG_URL + movie.poster_path} alt="" />
             <div>
               <h2 className="text-white">{movie.title || movie.original_title}</h2>
               <h4 className="text-white">{movie.release_date}</h4>

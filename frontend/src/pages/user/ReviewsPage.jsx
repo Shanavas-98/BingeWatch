@@ -4,14 +4,14 @@ import ReviewList from '../../components/ReviewList/ReviewList';
 import RelatedMovies from '../../components/RelatedMovies/RelatedMovies';
 
 function ReviewsPage() {
-  const { movieId } = useParams();
+  const { contentId } = useParams();
   return (
     <div className="grid grid-cols-10">
       <div className="col-span-6">
-        <ReviewList movieId={movieId} />
+        <ReviewList contentId={contentId} />
       </div>
       <div className="col-span-4">
-        <RelatedMovies movieId={movieId} />
+        <RelatedMovies movieId={contentId} />
       </div>
     </div>
   );

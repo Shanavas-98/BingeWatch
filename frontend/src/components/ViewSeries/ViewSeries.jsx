@@ -32,7 +32,7 @@ function ViewSeries({ showId }) {
     getSeries(showId);
   }, [showId]);
   const viewSeason = async (seasonId) => {
-    navigate(`/series/view-season/${seasonId}`);
+    navigate(`/series/season/${seasonId}`);
   };
   if (loading) {
     return (
@@ -142,9 +142,9 @@ function ViewSeries({ showId }) {
             ))}
           </div>
           <h2 className="text-white text-lg mb-2">Casts</h2>
-          <CardCarousal key={castCards[0].key} cards={castCards} baseLink="/movies/view-movie/actor" style={cardStyle} />
+          <CardCarousal key={castCards[0].key} cards={castCards} baseLink="/actor" style={cardStyle} />
           <h2 className="text-white text-lg mb-2">Crews</h2>
-          <CardCarousal key={crewCards[0].key} cards={crewCards} baseLink="/movies/view-movie/crew" style={cardStyle} />
+          <CardCarousal key={crewCards[0].key} cards={crewCards} baseLink="/crew" style={cardStyle} />
         </div>
       </div>
     );

@@ -24,7 +24,10 @@ function Watchlist() {
     getWatchlist();
   }, [trigger]);
   const goToMovie = (movieId) => {
-    navigate(`/movies/view-movie/${movieId}`);
+    navigate(`/movie/${movieId}`);
+  };
+  const goToSeries = (showId) => {
+    navigate(`/series/show/${showId}`);
   };
   const handleKeyPress = (event) => {
     if (event.key === 'Enter' || event.key === ' ') {
@@ -86,7 +89,7 @@ function Watchlist() {
             role="button"
             tabIndex={0}
             className="flex flex-col flex-shrink-0"
-            onClick={() => goToMovie(item._id)}
+            onClick={() => goToSeries(item._id)}
             onKeyDown={handleKeyPress}
           >
             <img

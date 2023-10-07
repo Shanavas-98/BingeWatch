@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const { tmdbInstance } = require('../axios/tmdbInstance');
 const genreModel = require('../models/genreModel');
 const movieModel = require('../models/movieModel');
+const seriesModel = require('../models/seriesModel');
 const platformModel = require('../models/platformModel');
 const productionModel = require('../models/productionModel');
 const castModel = require('../models/castModel');
@@ -457,7 +458,6 @@ const addMovieDetails = async (movieDetails) => {
 
 const getMovieDetails = async (req, res) => {
     try {
-        console.log('fetching movie details');
         const movieId = req.params?.movieId;
         const exist = await movieModel
             .findOne({ id: movieId })
@@ -839,17 +839,18 @@ const addToWatchlist = async (req, res) => {
 
 const fetchReview = async (req, res) => {
     try {
-        const movieId = req.params.movieId;
+        const contentId = req.params.movieId;
         const userId = req.userId;
-        const reviewData = await reviewModel.findOne({ content: movieId, user: userId });
-        const isMovie = await watchlistModel.findOne({
-            $and: [
-                { user: userId },
-                { movies: movieId }
+        const reviewData = await reviewModel.findOne({ content: contentId, user: userId });
+        const isContent = await watchlistModel.findOne({
+            user: userId,
+            $or: [
+                { movies: contentId },
+                { series: contentId }
             ]
         });
         let inList = false;
-        if (isMovie) {
+        if (isContent) {
             inList = true;
         }
         if (reviewData) {
@@ -978,6 +979,68 @@ const fetchRelatedMovies = async (req, res) => {
     }
 };
 
+const fetchContents = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const start = (page - 1) * limit;
+        const end = page * limit;
+        const search = req.query.query;
+        const year = req.query.year;
+        const movieCount = await movieModel
+            .find({
+                $and: [
+                    { title: { $regex: search, $options: 'i' } },
+                    { releaseDate: { $regex: year, $options: 'i' } }
+                ]
+            })
+            .countDocuments()
+            .exec();
+        const movies = await movieModel
+            .find({
+                $and: [
+                    { title: { $regex: search, $options: 'i' } },
+                    { releaseDate: { $regex: year, $options: 'i' } }
+                ]
+            })
+            .skip(start)
+            .limit(limit)
+            .exec();
+        const showCount = await seriesModel
+            .find({
+                $and: [
+                    { title: { $regex: search, $options: 'i' } },
+                    { airDate: { $regex: year, $options: 'i' } }
+                ]
+            })
+            .countDocuments()
+            .exec();
+        const shows = await seriesModel
+            .find({
+                $and: [
+                    { title: { $regex: search, $options: 'i' } },
+                    { airDate: { $regex: year, $options: 'i' } }
+                ]
+            })
+            .skip(start)
+            .limit(limit)
+            .exec();
+        const pagination = {};
+        pagination.current = page;
+        pagination.limit = limit;
+        if (start > 0) {
+            pagination.previous = page - 1;
+        }
+        if (end < (movieCount+showCount)) {
+            pagination.next = page + 1;
+        }
+        res.json({ movies, shows, pagination });
+    } catch (err) {
+        console.error(err);
+        res.json(err);
+    }
+};
+
 module.exports = {
     getMovieDetails,
     getPlatformDetails,
@@ -1001,6 +1064,7 @@ module.exports = {
     fetchActorDetails,
     fetchCrewDetails,
     fetchAllReviews,
-    fetchRelatedMovies
+    fetchRelatedMovies,
+    fetchContents
 };
 

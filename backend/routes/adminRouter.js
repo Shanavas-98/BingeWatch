@@ -12,14 +12,14 @@ router.get('/auth-admin',adminAuth);
 router.get('/users',authAdmin,fetchUsers);
 router.get('/users/block-user/:userId',authAdmin,blockUser);
 router.get('/movies',authAdmin,fetchMovies);
-router.get('/movies/add-movie/:movieId',authAdmin,getMovieDetails);
-router.get('/movies/view-movie/:movieId',authAdmin,fetchMovie);
-router.post('/movies/edit-movie/:movieId',authAdmin,editMovie);
+router.get('/movie/add/:movieId',authAdmin,getMovieDetails);
+router.get('/movie/view/:movieId',authAdmin,fetchMovie);
+router.post('/movie/edit/:movieId',authAdmin,editMovie);
 router.get('/genres',authAdmin,fetchGenres);
 router.get('/actors',authAdmin,fetchActors);
 router.get('/crews',authAdmin,fetchCrews);
 router.get('/series',authAdmin,fetchSeries);
-router.get('/series/add-series/:showId',authAdmin,getShowDetails);
+router.get('/series/add-show/:showId',authAdmin,getShowDetails);
 router.get('/series/add-season/:showId',authAdmin,getSeasonDetails);
 router.get('/series/add-episode/:showId',authAdmin,getEpisodeDetails);
 

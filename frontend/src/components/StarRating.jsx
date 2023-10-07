@@ -4,13 +4,18 @@ import { Box, HStack, Radio } from '@chakra-ui/react';
 import { StarIcon } from '@chakra-ui/icons';
 
 function StarRating({
-  rating, setRating, count, size,
+  rating, setRating, count, size, disabled,
 }) {
   StarRating.propTypes = {
     rating: PropTypes.number.isRequired,
-    setRating: PropTypes.func.isRequired,
+    setRating: PropTypes.func,
     count: PropTypes.number.isRequired,
     size: PropTypes.number.isRequired,
+    disabled: PropTypes.bool,
+  };
+  StarRating.defaultProps = {
+    setRating: undefined,
+    disabled: false,
   };
   const [hover, setHover] = useState(null);
   return (
@@ -21,12 +26,24 @@ function StarRating({
           <Box
             as="label"
             color={ratingValue <= (hover || rating) ? '#ffc107' : '#e4e5e9'}
-            onMouseEnter={() => setHover(ratingValue)}
-            onMouseLeave={() => setHover(null)}
+            onMouseEnter={() => {
+              if (!disabled) {
+                setHover(ratingValue);
+              }
+            }}
+            onMouseLeave={() => {
+              if (!disabled) {
+                setHover(null);
+              }
+            }}
           >
             <Radio
               name="rating"
-              onChange={() => setRating(ratingValue)}
+              onChange={() => {
+                if (!disabled) {
+                  setRating(ratingValue);
+                }
+              }}
               value={ratingValue}
               display="none"
             />

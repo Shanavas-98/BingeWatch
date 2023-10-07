@@ -5,15 +5,15 @@ import { toast } from 'react-toastify';
 import { fetchAllReviews } from '../../services/userApi';
 import Review from './Review';
 
-export default function ReviewList({ movieId }) {
+export default function ReviewList({ contentId }) {
   ReviewList.propTypes = {
-    movieId: PropTypes.string.isRequired,
+    contentId: PropTypes.string.isRequired,
   };
   const [reviews, setReviews] = useState([]);
   const [userReview, setUserReview] = useState({});
   useEffect(() => {
-    const getReviews = async (movie) => {
-      await fetchAllReviews(movie)
+    const getReviews = async (content) => {
+      await fetchAllReviews(content)
         .then((res) => {
           setReviews(res.data.reviews);
           setUserReview(res.data.userReview);
@@ -24,8 +24,8 @@ export default function ReviewList({ movieId }) {
           });
         });
     };
-    getReviews(movieId);
-  }, [movieId]);
+    getReviews(contentId);
+  }, [contentId]);
   return (
     <div className="m-2">
       <h1 className="text-white">User Reviews</h1>
