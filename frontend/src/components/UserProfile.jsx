@@ -6,7 +6,7 @@ import { DoneAll, Edit } from '@mui/icons-material';
 import { getUserDetails, updateUserAvatar, updateUserDetails } from '../services/userApi';
 
 export default function UserProfile() {
-  const [userData, setUserData] = useState(null);
+  const [userData, setuserData] = useState(null);
   const [image, setImage] = useState();
   const initialValues = {};
 
@@ -14,8 +14,8 @@ export default function UserProfile() {
   useEffect(() => {
     getUserDetails()
       .then((res) => {
-        setUserData(res.data);
-        initialValues.fullName = res.data.fullName;
+        setuserData(res.data);
+        initialValues.fullName = res.data?.fullName;
       })
       .catch((error) => {
         toast(error.message, { position: 'top-center' });
@@ -36,10 +36,10 @@ export default function UserProfile() {
     onSubmit: async (values) => {
       updateUserDetails(values)
         .then((response) => {
-          toast.success(response.data.message, {
+          toast.success(response.data?.message, {
             position: 'top-center',
           });
-          setUserData({ ...userData, fullName: values.fullName });
+          setuserData({ ...userData, fullName: values?.fullName });
         })
         .catch((error) => {
           toast.error(error.message, {

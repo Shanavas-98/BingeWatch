@@ -144,8 +144,8 @@ export default function MovieTable() {
                   }}
                 >
                   <option defaultValue="">Genres</option>
-                  {genres && genres.map((item) => (
-                    <option value={item._id}>{item.genreName}</option>
+                  {genres && genres?.map((item) => (
+                    <option value={item?._id}>{item?.genreName}</option>
                   ))}
                 </select>
               </th>
@@ -170,23 +170,23 @@ export default function MovieTable() {
             ? (
               <tbody>
                 {movies?.map((item) => {
-                  const genreNames = item.genres?.map((obj) => obj.genreName).join(', ');
+                  const genreNames = item?.genres?.map((obj) => obj.genreName).join(', ');
                   return (
-                    <tr key={item.id}>
-                      <td>{item.id}</td>
+                    <tr key={item?.id}>
+                      <td>{item?.id}</td>
                       <td><img src={IMG_URL + item.images[0]} alt="" className="w-15 h-20" /></td>
-                      <td>{item.title}</td>
+                      <td>{item?.title}</td>
                       <td>{genreNames}</td>
-                      <td>{item.duration}</td>
-                      <td>{item.language}</td>
-                      <td>{item.releaseDate}</td>
+                      <td>{item?.duration}</td>
+                      <td>{item?.language}</td>
+                      <td>{item?.releaseDate}</td>
                       <td>
                         <Button
-                          key={item.id}
+                          key={item?.id}
                           variant="outlined"
                           color="primary"
                           size="medium"
-                          onClick={() => viewMovie(item._id)}
+                          onClick={() => viewMovie(item?._id)}
                         >
                           View
                         </Button>

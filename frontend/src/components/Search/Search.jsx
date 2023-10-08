@@ -44,13 +44,6 @@ function Search() {
     setPage(pageNo - 1);
     searchMovie(page - 1, query, year);
   };
-  // if (loading) {
-  //   return (
-  //     <div>
-  //       <h1 className="text-white">Loading...</h1>
-  //     </div>
-  //   );
-  // }
   return (
     <div className="w-auto m-2">
       <h3 className="text-xl font-medium m-2 text-white">
@@ -80,7 +73,7 @@ function Search() {
         >
           search
         </Button>
-        {(movies.length > 0 || series.length > 0)
+        {(movies?.length > 0 || series?.length > 0)
             && (
             <div className="flex justify-center">
               {prev

@@ -14,7 +14,7 @@ function UserLogin() {
   } = useAuth();
   const from = location.state?.from?.pathname;
   useEffect(() => {
-    if (user) {
+    if (user?.id) {
       navigate(from || '/');
     }
   }, []);
@@ -26,8 +26,8 @@ function UserLogin() {
   const onSubmit = async (values) => {
     try {
       const { data } = await userLogin(values);
-      if (data.error) {
-        throw Error(data.error);
+      if (data?.error) {
+        throw Error(data?.error);
       } else {
         localStorage.setItem('userInfo', JSON.stringify(data));
         setUser(data);

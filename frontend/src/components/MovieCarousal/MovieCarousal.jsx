@@ -33,10 +33,10 @@ function MovieCarousal({ genre }) {
   }
   if (Array.isArray(movies)) {
     const movieCards = movies?.map((movie) => ({
-      id: movie._id,
-      key: movie.id,
-      title: movie.title,
-      image: movie.images[0],
+      id: movie?._id,
+      key: movie?.id,
+      title: movie?.title,
+      image: movie?.images[0],
     }));
     const cardStyle = {
       wd: 'w-36',

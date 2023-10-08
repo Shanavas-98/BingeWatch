@@ -15,8 +15,8 @@ export default function ReviewList({ contentId }) {
     const getReviews = async (content) => {
       await fetchAllReviews(content)
         .then((res) => {
-          setReviews(res.data.reviews);
-          setUserReview(res.data.userReview);
+          setReviews(res.data?.reviews);
+          setUserReview(res.data?.userReview);
         })
         .catch((err) => {
           toast.error(err.message, {
@@ -29,7 +29,7 @@ export default function ReviewList({ contentId }) {
   return (
     <div className="m-2">
       <h1 className="text-white">User Reviews</h1>
-      {userReview && <Review key={userReview._id} review={userReview} friend />}
+      {userReview && <Review key={userReview?._id} review={userReview} friend />}
       {reviews?.length > 0
         && reviews?.map((review) => <Review key={review._id} review={review} />)}
     </div>

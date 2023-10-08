@@ -106,15 +106,15 @@ const addShowDetails = async (showData)=>{
         const creators = await addCrewDetails(createdBy);
         const networksData = await addProductions(networks);
         const seasonsData = seasons
-            .filter((season)=>(season.season_number>0))
+            .filter((season)=>(season?.season_number>0))
             .map((season)=>({
-                id:season.id,
-                seasonNum:season.season_number,
-                title:season.name,
-                poster:season.poster_path,
-                airDate:season.air_date,
-                totalEpisodes:season.episode_count,
-                rating:season.vote_average
+                id:season?.id,
+                seasonNum:season?.season_number,
+                title:season?.name,
+                poster:season?.poster_path,
+                airDate:season?.air_date,
+                totalEpisodes:season?.episode_count,
+                rating:season?.vote_average
             }));
         const backdrops = images.slice(0,10).map((poster)=>poster?.file_path);
         const trailers = videos?.results?.filter((video) =>
@@ -235,19 +235,19 @@ const getSeasonDetails = async(req,res)=>{
             air_date, episodes, name, overview, id,
             poster_path, season_number, vote_average, videos,
         } = data;
-        const trailers = videos.results
-            .filter((video) => (video.official === true || video.type === 'Trailer' || video.type === 'Teaser'))
+        const trailers = videos?.results
+            .filter((video) => (video?.official === true || video?.type === 'Trailer' || video?.type === 'Teaser'))
             .slice(0, 10)
-            .map((video) => (video.key));
-        const episodesDetails = episodes.map((episode) => (
+            .map((video) => (video?.key));
+        const episodesDetails = episodes?.map((episode) => (
             {
-                airDate: episode.air_date,
-                episodeNum: episode.episode_number,
-                id: episode.id,
-                title: episode.name,
-                duration: episode.runtime,
-                poster: episode.still_path,
-                rating: episode.vote_average,
+                airDate: episode?.air_date,
+                episodeNum: episode?.episode_number,
+                id: episode?.id,
+                title: episode?.name,
+                duration: episode?.runtime,
+                poster: episode?.still_path,
+                rating: episode?.vote_average,
             }
         ));
         const season = {
@@ -321,7 +321,7 @@ const getEpisodeDetails = async(req,res)=>{
         } = data;
         const stills = images.stills.slice(0,10).map((pic)=>pic.file_path);
         const crews = await addCrewDetails(crew);
-        const casts = await addCastDetails(credits.cast);
+        const casts = await addCastDetails(credits?.cast);
         const guests = await addCastDetails(guest_stars);
         const episodeData = {
             id,

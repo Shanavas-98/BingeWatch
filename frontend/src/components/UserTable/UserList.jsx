@@ -8,15 +8,15 @@ import {
 } from '@mui/icons-material';
 
 import { blockUser, fetchUsers } from '../../services/adminApi';
-import { IMG_URL } from '../../axios/apiUrls';
+// import { IMG_URL } from '../../axios/apiUrls';
 
 function BlockButton({ user }) {
-  const [block, setBlock] = useState(user.blocked);
+  const [block, setBlock] = useState(user?.blocked);
   const handleBlock = async () => {
-    const userId = user._id;
+    const userId = user?._id;
     const { data } = await blockUser(userId);
-    if (data.success) {
-      if (data.block) {
+    if (data?.success) {
+      if (data?.block) {
         toast.warning('user blocked successfully');
       } else {
         toast.warning('user unblocked successfully');
@@ -151,11 +151,11 @@ function UserList() {
             {users?.map((person, index) => (
               <tr className="flex w-full" key={index}>
                 <td className="w-full pl-10">{index + 1}</td>
-                <td className="w-full pl-10"><img src={IMG_URL + person.profile} alt="" className="w-15 h-20" /></td>
-                <td className="w-full pl-10">{person.fullName}</td>
-                <td className="w-full pl-10">{person.email}</td>
-                <td className="w-full pl-10">{person.mobile}</td>
-                <td className="w-full pl-10">{person.verified ? 'true' : 'false'}</td>
+                <td className="w-full pl-10"><img src={person?.picture?.url} alt="" className="w-15 h-20" /></td>
+                <td className="w-full pl-10">{person?.fullName}</td>
+                <td className="w-full pl-10">{person?.email}</td>
+                <td className="w-full pl-10">{person?.mobile}</td>
+                <td className="w-full pl-10">{person?.verified ? 'true' : 'false'}</td>
                 <td className="w-full pl-10"><BlockButton user={person} /></td>
               </tr>
             ))}

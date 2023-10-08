@@ -50,18 +50,18 @@ function ViewSeries({ showId }) {
     const start = airDate?.slice(0, 4);
     const end = endDate?.slice(0, 4);
     const castCards = casts?.map((person) => ({
-      id: person.cast,
-      key: person.tmdbId,
-      title: person.name,
-      subtitle: person.character,
-      image: person.profile,
+      id: person?.cast,
+      key: person?.tmdbId,
+      title: person?.name,
+      subtitle: person?.character,
+      image: person?.profile,
     }));
     const crewCards = crews?.map((person) => ({
-      id: person.crew,
-      key: person.tmdbId,
-      title: person.name,
-      subtitle: person.job,
-      image: person.profile,
+      id: person?.crew,
+      key: person?.tmdbId,
+      title: person?.name,
+      subtitle: person?.job,
+      image: person?.profile,
     }));
     const cardStyle = {
       wd: 'w-28',
@@ -85,13 +85,13 @@ function ViewSeries({ showId }) {
           <p className="text-gray-200 mb-2">{summary}</p>
           <div className="flex mb-2">
             {genres?.map((item) => (
-              <div className="text-white border-2 border-gray-300 rounded-full px-2 py-1 mr-2" key={item.genreId}>{item.genreName}</div>
+              <div className="text-white border-2 border-gray-300 rounded-full px-2 py-1 mr-2" key={item?.genreId}>{item?.genreName}</div>
             ))}
           </div>
           <h2 className="text-white text-lg mb-2">Creators</h2>
           <div className="flex mb-2">
             {createdBy?.map((person) => (
-              <span className="text-white mx-1" key={person.tmdbId}>{person.name}</span>
+              <span className="text-white mx-1" key={person?.tmdbId}>{person?.name}</span>
             ))}
           </div>
           <h2 className="text-white text-lg mb-2">Platforms</h2>
@@ -99,7 +99,7 @@ function ViewSeries({ showId }) {
             <div className="cards-carousal">
               {platforms?.map((platform) => (
                 <img
-                  key={platform.platformId}
+                  key={platform?.platformId}
                   src={IMG_URL + platform.logoPath}
                   alt={`${platform?.platformName}`}
                   className="mr-1 h-20 w-20 rounded-2xl"
@@ -112,7 +112,7 @@ function ViewSeries({ showId }) {
           <FormLabel>Seasons</FormLabel>
           <div className="cards-carousal">
             {seasons?.map((season) => (
-              <div key={season.id} className="flex">
+              <div key={season?.id} className="flex">
                 <div>
                   <img
                     src={IMG_URL + season.poster}
@@ -122,17 +122,17 @@ function ViewSeries({ showId }) {
                 </div>
                 <div className="flex flex-col justify-between">
                   <div>
-                    <h2 className="text-white">{season.title}</h2>
-                    <h4 className="text-white">{season.airDate}</h4>
-                    <h4 className="text-white">{`${season.totalEpisodes} episodes`}</h4>
+                    <h2 className="text-white">{season?.title}</h2>
+                    <h4 className="text-white">{season?.airDate}</h4>
+                    <h4 className="text-white">{`${season?.totalEpisodes} episodes`}</h4>
                     <h4 className="text-yellow-400">
                       <StarRateRounded />
-                      {`${season.rating}/10`}
+                      {`${season?.rating}/10`}
                     </h4>
                   </div>
                   <Button
-                    key={season.id}
-                    onClick={() => viewSeason(season.id)}
+                    key={season?.id}
+                    onClick={() => viewSeason(season?.id)}
                     className="mr-2"
                   >
                     View

@@ -54,14 +54,14 @@ function EditMovie({ movieId }) {
       // seting the loading state
       setLoading(!loading);
       const { data } = await editMovie(values);
-      if (data.success) {
-        toast.success(data.message, {
+      if (data?.success) {
+        toast.success(data?.message, {
           position: 'top-center',
         });
         navigate('admin/movies');
       } else {
         setLoading(false);
-        throw Error(data.message);
+        throw Error(data?.message);
       }
     } catch (error) {
       toast.error(error.message, {
@@ -139,7 +139,7 @@ function EditMovie({ movieId }) {
                   type="text"
                   className="dark"
                   readOnly={!edit}
-                  defaultValue={movie ? movie.title : ''}
+                  defaultValue={movie?.title || ''}
                 />
               )}
           </div>
@@ -166,7 +166,7 @@ function EditMovie({ movieId }) {
                   type="text"
                   className="dark"
                   readOnly={!edit}
-                  defaultValue={movie ? movie.language : ''}
+                  defaultValue={movie?.language || ''}
                 />
               )}
           </div>
@@ -193,7 +193,7 @@ function EditMovie({ movieId }) {
                   type="text"
                   className="dark"
                   readOnly={!edit}
-                  defaultValue={movie ? movie.duration : ''}
+                  defaultValue={movie?.duration || ''}
                 />
               )}
           </div>
@@ -220,7 +220,7 @@ function EditMovie({ movieId }) {
                   type="text"
                   className="dark"
                   readOnly={!edit}
-                  defaultValue={movie ? movie.rating : ''}
+                  defaultValue={movie?.rating || ''}
                 />
               )}
           </div>
@@ -247,7 +247,7 @@ function EditMovie({ movieId }) {
                   type="text"
                   className="dark"
                   readOnly={!edit}
-                  defaultValue={movie ? movie.releaseDate : ''}
+                  defaultValue={movie?.releaseDate || ''}
                 />
               )}
           </div>
@@ -263,7 +263,7 @@ function EditMovie({ movieId }) {
               type="text"
               className="dark"
               readOnly={!edit}
-              defaultValue={movie ? movie.genres?.map((genre) => genre.genreName).join(', ') : ''}
+              defaultValue={movie?.genres?.map((genre) => genre?.genreName).join(', ') || ''}
             />
           </div>
           )}
@@ -293,7 +293,7 @@ function EditMovie({ movieId }) {
                   rows={5}
                   className="bg-slate-700 text-white"
                   readOnly={!edit}
-                  defaultValue={movie ? movie.summary : ''}
+                  defaultValue={movie?.summary || ''}
                 />
               )}
           </div>
@@ -306,7 +306,7 @@ function EditMovie({ movieId }) {
         ))}
       </div>
       <FormLabel>Videos</FormLabel>
-      {movie.videos
+      {movie?.videos
         && (
           <div className="grid lg:grid-cols-3">
             {movie?.videos?.map((key) => (

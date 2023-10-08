@@ -33,19 +33,19 @@ function RelatedMovies({ movieId }) {
   return (
     <div className="m-1">
       <h1 className="text-white">RelatedMovies</h1>
-      {relatedMovies.length > 0
+      {relatedMovies?.length > 0
       && relatedMovies?.map((movie) => (
-        <div key={movie._id} className="flex justify-between m-2 border border-white rounded-md p-2">
+        <div key={movie?._id} className="flex justify-between m-2 border border-white rounded-md p-2">
           <div
             role="button"
             tabIndex={0}
             className="flex"
-            onClick={() => viewMovie(movie._id)}
-            onKeyDown={(e) => handleKeyPress(e, movie._id)}
+            onClick={() => viewMovie(movie?._id)}
+            onKeyDown={(e) => handleKeyPress(e, movie?._id)}
           >
             <img src={IMG_URL + movie.images[0]} alt="" className="w-15 h-20" />
             <Stack m={1} className="ml-2">
-              <h3 className="text-white">{movie.title}</h3>
+              <h3 className="text-white">{movie?.title}</h3>
               <span className="text-slate-300 text-sm">{`${movie?.releaseDate?.slice(0, 4)} | ${movie?.duration}`}</span>
             </Stack>
           </div>

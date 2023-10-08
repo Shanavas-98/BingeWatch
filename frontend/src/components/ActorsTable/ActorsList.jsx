@@ -153,19 +153,19 @@ function ActorsList() {
           </tr>
         </thead>
         <tbody>
-          {actors.map((person) => (
+          {actors?.map((person) => (
             <tr className="">
-              <td>{person.actorId}</td>
+              <td>{person?.actorId}</td>
               <td>
                 <img
-                  src={IMG_URL + person.profile}
+                  src={`${IMG_URL}${person?.profile}`}
                   alt=""
                   className="w-15 h-20"
                 />
               </td>
-              <td>{person.name}</td>
-              <td>{person.gender}</td>
-              <td>{person.popularity}</td>
+              <td>{person?.name}</td>
+              <td>{person?.gender}</td>
+              <td>{person?.popularity}</td>
               <td>view</td>
             </tr>
           ))}

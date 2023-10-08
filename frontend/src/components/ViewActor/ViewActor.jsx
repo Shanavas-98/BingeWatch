@@ -16,8 +16,8 @@ function ViewActor({ personId, type }) {
       const getActor = async (id) => {
         await fetchActor(id)
           .then((res) => {
-            setPerson(res.data.actor);
-            setKnownFor(res.data.knownFor);
+            setPerson(res.data?.actor);
+            setKnownFor(res.data?.knownFor);
             setLoading(false);
           })
           .catch((err) => {
@@ -32,8 +32,8 @@ function ViewActor({ personId, type }) {
       const getCrew = async (id) => {
         await fetchCrew(id)
           .then((res) => {
-            setPerson(res.data.crew);
-            setKnownFor(res.data.knownFor);
+            setPerson(res.data?.crew);
+            setKnownFor(res.data?.knownFor);
             setLoading(false);
           })
           .catch((err) => {
@@ -60,11 +60,11 @@ function ViewActor({ personId, type }) {
       gender, department, placeOfBirth,
     } = person;
     const movieCards = knownFor?.map((movie) => ({
-      id: movie._id,
-      key: movie.id,
-      title: movie.title,
-      subtitle: movie.releaseDate.slice(0, 4),
-      image: movie.images[0],
+      id: movie?._id,
+      key: movie?.id,
+      title: movie?.title,
+      subtitle: movie?.releaseDate.slice(0, 4),
+      image: movie?.images[0],
     }));
     const cardStyle = {
       wd: 'w-28',

@@ -23,31 +23,31 @@ function MovieForm({ movie }) {
     try {
       setLoading(!loading);
       const { data } = await addMovie(id);
-      if (data.success) {
+      if (data?.success) {
         setLoading(false);
-        toast.success(data.message, { position: 'top-right' });
+        toast.success(data?.message, { position: 'top-right' });
       } else {
         setLoading(false);
-        throw Error(data.message);
+        throw Error(data?.message);
       }
     } catch (err) {
       console.error(err);
       toast.error(err.message, { position: 'top-center' });
     }
   };
-  const castCards = movie.cast?.map((person) => ({
-    id: person._id,
-    key: person.castId,
-    title: person.name,
-    subtitle: person.character,
-    image: person.profile,
+  const castCards = movie?.cast?.map((person) => ({
+    id: person?._id,
+    key: person?.castId,
+    title: person?.name,
+    subtitle: person?.character,
+    image: person?.profile,
   }));
-  const crewCards = movie.crew?.map((person) => ({
-    id: person._id,
-    key: person.crewId,
-    title: person.name,
-    subtitle: person.job,
-    image: person.profile,
+  const crewCards = movie?.crew?.map((person) => ({
+    id: person?._id,
+    key: person?.crewId,
+    title: person?.name,
+    subtitle: person?.job,
+    image: person?.profile,
   }));
   const cardStyle = {
     wd: 'w-28',
@@ -70,7 +70,7 @@ function MovieForm({ movie }) {
             type="text"
             className="dark"
             readOnly
-            defaultValue={movie ? movie.title : ''}
+            defaultValue={movie?.title || ''}
           />
         </div>
         <div className="col-span-1 w-auto">
@@ -82,7 +82,7 @@ function MovieForm({ movie }) {
             type="text"
             className="dark"
             readOnly
-            defaultValue={movie ? movie.language : ''}
+            defaultValue={movie?.language || ''}
           />
         </div>
         <div className="col-span-1 w-auto">
@@ -94,7 +94,7 @@ function MovieForm({ movie }) {
             type="text"
             className="dark"
             readOnly
-            defaultValue={movie ? movie.duration : ''}
+            defaultValue={movie?.duration || ''}
           />
         </div>
         <div className="col-span-1 w-auto">
@@ -105,7 +105,7 @@ function MovieForm({ movie }) {
             name="rating"
             type="text"
             className="dark"
-            defaultValue={movie ? movie.rating : ''}
+            defaultValue={movie?.rating || ''}
           />
         </div>
         <div className="col-span-1 w-auto">
@@ -116,7 +116,7 @@ function MovieForm({ movie }) {
             name="date"
             type="text"
             className="dark"
-            defaultValue={movie ? movie.releaseDate : ''}
+            defaultValue={movie?.releaseDate || ''}
           />
         </div>
         <div className="col-span-1 w-auto">
@@ -127,7 +127,7 @@ function MovieForm({ movie }) {
             name="genres"
             type="text"
             className="dark"
-            defaultValue={movie ? movie.genres : ''}
+            defaultValue={movie?.genres || ''}
           />
         </div>
         <div className="col-span-1 w-auto">
@@ -139,14 +139,14 @@ function MovieForm({ movie }) {
             type="text"
             rows={5}
             className="bg-slate-700 text-white "
-            defaultValue={movie ? movie.summary : ''}
+            defaultValue={movie?.summary || ''}
           />
         </div>
       </div>
       <FormLabel>Platforms</FormLabel>
       <div className="w-full flex">
-        {movie.platforms.map((platform, index = 1) => (
-          <img key={index} src={IMG_URL + platform.logo_path} alt={platform.provider_name} className="h-20 w-20 m-2 rounded-lg" />
+        {movie?.platforms?.map((platform, index = 1) => (
+          <img key={index} src={IMG_URL + platform.logo_path} alt={platform?.provider_name} className="h-20 w-20 m-2 rounded-lg" />
         ))}
       </div>
       <FormLabel>Posters</FormLabel>
@@ -156,7 +156,7 @@ function MovieForm({ movie }) {
         ))}
       </div>
       <FormLabel>Videos</FormLabel>
-      {movie.videos
+      {movie?.videos
       && (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {movie?.videos?.map((key) => (

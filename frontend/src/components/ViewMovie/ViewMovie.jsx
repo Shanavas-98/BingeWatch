@@ -51,18 +51,18 @@ function ViewMovie({ movieId }) {
     } = movie;
     const year = releaseDate?.slice(0, 4);
     const castCards = casts?.map((person) => ({
-      id: person.cast,
-      key: person.tmdbId,
-      title: person.name,
-      subtitle: person.character,
-      image: person.profile,
+      id: person?.cast,
+      key: person?.tmdbId,
+      title: person?.name,
+      subtitle: person?.character,
+      image: person?.profile,
     }));
     const crewCards = crews?.map((person) => ({
-      id: person.crew,
-      key: person.tmdbId,
-      title: person.name,
-      subtitle: person.job,
-      image: person.profile,
+      id: person?.crew,
+      key: person?.tmdbId,
+      title: person?.name,
+      subtitle: person?.job,
+      image: person?.profile,
     }));
     const cardStyle = {
       wd: 'w-28',
@@ -92,9 +92,9 @@ function ViewMovie({ movieId }) {
             {genres?.map((item) => (
               <div
                 className="text-white border-2 border-gray-300 rounded-full px-2 py-1 mr-2"
-                key={item.genreId}
+                key={item?.genreId}
               >
-                {item.genreName}
+                {item?.genreName}
               </div>
             ))}
           </div>
@@ -103,7 +103,7 @@ function ViewMovie({ movieId }) {
             <div className="cards-carousal">
               {platforms?.map((platform) => (
                 <img
-                  key={platform.platformId}
+                  key={platform?.platformId}
                   src={IMG_URL + platform.logoPath}
                   alt={`${platform?.platformName} Thumbnail`}
                   className="mr-1 h-20 w-20 rounded-2xl"

@@ -27,12 +27,12 @@ function ShowForm({ show, onSeasonSelect }) {
     try {
       setLoading(!loading);
       const { data } = await addShow(id);
-      if (data.success) {
+      if (data?.success) {
         setLoading(false);
-        toast.success(data.message, { position: 'top-right' });
+        toast.success(data?.message, { position: 'top-right' });
       } else {
         setLoading(false);
-        throw Error(data.message);
+        throw Error(data?.message);
       }
     } catch (err) {
       toast.error(err.message, { position: 'top-center' });
@@ -44,21 +44,21 @@ function ShowForm({ show, onSeasonSelect }) {
       air_date, episodes, name, overview, id,
       poster_path, season_number, vote_average, videos,
     } = data;
-    const trailers = videos.results
-      .filter((video) => (video.official === true || video.type === 'Trailer' || video.type === 'Teaser'))
+    const trailers = videos?.results
+      .filter((video) => (video?.official === true || video?.type === 'Trailer' || video?.type === 'Teaser'))
       .slice(0, 10)
-      .map((video) => (video.key));
-    const episodesDetails = episodes.map((episode) => (
+      .map((video) => (video?.key));
+    const episodesDetails = episodes?.map((episode) => (
       {
-        airDate: episode.air_date,
-        episodeNum: episode.episode_number,
-        id: episode.id,
-        title: episode.name,
-        duration: episode.runtime,
-        seasonNum: episode.season_number,
-        showId: episode.show_id,
-        poster: episode.still_path,
-        rating: episode.vote_average,
+        airDate: episode?.air_date,
+        episodeNum: episode?.episode_number,
+        id: episode?.id,
+        title: episode?.name,
+        duration: episode?.runtime,
+        seasonNum: episode?.season_number,
+        showId: episode?.show_id,
+        poster: episode?.still_path,
+        rating: episode?.vote_average,
       }
     ));
     const season = {
@@ -75,19 +75,19 @@ function ShowForm({ show, onSeasonSelect }) {
     };
     onSeasonSelect(season);
   };
-  const castCards = show.casts?.map((person) => ({
-    id: person.id,
-    key: person.id,
-    title: person.name,
-    subtitle: person.character,
-    image: person.profile,
+  const castCards = show?.casts?.map((person) => ({
+    id: person?.id,
+    key: person?.id,
+    title: person?.name,
+    subtitle: person?.character,
+    image: person?.profile,
   }));
-  const crewCards = show.crews?.map((person) => ({
-    id: person.id,
-    key: person.id,
-    title: person.name,
-    subtitle: person.job,
-    image: person.profile,
+  const crewCards = show?.crews?.map((person) => ({
+    id: person?.id,
+    key: person?.id,
+    title: person?.name,
+    subtitle: person?.job,
+    image: person?.profile,
   }));
   const cardStyle = {
     wd: 'w-28',
@@ -97,7 +97,7 @@ function ShowForm({ show, onSeasonSelect }) {
     <>
       <div className="w-full my-2">
         {loading ? <Button isLoading type="button" className="dark">Add</Button>
-          : <Button type="button" className="dark" onClick={() => addShowDetails(show.id)}>Add</Button>}
+          : <Button type="button" className="dark" onClick={() => addShowDetails(show?.id)}>Add</Button>}
       </div>
       <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
         <div className="col-span-1 w-auto">
@@ -109,7 +109,7 @@ function ShowForm({ show, onSeasonSelect }) {
             type="text"
             className="dark"
             readOnly
-            defaultValue={show ? show.title : ''}
+            defaultValue={show?.title || ''}
           />
         </div>
         <div className="col-span-1 w-auto">
@@ -122,7 +122,7 @@ function ShowForm({ show, onSeasonSelect }) {
             type="text"
             className="dark"
             readOnly
-            defaultValue={show ? show.language : ''}
+            defaultValue={show?.language || ''}
           />
         </div>
         <div className="col-span-1 w-auto">
@@ -133,7 +133,7 @@ function ShowForm({ show, onSeasonSelect }) {
             name="date"
             type="text"
             className="dark"
-            defaultValue={show ? show.airDate : ''}
+            defaultValue={show?.airDate || ''}
           />
         </div>
         <div className="col-span-1 w-auto">
@@ -145,7 +145,7 @@ function ShowForm({ show, onSeasonSelect }) {
             type="text"
             className="dark"
             readOnly
-            defaultValue={show ? show.endDate : ''}
+            defaultValue={show?.endDate || ''}
           />
         </div>
         <div className="col-span-1 w-auto">
@@ -156,7 +156,7 @@ function ShowForm({ show, onSeasonSelect }) {
             name="rating"
             type="text"
             className="dark"
-            defaultValue={show ? show.rating : ''}
+            defaultValue={show?.rating || ''}
           />
         </div>
         <div className="col-span-1 w-auto">
@@ -167,7 +167,7 @@ function ShowForm({ show, onSeasonSelect }) {
             name="genres"
             type="text"
             className="dark"
-            defaultValue={show ? show.genres : ''}
+            defaultValue={show?.genres || ''}
           />
         </div>
         <div className="col-span-1 w-auto">
@@ -179,17 +179,17 @@ function ShowForm({ show, onSeasonSelect }) {
             type="text"
             rows={5}
             className="bg-slate-700 text-white "
-            defaultValue={show ? show.summary : ''}
+            defaultValue={show?.summary || ''}
           />
         </div>
         <div className="col-span-1 w-auto">
           <FormLabel>Title</FormLabel>
           <div className="cards-carousal">
-            {show.platforms.map((platform, index = 1) => (
+            {show?.platforms?.map((platform, index = 1) => (
               <img
                 key={index}
                 src={IMG_URL + platform.logo_path}
-                alt={platform.provider_name}
+                alt={platform?.provider_name}
                 className="h-20 w-20 m-2 rounded-lg"
               />
             ))}
@@ -199,8 +199,8 @@ function ShowForm({ show, onSeasonSelect }) {
 
       <FormLabel>Seasons</FormLabel>
       <div className="cards-carousal">
-        {show.seasons.map((season) => (
-          <div key={season.id} className="flex">
+        {show?.seasons?.map((season) => (
+          <div key={season?.id} className="flex">
             <div>
               <img
                 src={IMG_URL + season.poster}
@@ -210,17 +210,17 @@ function ShowForm({ show, onSeasonSelect }) {
             </div>
             <div className="flex flex-col justify-between">
               <div>
-                <h2 className="text-white">{season.title}</h2>
-                <h4 className="text-white">{season.airDate}</h4>
-                <h4 className="text-white">{`${season.totalEpisodes} episodes`}</h4>
+                <h2 className="text-white">{season?.title}</h2>
+                <h4 className="text-white">{season?.airDate}</h4>
+                <h4 className="text-white">{`${season?.totalEpisodes} episodes`}</h4>
                 <h4 className="text-yellow-400">
                   <StarRateRounded />
-                  {`${season.rating}/10`}
+                  {`${season?.rating}/10`}
                 </h4>
               </div>
               <Button
-                key={season.id}
-                onClick={() => getSeason(show.id, season.seasonNum)}
+                key={season?.id}
+                onClick={() => getSeason(show?.id, season?.seasonNum)}
                 className="mr-2"
               >
                 Add

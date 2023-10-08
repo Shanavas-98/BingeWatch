@@ -20,8 +20,8 @@ function AddSeries() {
       .then((res) => {
         setShow(null);
         setSeason(null);
-        setMaxPage(res.data.total_pages);
-        setResults(res.data.results);
+        setMaxPage(res.data?.total_pages);
+        setResults(res.data?.results);
       }).catch((err) => {
         toast.error(err.message, {
           position: 'top-center',

@@ -160,12 +160,12 @@ function CrewsList() {
         <tbody className="w-full">
           {crews.map((person) => (
             <tr className="flex w-full">
-              <td className="w-full">{person.crewId}</td>
+              <td className="w-full">{person?.crewId}</td>
               <td className="w-full pl-5"><img src={IMG_URL + person.profile} alt="" className="w-15 h-20" /></td>
-              <td className="w-full pl-5">{person.name}</td>
-              <td className="w-full pl-5">{person.gender}</td>
-              <td className="w-full pl-10">{person.department}</td>
-              <td className="w-full pl-10">{person.popularity}</td>
+              <td className="w-full pl-5">{person?.name}</td>
+              <td className="w-full pl-5">{person?.gender}</td>
+              <td className="w-full pl-10">{person?.department}</td>
+              <td className="w-full pl-10">{person?.popularity}</td>
               <td className="w-full pl-10">view</td>
             </tr>
           ))}

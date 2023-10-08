@@ -18,8 +18,8 @@ function AddMovie() {
     await searchMovieInstance.get(`&page=${pageNo}&query=${search}&primary_release_year=${release}`)
       .then((res) => {
         setMovie(null);
-        setMaxPage(res.data.total_pages);
-        setResults(res.data.results);
+        setMaxPage(res?.data?.total_pages);
+        setResults(res?.data?.results);
       }).catch((err) => {
         toast.error(err.message, {
           position: 'top-center',
@@ -71,7 +71,7 @@ function AddMovie() {
         >
           Search
         </Button>
-        {results.length > 0
+        {results?.length > 0
         && (
         <div className="flex">
           {page < 2

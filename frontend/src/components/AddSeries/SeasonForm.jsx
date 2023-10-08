@@ -23,12 +23,12 @@ function SeasonForm({ season }) {
     try {
       setLoading(!loading);
       const { data } = await addSeason(showId, seasonId, seasonNum);
-      if (data.success) {
+      if (data?.success) {
         setLoading(false);
-        toast.success(data.message, { position: 'top-right' });
+        toast.success(data?.message, { position: 'top-right' });
       } else {
         setLoading(false);
-        throw Error(data.message);
+        throw Error(data?.message);
       }
     } catch (err) {
       toast.error(err.message, { position: 'top-center' });
@@ -38,12 +38,12 @@ function SeasonForm({ season }) {
     try {
       setLoading(!loading);
       const { data } = await addEpisode(showId, seasonId, episodeId, seasonNum, episodeNum);
-      if (data.success) {
+      if (data?.success) {
         setLoading(false);
-        toast.success(data.message, { position: 'top-right' });
+        toast.success(data?.message, { position: 'top-right' });
       } else {
         setLoading(false);
-        throw Error(data.message);
+        throw Error(data?.message);
       }
     } catch (err) {
       toast.error(err.message, { position: 'top-center' });
@@ -53,7 +53,7 @@ function SeasonForm({ season }) {
     <>
       <div className="w-full my-2">
         {loading ? <Button isLoading type="button" className="dark">Add</Button>
-          : <Button type="button" className="dark" onClick={() => addSeasonDetails(season.showId, season.id, season.seasonNum)}>Add</Button>}
+          : <Button type="button" className="dark" onClick={() => addSeasonDetails(season?.showId, season?.id, season?.seasonNum)}>Add</Button>}
       </div>
       <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
         <div className="col-span-1 w-auto">
@@ -65,7 +65,7 @@ function SeasonForm({ season }) {
             type="text"
             className="dark"
             readOnly
-            defaultValue={season ? season.title : ''}
+            defaultValue={season?.title || ''}
           />
           <div className="mb-1 block">
             <FormLabel>Release Date</FormLabel>
@@ -74,7 +74,7 @@ function SeasonForm({ season }) {
             name="date"
             type="text"
             className="dark"
-            defaultValue={season ? season.airDate : ''}
+            defaultValue={season?.airDate || ''}
           />
           <div className="mb-1 block">
             <FormLabel>Rating</FormLabel>
@@ -83,7 +83,7 @@ function SeasonForm({ season }) {
             name="rating"
             type="text"
             className="dark"
-            defaultValue={season ? season.rating : ''}
+            defaultValue={season?.rating || ''}
           />
         </div>
         <div className="col-span-1 w-auto">
@@ -95,14 +95,14 @@ function SeasonForm({ season }) {
             type="text"
             rows={5}
             className="bg-slate-700 text-white "
-            defaultValue={season ? season.summary : ''}
+            defaultValue={season?.summary || ''}
           />
         </div>
       </div>
       <FormLabel>Episodes</FormLabel>
       <div className="cards-carousal">
-        {season.episodes.map((ep) => (
-          <div key={ep.id} className="flex flex-col mx-2">
+        {season?.episodes?.map((ep) => (
+          <div key={ep?.id} className="flex flex-col mx-2">
             <div>
               <img
                 src={IMG_URL + ep.poster}
@@ -112,21 +112,21 @@ function SeasonForm({ season }) {
             </div>
             <div className="flex justify-between">
               <div className="w-36 h-20 overflow-hidden">
-                <h2 className="text-white">{ep.title}</h2>
-                <h4 className="text-white">{ep.airDate}</h4>
+                <h2 className="text-white">{ep?.title}</h2>
+                <h4 className="text-white">{ep?.airDate}</h4>
               </div>
               <div>
                 <h4 className="text-yellow-400">
                   <StarRateRounded />
-                  {`${ep.rating.toFixed(1)}/10`}
+                  {`${ep?.rating.toFixed(1)}/10`}
                 </h4>
-                <h4 className="text-white">{`${ep.duration} min`}</h4>
+                <h4 className="text-white">{`${ep?.duration} min`}</h4>
               </div>
             </div>
             <Button
-              key={ep.id}
+              key={ep?.id}
               onClick={() => (
-                addEpisodeDetails(ep.showId, season.id, ep.id, ep.seasonNum, ep.episodeNum)
+                addEpisodeDetails(ep?.showId, season?.id, ep?.id, ep?.seasonNum, ep?.episodeNum)
               )}
               className="mr-2 w-20"
             >

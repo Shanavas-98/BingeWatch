@@ -66,13 +66,6 @@ export default function UpdateGroupChatModal({ fetchAgain, setFetchAgain, fetchM
     setSearch(query);
     try {
       setLoading(true);
-      // const config = {
-      //   headers: {
-      //     'Content-type': 'application/json',
-      //     Authorization: `Bearer ${user.token}`,
-      //   },
-      // };
-      // const { data } = await axios.get(`/api/user?search=${search}`, config);
       const { data } = await fetchAllUsers(search);
       setSearchResult(data);
       setLoading(false);
@@ -88,7 +81,7 @@ export default function UpdateGroupChatModal({ fetchAgain, setFetchAgain, fetchM
     }
   };
   const handleAdd = async (addUserId) => {
-    if (selectedChat?.users?.find((u) => (u._id === addUserId))) {
+    if (selectedChat?.users?.find((u) => (u?._id === addUserId))) {
       toast({
         title: 'User already added!',
         status: 'warning',
@@ -98,7 +91,7 @@ export default function UpdateGroupChatModal({ fetchAgain, setFetchAgain, fetchM
       });
       return;
     }
-    if (selectedChat?.groupAdmin?._id !== user.id) {
+    if (selectedChat?.groupAdmin?._id !== user?.id) {
       toast({
         title: 'Only admins can add someone!',
         status: 'warning',
@@ -129,7 +122,7 @@ export default function UpdateGroupChatModal({ fetchAgain, setFetchAgain, fetchM
     }
   };
   const handleRemove = async (delUserId) => {
-    if (selectedChat?.groupAdmin?._id !== user.id && delUserId !== user.id) {
+    if (selectedChat?.groupAdmin?._id !== user?.id && delUserId !== user?.id) {
       toast({
         title: 'Only admins can remove someone!',
         status: 'error',
@@ -145,7 +138,7 @@ export default function UpdateGroupChatModal({ fetchAgain, setFetchAgain, fetchM
         chatId: selectedChat?._id,
         friendId: delUserId,
       });
-      if (delUserId === user.id) {
+      if (delUserId === user?.id) {
         setSelectedChat(null);
       } else {
         setSelectedChat(data);
@@ -162,7 +155,7 @@ export default function UpdateGroupChatModal({ fetchAgain, setFetchAgain, fetchM
         position: 'bottom-center',
       });
     }
-    setSelectedUsers(selectedUsers.filter((selUser) => selUser._id !== delUserId));
+    setSelectedUsers(selectedUsers?.filter((selUser) => selUser?._id !== delUserId));
   };
   return (
     <div>
@@ -195,9 +188,9 @@ export default function UpdateGroupChatModal({ fetchAgain, setFetchAgain, fetchM
             >
               {selectedUsers?.map((person) => (
                 <UserBadgeItem
-                  key={person._id}
+                  key={person?._id}
                   user={person}
-                  handleFunction={() => handleRemove(person._id)}
+                  handleFunction={() => handleRemove(person?._id)}
                 />
               ))}
             </Box>
@@ -231,7 +224,7 @@ export default function UpdateGroupChatModal({ fetchAgain, setFetchAgain, fetchM
               <Spinner size="lg" />
             ) : (searchResult && searchResult?.slice(0, 4).map((person) => (
               <UserListItem
-                key={person._id}
+                key={person?._id}
                 user={person}
                 handleFunction={() => handleAdd(person)}
               />
@@ -239,7 +232,7 @@ export default function UpdateGroupChatModal({ fetchAgain, setFetchAgain, fetchM
 
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="red" onClick={() => handleRemove(user.id)}>
+            <Button colorScheme="red" onClick={() => handleRemove(user?.id)}>
               Leave Group
             </Button>
           </ModalFooter>

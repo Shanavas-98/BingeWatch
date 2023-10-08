@@ -33,10 +33,10 @@ function SeriesCarousal({ genre }) {
   }
   if (series) {
     const showCards = series?.map((show) => ({
-      id: show._id,
-      key: show.id,
-      title: show.title,
-      image: show.poster,
+      id: show?._id,
+      key: show?.id,
+      title: show?.title,
+      image: show?.poster,
     }));
     const cardStyle = {
       wd: 'w-36',

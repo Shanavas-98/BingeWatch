@@ -62,45 +62,45 @@ function Watchlist() {
   return (
     <div className="flex w-full text-white">
       {movies?.length > 0 && movies?.map((item) => (
-        <div key={item._id} className="relative w-36 mx-2">
+        <div key={item?._id} className="relative w-36 mx-2">
           <div
             role="button"
             tabIndex={0}
             className="flex flex-col flex-shrink-0"
-            onClick={() => goToMovie(item._id)}
+            onClick={() => goToMovie(item?._id)}
             onKeyDown={handleKeyPress}
           >
             <img
               src={IMG_URL + item.images[0]}
-              alt={item.title}
+              alt={item?.title}
               className="w-36 h-60 rounded-md"
             />
-            <span>{item.title}</span>
+            <span>{item?.title}</span>
           </div>
           <Close
-            onClick={() => handleWatchlist(item._id, 'movie')}
+            onClick={() => handleWatchlist(item?._id, 'movie')}
             className="hover:cursor-pointer absolute top-0 right-0"
           />
         </div>
       ))}
       {series?.length > 0 && series?.map((item) => (
-        <div key={item._id} className="relative w-36 mx-2">
+        <div key={item?._id} className="relative w-36 mx-2">
           <div
             role="button"
             tabIndex={0}
             className="flex flex-col flex-shrink-0"
-            onClick={() => goToSeries(item._id)}
+            onClick={() => goToSeries(item?._id)}
             onKeyDown={handleKeyPress}
           >
             <img
               src={IMG_URL + item.poster}
-              alt={item.title}
+              alt={item?.title}
               className="w-36 h-60 rounded-md"
             />
-            <span>{item.title}</span>
+            <span>{item?.title}</span>
           </div>
           <Close
-            onClick={() => handleWatchlist(item._id, 'show')}
+            onClick={() => handleWatchlist(item?._id, 'show')}
             className="hover:cursor-pointer absolute top-0 right-0"
           />
         </div>

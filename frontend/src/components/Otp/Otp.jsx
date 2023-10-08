@@ -26,10 +26,10 @@ function Otp() {
       try {
         const otp = parseInt(values.otp, 10);
         const { data } = await verifyOtp(otp);
-        if (!data.status) {
-          throw Error(data.message);
+        if (!data?.status) {
+          throw Error(data?.message);
         } else {
-          localStorage.setItem('userInfo', JSON.stringify(data.userData));
+          localStorage.setItem('userInfo', JSON.stringify(data?.userData));
           navigate('/');
         }
       } catch (error) {

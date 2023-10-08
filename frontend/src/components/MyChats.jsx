@@ -95,12 +95,12 @@ export default function MyChats({ fetchAgain }) {
                 px={3}
                 py={2}
                 borderRadius="lg"
-                key={chat._id}
+                key={chat?._id}
               >
                 <Text>
-                  {chat.isGroup
-                    ? (chat.chatName)
-                    : getSender(loggedUser, chat.users)}
+                  {chat?.isGroup
+                    ? (chat?.chatName)
+                    : getSender(loggedUser, chat?.users)}
                 </Text>
               </Box>
             ))}

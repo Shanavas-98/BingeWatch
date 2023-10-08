@@ -20,7 +20,7 @@ const createChat = async (req, res) => {
             path: 'latestMsg.sender',
             select: 'name picture email'
         });
-        if (isChat.length > 0) {
+        if (isChat?.length > 0) {
             res.json(isChat[0]);
         } else {
             let chatData = {
@@ -29,7 +29,7 @@ const createChat = async (req, res) => {
                 users: [userId, friendId]
             };
             const createdChat = await chatModel.create(chatData);
-            const fullChat = await chatModel.findOne({ _id: createdChat._id })
+            const fullChat = await chatModel.findOne({ _id: createdChat?._id })
                 .populate('users', '-password');
             res.status(200).json(fullChat);
         }
@@ -78,7 +78,7 @@ const createGroup = async (req, res) => {
             users: users,
             groupAdmin: req.userId
         });
-        const fullGroupChat = await chatModel.findOne({_id: groupChat._id})
+        const fullGroupChat = await chatModel.findOne({_id: groupChat?._id})
             .populate('users','-password')
             .populate('groupAdmin','-password');
         res.status(200).json(fullGroupChat);

@@ -27,36 +27,36 @@ function ShowResults({ results, onShowSelect }) {
           original_language, overview, poster_path,
           vote_average, images, videos, credits, seasons,
         } = res.data;
-        const genreNames = genres.map((genre) => genre.name);
+        const genreNames = genres?.map((genre) => genre?.name);
         const backdrops = images.backdrops.slice(0, 10).map((poster) => poster?.file_path);
-        const trailers = videos.results
-          .filter((video) => video.official === true || video.name === 'Official Trailer' || video.type === 'Trailer' || video.type === 'Teaser')
+        const trailers = videos?.results
+          .filter((video) => video?.official === true || video?.name === 'Official Trailer' || video?.type === 'Trailer' || video?.type === 'Teaser')
           .slice(0, 6)
-          .map((video) => video.key);
+          .map((video) => video?.key);
         const seasonsDetails = seasons
-          .filter((season) => season.season_number > 0)
+          .filter((season) => season?.season_number > 0)
           .map((season) => (
             {
-              airDate: season.air_date,
-              totalEpisodes: season.episode_count,
-              id: season.id,
-              title: season.name,
-              seasonNum: season.season_number,
-              poster: season.poster_path,
-              rating: season.vote_average,
+              airDate: season?.air_date,
+              totalEpisodes: season?.episode_count,
+              id: season?.id,
+              title: season?.name,
+              seasonNum: season?.season_number,
+              poster: season?.poster_path,
+              rating: season?.vote_average,
             }
           ));
-        const casts = credits.cast.map((person) => ({
-          id: person.id,
-          character: person.character,
-          name: person.name,
-          profile: person.profile_path,
+        const casts = credits?.cast.map((person) => ({
+          id: person?.id,
+          character: person?.character,
+          name: person?.name,
+          profile: person?.profile_path,
         })).slice(0, 20);
-        const crews = credits.crew.map((person) => ({
-          id: person.id,
-          job: person.job,
-          name: person.name,
-          profile: person.profile_path,
+        const crews = credits?.crew?.map((person) => ({
+          id: person?.id,
+          job: person?.job,
+          name: person?.name,
+          profile: person?.profile_path,
         })).slice(0, 20);
         const show = {
           id,
@@ -86,18 +86,18 @@ function ShowResults({ results, onShowSelect }) {
   };
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-3">
-      {results && results.map((show) => (
+      {results && results?.map((show) => (
         <div className="flex col-span-2 md:col-span-1">
           <div className="flex">
             <img className="h-40 w-26 m-2" src={IMG_URL + show.poster_path} alt="" />
             <div className="flex-col justify-around flex">
               <div>
-                <h2 className="text-white text-base h-12 overflow-hidden">{show.name}</h2>
-                <h4 className="text-white">{show.first_air_date}</h4>
-                <h4 className="text-white">{show.original_language}</h4>
+                <h2 className="text-white text-base h-12 overflow-hidden">{show?.name}</h2>
+                <h4 className="text-white">{show?.first_air_date}</h4>
+                <h4 className="text-white">{show?.original_language}</h4>
               </div>
               <div>
-                <Button onClick={() => getshow(show.id)} className="w-min">Add</Button>
+                <Button onClick={() => getshow(show?.id)} className="w-min">Add</Button>
               </div>
             </div>
           </div>

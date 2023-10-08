@@ -55,22 +55,14 @@ export default function SingleChat({ fetchAgain, setFetchAgain }) {
     socket.on('stop typing', () => setIsTyping(false));
   }, []);
   const fetchMessages = async () => {
-    if (!selectedChat._id) {
+    if (!selectedChat?._id) {
       return;
     }
     try {
-      // const config = {
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     Authorization: `Bearer ${user.token}`,
-      //   },
-      // };
-      // setLoading(true);
-      // const { data } = await axios.get(`api/message/${selectedChat._id}`, config);
-      const { data } = await chatMessages(selectedChat._id);
+      const { data } = await chatMessages(selectedChat?._id);
       setMessages(data);
       setLoading(false);
-      socket.emit('join chat', selectedChat._id);
+      socket.emit('join chat', selectedChat?._id);
     } catch (error) {
       setLoading(false);
       toast({
@@ -90,13 +82,13 @@ export default function SingleChat({ fetchAgain, setFetchAgain }) {
 
   const sendMessage = async (e) => {
     if (e.key === 'Enter' && newMessage) {
-      socket.emit('stop typing', selectedChat._id);
+      socket.emit('stop typing', selectedChat?._id);
       try {
         setNewMessage('');
         const { data } = await sendMsg(
           {
             content: newMessage,
-            chatId: selectedChat._id,
+            chatId: selectedChat?._id,
           },
         );
         socket.emit('new message', data);
@@ -116,7 +108,7 @@ export default function SingleChat({ fetchAgain, setFetchAgain }) {
 
   useEffect(() => {
     socket.on('message recieved', (newMsgRecieved) => {
-      if (!selectedChatCompare || selectedChatCompare._id !== newMsgRecieved.chat._id) {
+      if (!selectedChatCompare || selectedChatCompare?._id !== newMsgRecieved?.chat?._id) {
         // give notification
       } else {
         setMessages([...messages, newMsgRecieved]);
@@ -129,7 +121,7 @@ export default function SingleChat({ fetchAgain, setFetchAgain }) {
     if (!socketConnected) return;
     if (!typing) {
       setTyping(true);
-      socket.emit('typing', selectedChat._id);
+      socket.emit('typing', selectedChat?._id);
     }
     const typingTime = new Date().getTime();
     const timerLength = 3000;
@@ -137,7 +129,7 @@ export default function SingleChat({ fetchAgain, setFetchAgain }) {
       const timeNow = new Date().getTime();
       const timeDiff = timeNow - typingTime;
       if (timeDiff >= timerLength) {
-        socket.emit('stop typing', selectedChat._id);
+        socket.emit('stop typing', selectedChat?._id);
         setTyping(false);
       }
     });
@@ -171,7 +163,7 @@ export default function SingleChat({ fetchAgain, setFetchAgain }) {
                 </>
               ) : (
                 <>
-                  {selectedChat.chatName?.toUpperCase()}
+                  {selectedChat?.chatName?.toUpperCase()}
                   <UpdateGroupChatModal
                     fetchAgain={fetchAgain}
                     setFetchAgain={setFetchAgain}
@@ -239,7 +231,7 @@ export default function SingleChat({ fetchAgain, setFetchAgain }) {
             fontSize="3xl"
             pb={3}
             fontFamily="Work sans"
-            color="black"
+            color="white"
           >
             Click on a chat to start chating
           </Text>

@@ -52,8 +52,8 @@ const verifyOtp = async (req, res) => {
                     verified: true
                 }).save()
                     .then(async (user) => {
-                        const token = await createToken(user._id);
-                        const userData = {id:user._id, name:user.fullName, email:user.email, token:token};
+                        const token = await createToken(user?._id);
+                        const userData = {id:user?._id, name:user?.fullName, email:user?.email, token:token};
                         return res.json({ status: true, message: 'Verification successfull', userData });
                     });
             }
@@ -70,15 +70,15 @@ const login = async (req, res) => {
         if (!user) {
             throw Error('incorrect email');
         }
-        const auth = await bcrypt.compare(password, user.password);
+        const auth = await bcrypt.compare(password, user?.password);
         if (!auth) {
             throw Error('wrong password');
         }
-        if(user.blocked){
+        if(user?.blocked){
             throw Error('user is temporarily blocked');
         }
-        const token = await createToken(user._id);
-        res.json({ id:user._id, name:user.fullName, email:user.email, picture:user.picture.url, token });
+        const token = await createToken(user?._id);
+        res.json({ id:user?._id, name:user?.fullName, email:user?.email, picture:user?.picture?.url, token });
     } catch (error) {
         res.json({error: error.message});
     }
@@ -96,7 +96,7 @@ const userAuth = async(req,res)=>{
             if(!user){
                 return res.json({ success: false, message: 'User not exists' });
             }
-            const userData = { id:user._id, name:user.fullName, email:user.email, picture:user.picture.url, token };
+            const userData = { id:user?._id, name:user?.fullName, email:user?.email, picture:user?.picture?.url, token };
             res.json({ success: true, message: 'User authorised', userData });
         }else{
             res.json({ success: false, message: 'User unauthorized' });

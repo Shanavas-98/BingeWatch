@@ -40,25 +40,25 @@ function ViewEpisode({ episodeId }) {
       summary, images, casts, crews, guests,
     } = episode;
     const castCards = casts?.map((person) => ({
-      id: person.cast,
-      key: person.tmdbId,
-      title: person.name,
-      subtitle: person.character,
-      image: person.profile,
+      id: person?.cast,
+      key: person?.tmdbId,
+      title: person?.name,
+      subtitle: person?.character,
+      image: person?.profile,
     }));
     const guestCards = guests?.map((person) => ({
-      id: person.cast,
-      key: person.tmdbId,
-      title: person.name,
-      subtitle: person.character,
-      image: person.profile,
+      id: person?.cast,
+      key: person?.tmdbId,
+      title: person?.name,
+      subtitle: person?.character,
+      image: person?.profile,
     }));
     const crewCards = crews?.map((person) => ({
-      id: person.crew,
-      key: person.tmdbId,
-      title: person.name,
-      subtitle: person.job,
-      image: person.profile,
+      id: person?.crew,
+      key: person?.tmdbId,
+      title: person?.name,
+      subtitle: person?.job,
+      image: person?.profile,
     }));
     const cardStyle = {
       wd: 'w-28',

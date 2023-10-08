@@ -41,7 +41,6 @@ export default function Review({ review, friend }) {
           )}
         </div>
         <div className="flex flex-col">
-          {/* <Rating className="review-rating" value={review?.rating} precision={0.5} /> */}
           <StarRating rating={review?.rating} disabled />
           <span className="review-date">{review?.createdAt?.slice(0, 10)}</span>
         </div>

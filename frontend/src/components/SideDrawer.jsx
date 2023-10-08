@@ -51,7 +51,7 @@ export default function SideDrawer() {
     try {
       setLoadingChat(true);
       const { data } = await newChat(friendId);
-      if (!chats.find((c) => c._id === data._id)) {
+      if (!chats.find((c) => c._id === data?._id)) {
         setChats([data, ...chats]);
       }
       setSelectedChat(data);
@@ -135,9 +135,9 @@ export default function SideDrawer() {
             ) : (
               searchResult?.map((person) => (
                 <UserListItem
-                  key={person._id}
+                  key={person?._id}
                   user={person}
-                  handleFunction={() => createChat(person._id)}
+                  handleFunction={() => createChat(person?._id)}
                 />
               ))
             )}

@@ -98,9 +98,9 @@ const addCast = async (person) => {
             } else {
                 genderType = 'Unknown';
             }
-            const castCredits = combined_credits.cast
+            const castCredits = combined_credits?.cast
                 .slice(0, 20)
-                .map((movie) => (movie.id));
+                .map((movie) => (movie?.id));
             const result = await new Promise((resolve, reject) => {
                 new castModel({
                     actorId: id,
@@ -152,9 +152,9 @@ const addCastDetails = async (castDetails) => {
             .slice(0, 20)
             .map((person) => {
                 return ({
-                    castId: person.id,
-                    name: person.name,
-                    character: person.character,
+                    castId: person?.id,
+                    name: person?.name,
+                    character: person?.character,
                 });
             });
         const castData = await addCasts(cast);
@@ -187,10 +187,10 @@ const addCrew = async (person) => {
             } else {
                 genderType = 'Unknown';
             }
-            const crewCredits = combined_credits.crew
+            const crewCredits = combined_credits?.crew
                 .sort((a, b) => b.vote_average - a.vote_average)
                 .slice(0, 20)
-                .map((movie) => (movie.id));
+                .map((movie) => (movie?.id));
             const result = await new Promise((resolve, reject) => {
                 new crewModel({
                     crewId: id,
@@ -230,7 +230,7 @@ const addCrews = async (crews) => {
             }
         }
         const crewsArray = resultArray.reduce((acc, obj) => {
-            const existingObj = acc.find((item) => (item.tmdbId === obj.tmdbId));
+            const existingObj = acc.find((item) => (item?.tmdbId === obj.tmdbId));
             if (existingObj) {
                 existingObj.job += `, ${obj.job}`;
             } else {
@@ -250,9 +250,9 @@ const addCrewDetails = async (crewDetails) => {
             .slice(0, 20)
             .map((person) => {
                 return ({
-                    crewId: person.id,
-                    name: person.name,
-                    job: person.job,
+                    crewId: person?.id,
+                    name: person?.name,
+                    job: person?.job,
                 });
             });
         const crewData = await addCrews(crew);
@@ -920,13 +920,13 @@ const fetchCrewDetails = async (req, res) => {
         const crew = await crewModel.findById(crewId);
         if (crew) {
             const movies = await Promise.all(
-                crew.knownFor?.map(async (movieId) => {
+                crew?.knownFor?.map(async (movieId) => {
                     const movie = await movieModel.findOne({ id: movieId });
                     return movie;
                 })
             );
             if (movies.length > 0) {
-                const knownFor = movies.filter((movie) => movie !== null);
+                const knownFor = movies?.filter((movie) => movie !== null);
                 res.json({ status: true, crew, knownFor });
             }
         } else {

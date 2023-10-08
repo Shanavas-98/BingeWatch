@@ -143,8 +143,8 @@ function SeriesList() {
                 }}
               >
                 <option defaultValue="">Genres</option>
-                {genres && genres.map((item) => (
-                  <option value={item._id}>{item.genreName}</option>
+                {genres && genres?.map((item) => (
+                  <option value={item?._id}>{item?.genreName}</option>
                 ))}
               </select>
             </th>
@@ -176,25 +176,25 @@ function SeriesList() {
             <th>Actions</th>
           </tr>
         </thead>
-        {series.length > 0 ? (
+        {series?.length > 0 ? (
           <tbody className="w-full">
-            {series.map((item) => {
-              const genreNames = item.genres?.map((genre) => genre.genreName).join(', ');
+            {series?.map((item) => {
+              const genreNames = item?.genres?.map((genre) => genre?.genreName).join(', ');
               return (
                 <tr className="flex w-full">
-                  <td className="w-full pl-10">{item.id}</td>
+                  <td className="w-full pl-10">{item?.id}</td>
                   <td className="w-full pl-10"><img src={IMG_URL + item.poster} alt="" className="w-15 h-20" /></td>
-                  <td className="w-full pl-10">{item.title}</td>
+                  <td className="w-full pl-10">{item?.title}</td>
                   <td className="w-full pl-10">{genreNames}</td>
-                  <td className="w-full pl-10">{item.language}</td>
-                  <td className="w-full pl-10">{item.airDate}</td>
-                  <td className="w-full pl-10">{item.endDate}</td>
+                  <td className="w-full pl-10">{item?.language}</td>
+                  <td className="w-full pl-10">{item?.airDate}</td>
+                  <td className="w-full pl-10">{item?.endDate}</td>
                   <td className="w-full pl-10">
                     <Button
                       variant="outlined"
                       color="primary"
                       size="medium"
-                      onClick={() => viewSeries(item._id)}
+                      onClick={() => viewSeries(item?._id)}
                     >
                       View
                     </Button>
@@ -207,7 +207,7 @@ function SeriesList() {
           <div className="text-lg font-bold p-5">Show not found!</div>
         )}
       </table>
-      {series.length > 0
+      {series?.length > 0
       && (
       <div className="flex justify-center">
         {prev

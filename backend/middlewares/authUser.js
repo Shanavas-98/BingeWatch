@@ -13,7 +13,7 @@ module.exports = async (req, res, next) => {
             if(!user){
                 return res.json({ success: false, message: 'User not exists' });
             }
-            req.userId=user._id;
+            req.userId=user?._id;
             next();
         }else{
             res.json({ success:false, message: 'Middleware: User unauthorized' });

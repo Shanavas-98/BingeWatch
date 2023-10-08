@@ -46,11 +46,11 @@ function Signup() {
       // seting the loading state
       setLoading(!loading);
       const { data } = await userSignup(values);
-      if (data.status) {
+      if (data?.status) {
         navigate('/verify');
       } else {
         setLoading(false);
-        throw Error(data.message);
+        throw Error(data?.message);
       }
     } catch (error) {
       toast.error(error.message, {

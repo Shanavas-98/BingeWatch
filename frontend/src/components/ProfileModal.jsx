@@ -6,6 +6,7 @@ import {
   ModalHeader, ModalOverlay, Text, useDisclosure,
 } from '@chakra-ui/react';
 import { ViewIcon } from '@chakra-ui/icons';
+import { AVATAR } from '../axios/apiUrls';
 
 export default function ProfileModal({ user, children }) {
   ProfileModal.propTypes = {
@@ -40,7 +41,7 @@ export default function ProfileModal({ user, children }) {
             display="flex"
             justifyContent="center"
           >
-            {user.fullName}
+            {user?.fullName}
 
           </ModalHeader>
           <ModalCloseButton />
@@ -53,15 +54,15 @@ export default function ProfileModal({ user, children }) {
             <Image
               borderRadius="full"
               boxSize="150px"
-              src={user.picture.url}
-              alt={user.fullName}
+              src={user?.picture?.url || AVATAR}
+              alt={user?.fullName}
             />
             <Text
               fontSize={{ base: '28px', md: '30px' }}
               fontFamily="Work Sans"
             >
               Email:
-              {user.email}
+              {user?.email}
             </Text>
           </ModalBody>
 

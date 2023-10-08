@@ -29,14 +29,14 @@ export default function UserListItem({ user, handleFunction }) {
         mr={2}
         size="sm"
         cursor="pointer"
-        name={user.fullName}
-        src={user.pic}
+        name={user?.fullName}
+        src={user?.pic}
       />
       <Box>
-        <Text>{user.fullName}</Text>
+        <Text>{user?.fullName}</Text>
         <Text fontSize="xs">
           <b>Email : </b>
-          {user.email}
+          {user?.email}
         </Text>
       </Box>
     </Box>

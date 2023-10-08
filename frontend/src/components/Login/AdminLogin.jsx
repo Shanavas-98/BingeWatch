@@ -12,7 +12,7 @@ function AdminLogin() {
   const { admin, setAdmin } = useAuth();
   const from = location.state?.from?.pathname;
   useEffect(() => {
-    if (admin) {
+    if (admin?.id) {
       navigate(from || '/admin/dashboard');
     }
   }, []);
@@ -23,8 +23,8 @@ function AdminLogin() {
   const onSubmit = async (values) => {
     try {
       const { data } = await adminLogin(values);
-      if (data.error) {
-        throw Error(data.error);
+      if (data?.error) {
+        throw Error(data?.error);
       } else {
         localStorage.setItem('adminInfo', JSON.stringify(data));
         setAdmin(data);

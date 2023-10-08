@@ -60,7 +60,7 @@ export default function GroupChatModal({ children }) {
       const { data } = await newGroupChat(
         {
           name: groupName,
-          users: JSON.stringify(selectedUsers.map((u) => (u._id))),
+          users: JSON.stringify(selectedUsers?.map((u) => (u._id))),
         },
       );
       setChats([data, ...chats]);
@@ -84,7 +84,7 @@ export default function GroupChatModal({ children }) {
     }
   };
   const handleGroup = (userToAdd) => {
-    if (selectedUsers.includes(userToAdd)) {
+    if (selectedUsers?.includes(userToAdd)) {
       toast({
         title: 'User already added',
         status: 'warning',
@@ -97,7 +97,7 @@ export default function GroupChatModal({ children }) {
     setSelectedUsers([...selectedUsers, userToAdd]);
   };
   const handleDelete = (delUserId) => {
-    setSelectedUsers(selectedUsers.filter((selUser) => selUser._id !== delUserId));
+    setSelectedUsers(selectedUsers?.filter((selUser) => selUser?._id !== delUserId));
   };
   return (
     <div>
@@ -155,9 +155,9 @@ export default function GroupChatModal({ children }) {
             >
               {selectedUsers?.map((person) => (
                 <UserBadgeItem
-                  key={person._id}
+                  key={person?._id}
                   user={person}
-                  handleFunction={() => handleDelete(person._id)}
+                  handleFunction={() => handleDelete(person?._id)}
                 />
               ))}
             </Box>
@@ -166,7 +166,7 @@ export default function GroupChatModal({ children }) {
               <div>loading</div>
             ) : (searchResult && searchResult?.slice(0, 4).map((person) => (
               <UserListItem
-                key={person._id}
+                key={person?._id}
                 user={person}
                 handleFunction={() => handleGroup(person)}
               />

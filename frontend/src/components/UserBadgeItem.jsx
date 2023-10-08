@@ -21,7 +21,7 @@ export default function UserBadgeItem({ user, handleFunction }) {
       cursor="pointer"
       onClick={handleFunction}
     >
-      {user.fullName}
+      {user?.fullName}
       <CloseIcon fontSize="10px" />
     </Box>
   );
