@@ -39,7 +39,7 @@ export default function ScrollableChat({ messages }) {
                 )}
           <span
             style={{
-              backgroundColor: `${msg.sender._id === user.id ? '#BEE3F8' : '#B9F5D0'}`,
+              backgroundColor: `${msg.sender._id === user.id ? '#189be7' : '#1dc95f'}`,
               borderRadius: '20px',
               padding: '5px 15px',
               maxWidth: '75%',
@@ -47,6 +47,7 @@ export default function ScrollableChat({ messages }) {
               marginTop: isSameUser(messages, msg, idx, user.id) ? 3 : 10,
             }}
           >
+            {/* bgcolor '#BEE3F8' : '#B9F5D0' */}
             {msg.content}
           </span>
         </div>

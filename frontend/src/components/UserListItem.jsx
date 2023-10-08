@@ -11,7 +11,7 @@ export default function UserListItem({ user, handleFunction }) {
     <Box
       onClick={handleFunction}
       cursor="pointer"
-      bg="#E8E8E8"
+      bg="#737373"
       _hover={{
         background: '#38B2AC',
         color: 'white',

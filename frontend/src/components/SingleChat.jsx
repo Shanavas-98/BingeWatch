@@ -185,12 +185,13 @@ export default function SingleChat({ fetchAgain, setFetchAgain }) {
             flexDirection="column"
             justifyContent="flex-end"
             p={3}
-            bg="#E8E8E8"
+            bg="#262626"
             w="100%"
             h="100%"
             borderRadius="lg"
             overflowY="hidden"
           >
+            {/* bgcolor #E8E8E8 */}
             {loading ? (
               <Spinner
                 size="xl"
@@ -216,11 +217,12 @@ export default function SingleChat({ fetchAgain, setFetchAgain }) {
               )}
               <Input
                 variant="filled"
-                bg="#E0E0E0"
+                bg="#4d4d4d"
                 placeholder="Enter a message"
                 onChange={typingHandler}
                 value={newMessage}
               />
+              {/* bgcolor #E0E0E0 */}
             </FormControl>
           </Box>
 

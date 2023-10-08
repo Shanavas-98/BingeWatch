@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import './style.css';
 import {
-  Box, Button, Stack, Text, useToast,
+  Box, IconButton, Stack, Text, Tooltip, useToast,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { getSender } from '../utils/ChatLogic';
@@ -63,20 +63,22 @@ export default function MyChats({ fetchAgain }) {
       >
         My Chats
         <GroupChatModal>
-          <Button
-            display="flex"
-            fontSize={{ base: '17px', md: '10px', lg: '17px' }}
-            rightIcon={<AddIcon />}
-          >
-            New Group
-          </Button>
+          <Tooltip hasArrow label="New group" placement="top">
+            <IconButton
+              variant="outline"
+              colorScheme="white"
+              fontSize={{ base: '17px', md: '10px', lg: '17px' }}
+              aria-label="New group"
+              icon={<AddIcon />}
+            />
+          </Tooltip>
         </GroupChatModal>
       </Box>
       <Box
         display="flex"
         flexDirection="column"
         p={3}
-        bg="#F8F8F8"
+        bg="#262626"
         w="100%"
         h="100%"
         borderRadius="lg"
@@ -88,7 +90,7 @@ export default function MyChats({ fetchAgain }) {
               <Box
                 onClick={() => setSelectedChat(chat)}
                 cursor="pointer"
-                bg={selectedChat === chat ? '#38B2AC' : '#E8E8E8'}
+                bg={selectedChat === chat ? '#38B2AC' : '#737373'}
                 color={selectedChat === chat ? 'white' : 'black'}
                 px={3}
                 py={2}

@@ -1,35 +1,25 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
-  Avatar, Box, Button, Drawer, DrawerBody,
+  Box, Button, Drawer, DrawerBody,
   DrawerCloseButton, DrawerContent, DrawerHeader,
-  DrawerOverlay, Input, Menu, MenuButton,
-  MenuDivider, MenuItem, MenuList, Spinner,
+  DrawerOverlay, Input, Menu, MenuButton, Spinner,
   Text, Tooltip, useDisclosure, useToast,
 } from '@chakra-ui/react';
-import { BellIcon, ChevronDownIcon, SearchIcon } from '@chakra-ui/icons';
+import { BellIcon, SearchIcon } from '@chakra-ui/icons';
 import ChatLoading from './ChatLoading';
 import UserListItem from './UserListItem';
-import ProfileModal from './ProfileModal';
 import { fetchAllUsers, newChat } from '../services/userApi';
 import useChat from '../hooks/useChat';
-import useAuth from '../hooks/useAuth';
 
 export default function SideDrawer() {
-  const navigate = useNavigate();
   const toast = useToast();
   const [search, setSearch] = useState('');
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
-  const { user } = useAuth();
   const {
     setSelectedChat, chats, setChats,
   } = useChat();
-  const logoutHandler = () => {
-    localStorage.removeItem('userInfo');
-    navigate('/');
-  };
   const { isOpen, onOpen, onClose } = useDisclosure();
   const handleSearch = async () => {
     if (!search) {
@@ -110,18 +100,6 @@ export default function SideDrawer() {
               <BellIcon fontSize="2xl" m={1} />
             </MenuButton>
             {/* <MenuList></MenuList> */}
-          </Menu>
-          <Menu>
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-              <Avatar size="sm" cursor="pointer" name={user.fullName} src={user.pic} />
-            </MenuButton>
-            <MenuList>
-              <ProfileModal user={user}>
-                <MenuItem color="black">Profile</MenuItem>
-              </ProfileModal>
-              <MenuDivider />
-              <MenuItem color="black" onClick={logoutHandler}>Logout</MenuItem>
-            </MenuList>
           </Menu>
         </div>
       </Box>
