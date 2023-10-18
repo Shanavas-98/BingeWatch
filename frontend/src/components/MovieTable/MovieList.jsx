@@ -183,9 +183,7 @@ export default function MovieTable() {
                       <td>
                         <Button
                           key={item?.id}
-                          variant="outlined"
-                          color="primary"
-                          size="medium"
+                          colorScheme="gray"
                           onClick={() => viewMovie(item?._id)}
                         >
                           View

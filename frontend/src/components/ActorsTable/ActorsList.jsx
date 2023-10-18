@@ -8,10 +8,12 @@ import {
   Search,
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import { fetchActors } from '../../services/adminApi';
 import { IMG_URL } from '../../axios/apiUrls';
 
 function ActorsList() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [actors, setActors] = useState([]);
   const [prev, setPrev] = useState();
@@ -22,6 +24,10 @@ function ActorsList() {
   const [field, setField] = useState('name');
   const [order, setOrder] = useState(false);
   const [gender, setGender] = useState('');
+
+  const editActor = (actorId) => {
+    navigate(`/admin/actors/edit/${actorId}`);
+  };
 
   const handleNextPage = (pageNo) => {
     setPage(pageNo + 1);
@@ -154,7 +160,9 @@ function ActorsList() {
         </thead>
         <tbody>
           {actors?.map((person) => (
-            <tr className="">
+            <tr
+              key={person?.actorId}
+            >
               <td>{person?.actorId}</td>
               <td>
                 <img
@@ -166,7 +174,15 @@ function ActorsList() {
               <td>{person?.name}</td>
               <td>{person?.gender}</td>
               <td>{person?.popularity}</td>
-              <td>view</td>
+              <td>
+                <Button
+                  key={person?.actorId}
+                  colorScheme="gray"
+                  onClick={() => editActor(person?._id)}
+                >
+                  Edit
+                </Button>
+              </td>
             </tr>
           ))}
         </tbody>

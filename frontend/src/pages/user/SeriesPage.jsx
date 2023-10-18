@@ -1,15 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import SeriesCarousal from '../../components/SeriesCarousal/SeriesCarousal';
+import { fetchRandomGenres } from '../../services/userApi';
 
 function SeriesPage() {
-  const genresArray = ['Drama'];
+  const [genres, setGenres] = useState();
+  useEffect(() => {
+    async function getRandomGenres() {
+      try {
+        const { data } = await fetchRandomGenres();
+        setGenres(data);
+      } catch (error) {
+        toast.error(error.message);
+      }
+    }
+    getRandomGenres();
+  }, []);
   return (
     <div className="w-auto m-2">
-      {genresArray.map((showGenre) => (
-        <>
-          <strong className="text-white">{showGenre}</strong>
-          <SeriesCarousal genre={showGenre} />
-        </>
+      {genres?.map((gen) => (
+        <div key={gen._id}>
+          <strong className="text-white">{gen.genreName}</strong>
+          <SeriesCarousal genre={gen._id} />
+        </div>
       ))}
     </div>
   );

@@ -14,10 +14,10 @@ function UserLogin() {
   } = useAuth();
   const from = location.state?.from?.pathname;
   useEffect(() => {
-    if (user?.id) {
+    if (user && !user.blocked) {
       navigate(from || '/');
     }
-  }, []);
+  }, [navigate, user]);
 
   const initialValues = {
     email: '',
@@ -87,6 +87,18 @@ function UserLogin() {
             <Button type="submit" outline>Login</Button>
           </div>
         </form>
+        <div className="flex justify-between my-2 text-sm font-medium text-gray-300">
+          Forgot password?
+          <div
+            role="button"
+            tabIndex={0}
+            className=" hover:underline cursor-pointer text-cyan-500 "
+            onClick={() => navigate('/forgot')}
+            onKeyDown={handleKeyPress}
+          >
+            reset
+          </div>
+        </div>
         <div className="flex justify-between text-sm font-medium text-gray-300">
           Not registered?
           <div

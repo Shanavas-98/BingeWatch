@@ -13,13 +13,19 @@ module.exports = async (req, res, next) => {
             if(!user){
                 return res.json({ success: false, message: 'User not exists' });
             }
+            if(user.blocked){
+                return res.json({ success: false, message: 'User temporarily blocked' });
+            }
             req.userId=user?._id;
             next();
         }else{
             res.json({ success:false, message: 'Middleware: User unauthorized' });
         }
-    } catch (err) {
-        console.log(err);
-        res.json({ success: false, message: 'Middleware: User unauthorized' });
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            res.status(401).json({ success: false, message: 'TokenExpiredError' });
+        }else{
+            res.json({ success: false, message: 'Middleware: User unauthorized' });
+        }
     }
 };

@@ -12,10 +12,10 @@ function AdminLogin() {
   const { admin, setAdmin } = useAuth();
   const from = location.state?.from?.pathname;
   useEffect(() => {
-    if (admin?.id) {
+    if (admin) {
       navigate(from || '/admin/dashboard');
     }
-  }, []);
+  }, [navigate, admin]);
   const initialValues = {
     email: '',
     password: '',

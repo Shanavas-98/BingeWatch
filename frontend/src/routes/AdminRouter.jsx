@@ -15,6 +15,11 @@ import AdminLayout from '../layouts/AdminLayout';
 import NotFound from '../pages/NotFound';
 import AdminAuth from '../utils/AdminAuth';
 import AdminLogin from '../components/Login/AdminLogin';
+import EditShowPage from '../pages/admin/EditShowPage';
+import EditSeasonPage from '../pages/admin/EditSeasonPage';
+import EditEpisodePage from '../pages/admin/EditEpisodePage';
+import EditActorPage from '../pages/admin/EditActorPage';
+import EditCrewPage from '../pages/admin/EditCrewPage';
 
 function AdminRouter() {
   return (
@@ -32,10 +37,19 @@ function AdminRouter() {
           <Route path="series/">
             <Route index element={<SeriesPage />} />
             <Route path="add-show" element={<AddSeriesPage />} />
+            <Route path="view-show/:showId" element={<EditShowPage />} />
+            <Route path="view-season/:seasonId" element={<EditSeasonPage />} />
+            <Route path="view-episode/:episodeId" element={<EditEpisodePage />} />
           </Route>
           <Route path="genres" element={<GenresPage />} />
-          <Route path="actors" element={<ActorsPage />} />
-          <Route path="crews" element={<CrewsPage />} />
+          <Route path="actors/">
+            <Route index element={<ActorsPage />} />
+            <Route path="edit/:actorId" element={<EditActorPage />} />
+          </Route>
+          <Route path="crews/">
+            <Route index element={<CrewsPage />} />
+            <Route path="edit/:crewId" element={<EditCrewPage />} />
+          </Route>
         </Route>
         <Route path="*" element={<NotFound />} />
       </Route>

@@ -21,6 +21,7 @@ import ChatPage from '../pages/user/ChatPage';
 import UserAuth from '../utils/UserAuth';
 import UserLogin from '../components/Login/UserLogin';
 import Search from '../components/Search/Search';
+import Forgot from '../components/Forgot/Forgot';
 
 function UserRouter() {
   return (
@@ -30,6 +31,7 @@ function UserRouter() {
         <Route path="login" element={<UserLogin />} />
         <Route path="register" element={<Signup />} />
         <Route path="verify" element={<Otp />} />
+        <Route path="forgot" element={<Forgot />} />
         <Route path="search" element={<Search />} />
         <Route path="movies" element={<MoviesLayout />}>
           <Route index element={<MoviesPage />} />

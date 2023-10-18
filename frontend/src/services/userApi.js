@@ -3,10 +3,16 @@ import { userInstance } from '../axios/axiosInstance';
 
 export const userLogin = (values) => userInstance.post('/login', { ...values });
 export const userSignup = (values) => userInstance.post('/register', { ...values });
+export const sendOtp = () => userInstance.get('/resend-otp');
 export const verifyOtp = (otp) => userInstance.post('/verify', { otp });
-// export const userAuth = () => userInstance.get('/auth-user');
+export const newOtp = (mobile) => userInstance.post('/forgot-otp', { mobile });
+export const setNewPassword = (values) => userInstance.post('/forgot', { ...values });
+// export const isUserBlocked = () => userInstance.get('/is-blocked');
+export const userAuth = () => userInstance.get('/auth-user');
+
 export const searchContents = (search, release, pageNo) => userInstance.get(`/search?query=${search}&year=${release}&page=${pageNo}`);
-export const fetchGenreMovies = (genreName) => userInstance.get(`/movies/${genreName}`);
+export const fetchRandomGenres = () => userInstance.get('/genres');
+export const fetchGenreMovies = (genreId) => userInstance.get(`/movies/${genreId}`);
 export const fetchMovie = (movieId) => userInstance.get(`/movie/${movieId}`);
 export const addRating = (value, movieId) => userInstance.get(`/add-rating/${movieId}?rating=${value}`);
 export const addToWatchlist = (contentId, type) => userInstance.get(`/add-watchlist/${contentId}?type=${type}`);
@@ -16,7 +22,7 @@ export const fetchActor = (actorId) => userInstance.get(`/actor/${actorId}`);
 export const fetchCrew = (crewId) => userInstance.get(`/crew/${crewId}`);
 export const fetchAllReviews = (contentId) => userInstance.get(`/reviews/${contentId}`);
 export const fetchRelatedMovies = (movieId) => userInstance.get(`/related-movies/${movieId}`);
-export const fetchGenreSeries = (genreName) => userInstance.get(`/series/${genreName}`);
+export const fetchGenreSeries = (genreId) => userInstance.get(`/series/${genreId}`);
 export const fetchSeries = (showId) => userInstance.get(`/show/${showId}`);
 export const fetchSeason = (seasonId) => userInstance.get(`/season/${seasonId}`);
 export const fetchEpisode = (episodeId) => userInstance.get(`/episode/${episodeId}`);

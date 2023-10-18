@@ -350,22 +350,8 @@ const getEpisodeDetails = async(req,res)=>{
 
 const fetchGenreSeries = async (req, res) => {
     try {
-        const genreName = req.params.genreName;
-        const series = await seriesModel.aggregate([
-            {
-                $lookup: {
-                    from: 'genres',
-                    localField: 'genres',
-                    foreignField: '_id',
-                    as: 'genres'
-                }
-            },
-            {
-                $match: {
-                    'genres.genreName': genreName
-                }
-            }
-        ]);
+        const genreId = req.params.genreId;
+        const series = await seriesModel.find({genres:genreId}).exec();
         res.json(series);
     } catch (err) {
         console.error(err);
@@ -390,6 +376,46 @@ const fetchSeriesDetails = async(req,res)=>{
     }
 };
 
+const fetchShow = async (req, res) => {
+    try {
+        const showId = req.params?.showId;
+        const show = await seriesModel.findById(showId).populate('genres').lean();
+        res.json(show);
+    } catch (err) {
+        console.error(err);
+        res.json(err);
+    }
+};
+
+const editShow = async (req, res) => {
+    try {
+        const { title, language, airDate, endDate, rating, summary } = req.body;
+        const showId = req.params?.showId;
+        await seriesModel.findByIdAndUpdate(
+            showId,
+            {
+                $set: {
+                    title,
+                    language,
+                    airDate,
+                    endDate,
+                    rating,
+                    summary
+                }
+            },
+            { new: true })
+            .then(() => {
+                res.json({ success: true, message: 'show edited successfully' });
+            })
+            .catch((err) => {
+                res.json({ success: false, message: 'error while editing show', err });
+            });
+    } catch (err) {
+        console.error(err);
+        res.json(err);
+    }
+};
+
 const fetchSeasonDetails = async(req,res)=>{
     try {
         const seasonId = req.params?.seasonId;
@@ -400,6 +426,44 @@ const fetchSeasonDetails = async(req,res)=>{
     } catch (error) {
         console.error(error);
         res.json(error);
+    }
+};
+
+const fetchSeason = async (req, res) => {
+    try {
+        const seasonId = req.params?.seasonId;
+        const show = await seasonModel.findOne({id:seasonId}).lean();
+        res.json(show);
+    } catch (err) {
+        console.error(err);
+        res.json(err);
+    }
+};
+
+const editSeason = async (req, res) => {
+    try {
+        const { title, airDate, rating, summary } = req.body;
+        const seasonId = req.params?.seasonId;
+        await seasonModel.findByIdAndUpdate(
+            seasonId,
+            {
+                $set: {
+                    title,
+                    airDate,
+                    rating,
+                    summary
+                }
+            },
+            { new: true })
+            .then(() => {
+                res.json({ success: true, message: 'season edited successfully' });
+            })
+            .catch((err) => {
+                res.json({ success: false, message: 'error while editing season', err });
+            });
+    } catch (err) {
+        console.error(err);
+        res.json(err);
     }
 };
 
@@ -416,6 +480,117 @@ const fetchEpisodeDetails = async(req,res)=>{
     }
 };
 
+const fetchEpisode = async (req, res) => {
+    try {
+        const episodeId = req.params?.episodeId;
+        const show = await episodeModel.findOne({id:episodeId}).lean();
+        res.json(show);
+    } catch (err) {
+        console.error(err);
+        res.json(err);
+    }
+};
+
+const editEpisode = async (req, res) => {
+    try {
+        const { title, airDate, rating, summary } = req.body;
+        const episodeId = req.params?.episodeId;
+        await episodeModel.findByIdAndUpdate(
+            episodeId,
+            {
+                $set: {
+                    title,
+                    airDate,
+                    rating,
+                    summary
+                }
+            },
+            { new: true })
+            .then(() => {
+                res.json({ success: true, message: 'episode edited successfully' });
+            })
+            .catch((err) => {
+                res.json({ success: false, message: 'error while editing episode', err });
+            });
+    } catch (err) {
+        console.error(err);
+        res.json(err);
+    }
+};
+
+const getShowsOfMonth = async(month,year)=>{
+    try {
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const showsCount = await seriesModel
+            .find({
+                createdAt: {
+                    $gte: firstDay,
+                    $lte: lastDay
+                }
+            })
+            .countDocuments().exec();
+        return showsCount;
+    } catch (error) {
+        return (error.message);
+    }
+};
+
+const getShowsGrowth = async (req, res) => {
+    try {
+        const today = new Date();
+        const month = today.getMonth();
+        const year = today.getFullYear();
+        const newShows = await getShowsOfMonth(month, year);
+        const lastMonthShows = await getShowsOfMonth(month-1, year);
+        const diff = newShows - lastMonthShows;
+        const profit = diff > 0 ? true : false ;
+        let growth;
+        if(lastMonthShows>0){
+            growth = (Math.abs(diff)/lastMonthShows)*100;
+        }else{
+            growth = Math.abs(diff)*100;
+        }
+        res.json({newShows,growth,profit});
+    } catch (error) {
+        res.json(error.message);
+    }
+};
+
+const getShowsOfYear = async(req,res)=>{
+    try {
+        const today = new Date();
+        const currMonth = today.getMonth();
+        const currYear = today.getFullYear();
+        const months = [
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'June',
+            'July',
+            'Aug',
+            'Sept',
+            'Oct',
+            'Nov',
+            'Dec',
+        ];
+        const monthlyShows = {};
+        for(let i=currMonth; i>=0; i--){
+            const showsCount = await getShowsOfMonth(i, currYear);
+            monthlyShows[months[i]] = showsCount;
+        }
+        for (let i = 11; i > currMonth; i -= 1) {
+            const showsCount = await getShowsOfMonth(i, currYear-1);
+            monthlyShows[months[i]] = showsCount;
+        }
+        res.json(monthlyShows);
+    } catch (error) {
+        res.json(error.message);
+    }
+};
+
 
 module.exports = {
     getShowDetails,
@@ -424,6 +599,14 @@ module.exports = {
     fetchSeries,
     fetchGenreSeries,
     fetchSeriesDetails,
+    fetchShow,
+    editShow,
     fetchSeasonDetails,
-    fetchEpisodeDetails
+    fetchSeason,
+    editSeason,
+    fetchEpisodeDetails,
+    fetchEpisode,
+    editEpisode,
+    getShowsGrowth,
+    getShowsOfYear
 };

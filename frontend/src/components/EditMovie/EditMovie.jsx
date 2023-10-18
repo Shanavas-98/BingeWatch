@@ -9,8 +9,8 @@ import {
   Button, FormLabel, Input, Textarea,
 } from '@chakra-ui/react';
 
-import { editMovie, fetchMovie } from '../../services/adminApi';
 import { IMG_URL } from '../../axios/apiUrls';
+import { editMovie, fetchMovie } from '../../services/adminApi';
 
 function EditMovie({ movieId }) {
   const navigate = useNavigate();
@@ -37,18 +37,34 @@ function EditMovie({ movieId }) {
   // Yup form validation
   const validationSchema = Yup.object({
     title: Yup.string()
-      .required('First Name Required'),
+      .trim('no trailing spaces')
+      .strict(true)
+      .required('title is required'),
     language: Yup.string()
-      .required('Email is Required'),
+      .trim('no trailing spaces')
+      .strict(true)
+      .matches(/^[A-Za-z ]*$/, 'Please enter valid language')
+      .required('language is required'),
     duration: Yup.string()
+      .trim('no trailing spaces')
+      .strict(true)
+      .matches(/^\d+h \d+m$/, "should be in 'HHh MMm' format")
       .required('duration is required'),
-    rating: Yup.string()
-      .required('rating is Required'),
-    releaseDate: Yup.string()
-      .required('date is Required '),
+    rating: Yup.number()
+      .min(0, 'min value is 0')
+      .max(10, 'max value is 10')
+      .required('rating is required'),
+    releaseDate: Yup.date()
+      .typeError('Invalid date format')
+      .min(new Date('1900-01-01'), 'Date must be after 1900-01-01')
+      .max(new Date(), 'Date cannot be in the future')
+      .required('date is required'),
     summary: Yup.string()
-      .required('summary is Required '),
+      .trim('no trailing spaces')
+      .strict(true)
+      .required('summary is required '),
   });
+
   const onSubmit = async (values) => {
     try {
       // seting the loading state
@@ -58,7 +74,7 @@ function EditMovie({ movieId }) {
         toast.success(data?.message, {
           position: 'top-center',
         });
-        navigate('admin/movies');
+        navigate('/admin/movies');
       } else {
         setLoading(false);
         throw Error(data?.message);
@@ -69,6 +85,7 @@ function EditMovie({ movieId }) {
       });
     }
   };
+
   const formik = useFormik({
     initialValues,
     onSubmit,
@@ -100,7 +117,8 @@ function EditMovie({ movieId }) {
 
   return (
     <div className="m-2">
-      <Button type="button" className="dark" onClick={() => setEdit(true)}>Edit</Button>
+      {!edit
+      && <Button type="button" className="dark" onClick={() => setEdit(true)}>Edit</Button>}
       <form action="" method="post" onSubmit={formik.handleSubmit}>
         {edit && (
         <div className="w-full my-2">
@@ -121,7 +139,7 @@ function EditMovie({ movieId }) {
               <FormLabel>Movie Title</FormLabel>
             </div>
             {formik.touched.title && formik.errors.title
-              ? <p>{formik.errors.title}</p> : null}
+              ? <p className="text-red-500">{formik.errors.title}</p> : null}
             {edit
               ? (
                 <Input
@@ -148,7 +166,7 @@ function EditMovie({ movieId }) {
               <FormLabel>Language</FormLabel>
             </div>
             {formik.touched.language && formik.errors.language
-              ? <p>{formik.errors.language}</p> : null}
+              ? <p className="text-red-500">{formik.errors.language}</p> : null}
             {edit
               ? (
                 <Input
@@ -175,7 +193,7 @@ function EditMovie({ movieId }) {
               <FormLabel>Duration</FormLabel>
             </div>
             {formik.touched.duration && formik.errors.duration
-              ? <p>{formik.errors.duration}</p> : null}
+              ? <p className="text-red-500">{formik.errors.duration}</p> : null}
             {edit
               ? (
                 <Input
@@ -202,7 +220,7 @@ function EditMovie({ movieId }) {
               <FormLabel>Rating</FormLabel>
             </div>
             {formik.touched.rating && formik.errors.rating
-              ? <p>{formik.errors.rating}</p> : null}
+              ? <p className="text-red-500">{formik.errors.rating}</p> : null}
             {edit
               ? (
                 <Input
@@ -229,12 +247,12 @@ function EditMovie({ movieId }) {
               <FormLabel>Release Date</FormLabel>
             </div>
             {formik.touched.releaseDate && formik.errors.releaseDate
-              ? <p>{formik.errors.releaseDate}</p> : null}
+              ? <p className="text-red-500">{formik.errors.releaseDate}</p> : null}
             {edit
               ? (
                 <Input
                   name="releaseDate"
-                  type="text"
+                  type="date"
                   className="dark"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -244,7 +262,7 @@ function EditMovie({ movieId }) {
               : (
                 <Input
                   name="date"
-                  type="text"
+                  type="date"
                   className="dark"
                   readOnly={!edit}
                   defaultValue={movie?.releaseDate || ''}
@@ -257,7 +275,7 @@ function EditMovie({ movieId }) {
               <FormLabel>Genres</FormLabel>
             </div>
             {formik.touched.genres && formik.errors.genres
-              ? <p>{formik.errors.genres}</p> : null}
+              ? <p className="text-red-500">{formik.errors.genres}</p> : null}
             <Input
               name="genres"
               type="text"
@@ -273,7 +291,7 @@ function EditMovie({ movieId }) {
               <FormLabel>Summary</FormLabel>
             </div>
             {formik.touched.summary && formik.errors.summary
-              ? <p>{formik.errors.summary}</p> : null}
+              ? <p className="text-red-500">{formik.errors.summary}</p> : null}
             {edit
               ? (
                 <Textarea
@@ -299,22 +317,29 @@ function EditMovie({ movieId }) {
           </div>
         </div>
       </form>
-      <FormLabel>Posters</FormLabel>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-        {movie?.images?.map((image, index = 1) => (
-          <img key={index} src={IMG_URL + image} alt={`poster${index}`} className="h-60 w-36 m-2 rounded-md" />
-        ))}
-      </div>
-      <FormLabel>Videos</FormLabel>
-      {movie?.videos
+      {!edit && movie?.images
+      && (
+      <>
+        <FormLabel>Posters</FormLabel>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+          {movie?.images?.map((image, index = 1) => (
+            <img key={index} src={IMG_URL + image} alt={`poster${index}`} className="h-60 w-36 m-2 rounded-md" />
+          ))}
+        </div>
+      </>
+      )}
+      {!edit && movie?.videos
         && (
-          <div className="grid lg:grid-cols-3">
-            {movie?.videos?.map((key) => (
-              <div className="m-1">
-                <YouTube videoId={key} opts={opts} />
-              </div>
-            ))}
-          </div>
+          <>
+            <FormLabel>Videos</FormLabel>
+            <div className="grid lg:grid-cols-3">
+              {movie?.videos?.map((key) => (
+                <div className="m-1">
+                  <YouTube videoId={key} opts={opts} />
+                </div>
+              ))}
+            </div>
+          </>
         )}
     </div>
   );

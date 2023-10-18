@@ -17,7 +17,6 @@ const userInstance = axios.create({
   },
 });
 
-// Define a request interceptor to add the authorization token
 userInstance.interceptors.request.use(
   (config) => {
     const userData = JSON.parse(localStorage.getItem('userInfo'));
@@ -27,8 +26,20 @@ userInstance.interceptors.request.use(
     return config;
   },
   (error) => {
-    console.log('interceptor error', error);
     Promise.reject(error);
+  },
+);
+
+userInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response.data.message === 'TokenExpiredError' && error.response.status === 401) {
+      // JWT token is expired, perform user logout
+      localStorage.removeItem('userInfo');
+      // Redirect to the login page
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
   },
 );
 
@@ -50,6 +61,19 @@ adminInstance.interceptors.request.use(
     return config;
   },
   (error) => Promise.reject(error),
+);
+
+adminInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response.data.message === 'TokenExpiredError' && error.response.status === 401) {
+      // JWT token is expired, perform user logout
+      localStorage.removeItem('adminInfo');
+      // Redirect to the login page
+      window.location.href = '/admin';
+    }
+    return Promise.reject(error);
+  },
 );
 
 const tmdbInstance = axios.create({

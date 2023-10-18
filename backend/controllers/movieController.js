@@ -492,10 +492,8 @@ const getMovieDetails = async (req, res) => {
                 console.error(err);
             });
         const { success, message } = await addMovieDetails(movieData);
-        console.log('error',message);
         res.json({ success, message });
     } catch (err) {
-        console.log(err);
         res.json({ success:false, message:err.message });
     }
 };
@@ -568,31 +566,6 @@ const fetchMovie = async (req, res) => {
     }
 };
 
-const fetchGenreMovies = async (req, res) => {
-    try {
-        const genreName = req.params.genreName;
-        const movies = await movieModel.aggregate([
-            {
-                $lookup: {
-                    from: 'genres',
-                    localField: 'genres',
-                    foreignField: '_id',
-                    as: 'genres'
-                }
-            },
-            {
-                $match: {
-                    'genres.genreName': genreName
-                }
-            }
-        ]);
-        res.json(movies);
-    } catch (err) {
-        console.error(err);
-        res.json(err);
-    }
-};
-
 const editMovie = async (req, res) => {
     try {
         const { title, language, duration, rating, releaseDate, summary } = req.body;
@@ -619,6 +592,37 @@ const editMovie = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.json(err);
+    }
+};
+
+
+function shuffleArray(array) {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+}
+
+const getRandomGenres = async (req,res) => {
+    try {
+        const genres = await genreModel.find({}, '_id genreName').exec();
+        const shuffledGenres = shuffleArray(genres);
+        const randomGenres = shuffledGenres.slice(0, 5);
+        res.json(randomGenres);
+    } catch (error) {
+        res.json(error.message);
+    }
+};
+
+const fetchGenreMovies = async (req, res) => {
+    try {
+        const genreId = req.params.genreId;
+        const movies = await movieModel.find({genres:genreId}).exec();
+        res.json(movies);
+    } catch (error) {
+        res.json(error);
     }
 };
 
@@ -653,6 +657,30 @@ const fetchGenres = async (req, res) => {
             pagination.next = page + 1;
         }
         res.json({ genres, pagination });
+    } catch (err) {
+        console.error(err);
+        res.json(err);
+    }
+};
+
+const editGenre = async (req, res) => {
+    try {
+        const { genreName } = req.body;
+        const genreId = req.params?.genreId;
+        await genreModel.findByIdAndUpdate(
+            genreId,
+            {
+                $set: {
+                    genreName
+                }
+            },
+            { new: true })
+            .then(() => {
+                res.json({ success: true, message: 'genre edited successfully' });
+            })
+            .catch((err) => {
+                res.json({ success: false, message: 'error while editing genre', err });
+            });
     } catch (err) {
         console.error(err);
         res.json(err);
@@ -707,6 +735,48 @@ const fetchActors = async (req, res) => {
     }
 };
 
+const fetchActor = async (req, res) => {
+    try {
+        const actorId = req.params?.actorId;
+        const actor = await castModel.findById(actorId).lean();
+        res.json(actor);
+    } catch (err) {
+        console.error(err);
+        res.json(err);
+    }
+};
+
+
+const editActor = async (req, res) => {
+    try {
+        const { name, biography, birthday, deathday, gender, department, placeOfBirth } = req.body;
+        const actorId = req.params?.actorId;
+        await castModel.findByIdAndUpdate(
+            actorId,
+            {
+                $set: {
+                    name,
+                    biography,
+                    birthday,
+                    deathday,
+                    gender,
+                    department,
+                    placeOfBirth
+                }
+            },
+            { new: true })
+            .then(() => {
+                res.json({ success: true, message: 'actor edited successfully' });
+            })
+            .catch((err) => {
+                res.json({ success: false, message: 'error while editing actor', err });
+            });
+    } catch (err) {
+        console.error(err);
+        res.json(err);
+    }
+};
+
 const fetchCrews = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -749,6 +819,48 @@ const fetchCrews = async (req, res) => {
             pagination.next = page + 1;
         }
         res.json({ crews, pagination });
+    } catch (err) {
+        console.error(err);
+        res.json(err);
+    }
+};
+
+const fetchCrew = async (req, res) => {
+    try {
+        const crewId = req.params?.crewId;
+        const crew = await crewModel.findById(crewId).lean();
+        res.json(crew);
+    } catch (err) {
+        console.error(err);
+        res.json(err);
+    }
+};
+
+
+const editCrew = async (req, res) => {
+    try {
+        const { name, biography, birthday, deathday, gender, department, placeOfBirth } = req.body;
+        const crewId = req.params?.crewId;
+        await crewModel.findByIdAndUpdate(
+            crewId,
+            {
+                $set: {
+                    name,
+                    biography,
+                    birthday,
+                    deathday,
+                    gender,
+                    department,
+                    placeOfBirth
+                }
+            },
+            { new: true })
+            .then(() => {
+                res.json({ success: true, message: 'actor edited successfully' });
+            })
+            .catch((err) => {
+                res.json({ success: false, message: 'error while editing actor', err });
+            });
     } catch (err) {
         console.error(err);
         res.json(err);
@@ -1041,6 +1153,80 @@ const fetchContents = async (req, res) => {
     }
 };
 
+const getMoviesOfMonth = async(month,year)=>{
+    try {
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const moviesCount = await movieModel
+            .find({
+                createdAt: {
+                    $gte: firstDay,
+                    $lte: lastDay
+                }
+            })
+            .countDocuments().exec();
+        return moviesCount;
+    } catch (error) {
+        return (error.message);
+    }
+};
+
+const getMoviesGrowth = async (req, res) => {
+    try {
+        const today = new Date();
+        const month = today.getMonth();
+        const year = today.getFullYear();
+        const newMovies = await getMoviesOfMonth(month, year);
+        const lastMonthMovies = await getMoviesOfMonth(month-1, year);
+        const diff = newMovies - lastMonthMovies;
+        const profit = diff > 0 ? true : false ;
+        let growth;
+        if(lastMonthMovies>0){
+            growth = (Math.abs(diff)/lastMonthMovies)*100;
+        }else{
+            growth = Math.abs(diff)*100;
+        }
+        res.json({newMovies,growth,profit});
+    } catch (error) {
+        res.json(error.message);
+    }
+};
+
+const getMoviesOfYear = async(req,res)=>{
+    try {
+        const today = new Date();
+        const currMonth = today.getMonth();
+        const currYear = today.getFullYear();
+        const months = [
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'June',
+            'July',
+            'Aug',
+            'Sept',
+            'Oct',
+            'Nov',
+            'Dec',
+        ];
+        const monthlyMovies = {};
+        for(let i=currMonth; i>=0; i--){
+            const moviesCount = await getMoviesOfMonth(i, currYear);
+            monthlyMovies[months[i]] = moviesCount;
+        }
+        for (let i = 11; i > currMonth; i -= 1) {
+            const moviesCount = await getMoviesOfMonth(i, currYear-1);
+            monthlyMovies[months[i]] = moviesCount;
+        }
+        res.json(monthlyMovies);
+    } catch (error) {
+        res.json(error.message);
+    }
+};
+
+
 module.exports = {
     getMovieDetails,
     getPlatformDetails,
@@ -1053,8 +1239,14 @@ module.exports = {
     fetchMovie,
     editMovie,
     fetchGenres,
+    editGenre,
     fetchActors,
+    fetchActor,
+    editActor,
     fetchCrews,
+    fetchCrew,
+    editCrew,
+    getRandomGenres,
     fetchGenreMovies,
     fetchMovieDetails,
     addRating,
@@ -1065,6 +1257,8 @@ module.exports = {
     fetchCrewDetails,
     fetchAllReviews,
     fetchRelatedMovies,
-    fetchContents
+    fetchContents,
+    getMoviesGrowth,
+    getMoviesOfYear
 };
 

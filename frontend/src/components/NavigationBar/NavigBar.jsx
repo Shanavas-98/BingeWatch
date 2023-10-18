@@ -33,7 +33,7 @@ function NavigBar({ data }) {
     getRating(id);
   }, []);
   const movieRating = async (val) => {
-    if (!user) {
+    if (!user || user.blocked) {
       navigate('/login');
     } else if (val) {
       setRate(val);
@@ -54,14 +54,14 @@ function NavigBar({ data }) {
     }
   };
   const handleReviewModal = () => {
-    if (!user) {
+    if (!user || user.blocked) {
       navigate('/login');
     } else {
       setReviewModalOpen(true);
     }
   };
   const handleWatchlist = async (movieId) => {
-    if (!user) {
+    if (!user || user.blocked) {
       navigate('/login');
     } else {
       setAdded(!added);

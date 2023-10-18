@@ -23,16 +23,19 @@ export default function UserProfile() {
   }, []);
 
   // validation
-  const validate = Yup.object({
+  const validationSchema = Yup.object({
     fullName: Yup.string()
-      .max(20, 'Must be 20 characters or less')
-      .required('First Name Required'),
+      .trim('no trailing spaces')
+      .strict(true)
+      .matches(/^[A-Za-z ]*$/, 'Please enter valid name')
+      .max(30, 'Must be 30 characters or less')
+      .required('Full Name Required'),
   });
 
   // formik
   const formik = useFormik({
     initialValues,
-    validationSchema: validate,
+    validationSchema,
     onSubmit: async (values) => {
       updateUserDetails(values)
         .then((response) => {

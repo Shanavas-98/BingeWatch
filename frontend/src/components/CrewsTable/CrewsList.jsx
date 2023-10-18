@@ -5,10 +5,12 @@ import {
 import { Button, Input } from '@chakra-ui/react';
 import { toast } from 'react-toastify';
 
+import { useNavigate } from 'react-router-dom';
 import { IMG_URL } from '../../axios/apiUrls';
 import { fetchCrews } from '../../services/adminApi';
 
 function CrewsList() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [crews, setCrews] = useState([]);
   const [prev, setPrev] = useState();
@@ -28,6 +30,9 @@ function CrewsList() {
   const handleSort = (key) => {
     setField(key);
     setOrder(!order);
+  };
+  const editCrew = (crewId) => {
+    navigate(`/admin/crews/edit/${crewId}`);
   };
   useEffect(() => {
     const getCrews = async () => {
@@ -159,14 +164,25 @@ function CrewsList() {
         </thead>
         <tbody className="w-full">
           {crews.map((person) => (
-            <tr className="flex w-full">
+            <tr
+              className="flex w-full"
+              key={person?.crewId}
+            >
               <td className="w-full">{person?.crewId}</td>
               <td className="w-full pl-5"><img src={IMG_URL + person.profile} alt="" className="w-15 h-20" /></td>
               <td className="w-full pl-5">{person?.name}</td>
               <td className="w-full pl-5">{person?.gender}</td>
               <td className="w-full pl-10">{person?.department}</td>
               <td className="w-full pl-10">{person?.popularity}</td>
-              <td className="w-full pl-10">view</td>
+              <td className="w-full pl-10">
+                <Button
+                  key={person?.crewId}
+                  colorScheme="gray"
+                  onClick={() => editCrew(person?._id)}
+                >
+                  Edit
+                </Button>
+              </td>
             </tr>
           ))}
         </tbody>

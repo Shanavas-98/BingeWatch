@@ -5,13 +5,16 @@ import { toast } from 'react-toastify';
 import { fetchGenreMovies } from '../../services/userApi';
 import CardCarousal from '../CardCarousal/CardCarousal';
 
-function MovieCarousal({ genre }) {
+function MovieCarousal({ genreId }) {
+  MovieCarousal.propTypes = {
+    genreId: PropTypes.string.isRequired,
+  };
   const [loading, setLoading] = useState(true);
   const [movies, setMovies] = useState();
   useEffect(() => {
-    const getMovies = async (genreName) => {
+    const getMovies = async (genre) => {
       try {
-        const { data } = await fetchGenreMovies(genreName);
+        const { data } = await fetchGenreMovies(genre);
         setMovies(data);
         setLoading(false);
       } catch (err) {
@@ -21,8 +24,8 @@ function MovieCarousal({ genre }) {
         setLoading(false);
       }
     };
-    getMovies(genre);
-  }, [genre]);
+    getMovies(genreId);
+  }, [genreId]);
 
   if (loading) {
     return (
@@ -50,9 +53,5 @@ function MovieCarousal({ genre }) {
     <h1>movies is not an array</h1>
   );
 }
-
-MovieCarousal.propTypes = {
-  genre: PropTypes.string.isRequired,
-};
 
 export default MovieCarousal;

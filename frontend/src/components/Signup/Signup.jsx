@@ -21,14 +21,19 @@ function Signup() {
   // Yup form validation
   const validationSchema = Yup.object({
     fullName: Yup.string()
-      .max(15, 'Must be 15 characters or less')
-      .required('First Name Required'),
+      .trim('no trailing spaces')
+      .strict(true)
+      .matches(/^[A-Za-z ]*$/, 'Please enter valid name')
+      .max(30, 'Must be 30 characters or less')
+      .required('Full Name Required'),
     email: Yup.string()
+      .trim('no trailing spaces')
+      .strict(true)
       .email('Invalid email address')
       .required('Email is Required'),
     mobile: Yup.string()
       .matches(/^[5-9]{1}[0-9]{9}$/, 'Invalid mobile number')
-      .required('This field required'),
+      .required('Mobile is required'),
     password: Yup.string()
       .min(6, 'Password must be at least 6 charaters')
       .matches(
@@ -88,7 +93,7 @@ function Signup() {
               <FormLabel>Your full name</FormLabel>
             </div>
             {formik.touched.fullName && formik.errors.fullName
-              ? <p>{formik.errors.fullName}</p> : null}
+              ? <p className="text-red-500">{formik.errors.fullName}</p> : null}
             <Input
               name="fullName"
               type="text"
@@ -102,7 +107,7 @@ function Signup() {
             <div className="mb-1 block">
               <FormLabel>Your Email</FormLabel>
             </div>
-            {formik.touched.email && formik.errors.email ? <p>{formik.errors.email}</p> : null}
+            {formik.touched.email && formik.errors.email ? <p className="text-red-500">{formik.errors.email}</p> : null}
             <Input
               name="email"
               type="email"
@@ -117,7 +122,7 @@ function Signup() {
             <div className="mb-1 block">
               <FormLabel>Your Mobile</FormLabel>
             </div>
-            {formik.touched.mobile && formik.errors.mobile ? <p>{formik.errors.mobile}</p> : null}
+            {formik.touched.mobile && formik.errors.mobile ? <p className="text-red-500">{formik.errors.mobile}</p> : null}
             <Input
               name="mobile"
               type="tel"
@@ -132,7 +137,7 @@ function Signup() {
               <FormLabel>Your Password</FormLabel>
             </div>
             {formik.touched.password && formik.errors.password
-              ? <p>{formik.errors.password}</p> : null}
+              ? <p className="text-red-500">{formik.errors.password}</p> : null}
             <Input
               name="password"
               type="password"
@@ -147,7 +152,7 @@ function Signup() {
               <FormLabel>Confirm Password</FormLabel>
             </div>
             {formik.touched.confirmPass && formik.errors.confirmPass
-              ? <p>{formik.errors.confirmPass}</p> : null}
+              ? <p className="text-red-500">{formik.errors.confirmPass}</p> : null}
             <Input
               name="confirmPass"
               type="password"

@@ -41,6 +41,13 @@ const userSchema = new mongoose.Schema({
     timestamps:true
 });
 
+// Method to update and encrypt the password
+userSchema.methods.updatePassword = async function(newPassword) {
+    const salt = await bcrypt.genSalt();
+    this.password = await bcrypt.hash(newPassword, salt);
+};
+
+// Method to encrypt password of new user
 userSchema.pre('save',async function(next) {
     if(!this.isModified('password')){
         return next();

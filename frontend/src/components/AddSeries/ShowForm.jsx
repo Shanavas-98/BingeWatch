@@ -183,7 +183,7 @@ function ShowForm({ show, onSeasonSelect }) {
           />
         </div>
         <div className="col-span-1 w-auto">
-          <FormLabel>Title</FormLabel>
+          <FormLabel>Platforms</FormLabel>
           <div className="cards-carousal">
             {show?.platforms?.map((platform, index = 1) => (
               <img

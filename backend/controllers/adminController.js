@@ -40,17 +40,11 @@ const adminAuth = async (req, res) => {
         }else{
             res.json({ success: false, message: 'Admin unauthorised' });
         }
-    } catch (err) {
-        console.log('error',err);
-        res.json({ success: false, message: 'Admin unauthorised' });
-    }
-};
-
-const dashboard = async (req, res) => {
-    try {
-        // console.log(req.body);
     } catch (error) {
-        res.json({ error });
+        if (error.name === 'TokenExpiredError') {
+            res.status(401).json({ success: false, message: 'TokenExpiredError' });
+        }
+        res.json({ success: false, message: 'Admin unauthorised' });
     }
 };
 
@@ -107,4 +101,88 @@ const blockUser = async(req,res)=>{
     }
 };
 
-module.exports = { login, dashboard, adminAuth, fetchUsers, blockUser };
+const getUsersOfMonth = async(month,year)=>{
+    try {
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const usersCount = await userModel
+            .find({
+                createdAt: {
+                    $gte: firstDay,
+                    $lte: lastDay
+                }
+            })
+            .countDocuments().exec();
+        return usersCount;
+    } catch (error) {
+        return (error.message);
+    }
+};
+
+const getUserGrowth = async (req, res) => {
+    try {
+        const today = new Date();
+        const month = today.getMonth();
+        const year = today.getFullYear();
+        const newUsers = await getUsersOfMonth(month, year);
+        const lastMonthUsers = await getUsersOfMonth(month-1, year);
+        const diff = newUsers - lastMonthUsers;
+        const profit = diff > 0 ? true : false ;
+        let growth;
+        if(lastMonthUsers>0){
+            growth = (Math.abs(diff)/lastMonthUsers)*100;
+        }else{
+            growth = Math.abs(diff)*100;
+        }
+        res.json({newUsers,growth,profit});
+    } catch (error) {
+        res.json(error.message);
+    }
+};
+
+const getUsersOfYear = async(req,res)=>{
+    try {
+        const today = new Date();
+        const currMonth = today.getMonth();
+        const currYear = today.getFullYear();
+        const months = [
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'June',
+            'July',
+            'Aug',
+            'Sept',
+            'Oct',
+            'Nov',
+            'Dec',
+        ];
+        const monthlyUsers = {};
+        for(let i=currMonth; i>=0; i--){
+            const userCount = await getUsersOfMonth(i, currYear);
+            monthlyUsers[months[i]] = userCount;
+        }
+        for (let i = 11; i > currMonth; i -= 1) {
+            const userCount = await getUsersOfMonth(i, currYear-1);
+            monthlyUsers[months[i]] = userCount;
+        }
+        res.json(monthlyUsers);
+    } catch (error) {
+        res.json(error.message);
+    }
+};
+
+const getUserCounts = async(req,res)=>{
+    try {
+        const total = await userModel.find().countDocuments().exec();
+        const blocked = await userModel.find({blocked:true}).countDocuments().exec();
+        const active = total-blocked;
+        res.json({total,blocked,active});
+    } catch (error) {
+        res.json(error.message);
+    }
+};
+
+module.exports = { login, adminAuth, fetchUsers, blockUser, getUserGrowth, getUserCounts, getUsersOfYear };

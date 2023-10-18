@@ -18,8 +18,11 @@ module.exports = async (req, res, next) => {
         }else{
             res.json({ success:false, message: 'Middleware: Admin unauthorized' });
         }
-    } catch (err) {
-        console.log(err);
-        res.json({ success: false, message: 'Middleware: Admin unauthorized' });
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            res.status(401).json({ success: false, message: 'TokenExpiredError' });
+        }else{
+            res.json({ success: false, message: 'Middleware: Admin unauthorized' });
+        }
     }
 };

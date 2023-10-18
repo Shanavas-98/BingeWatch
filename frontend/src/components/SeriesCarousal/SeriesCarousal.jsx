@@ -9,9 +9,9 @@ function SeriesCarousal({ genre }) {
   const [loading, setLoading] = useState(true);
   const [series, setSeries] = useState();
   useEffect(() => {
-    const getSeries = async (genreName) => {
+    const getSeries = async (genreId) => {
       try {
-        const { data } = await fetchGenreSeries(genreName);
+        const { data } = await fetchGenreSeries(genreId);
         setSeries(data);
         setLoading(false);
       } catch (err) {

@@ -34,6 +34,17 @@ const register = async (req, res) => {
 
 };
 
+const resendOtp = async (req,res) => {
+    try {
+        client.verify.v2
+            .services(verifySid)
+            .verifications.create({ to: `+91${newUser.mobile}`, channel: 'sms' });
+        res.json({ success: true, message: 'otp send successfully' });
+    } catch (error) {
+        res.json({success: false, message: error.message});
+    }
+};
+
 const verifyOtp = async (req, res) => {
     const otpCode = req.body.otp;
     client.verify.v2
@@ -53,7 +64,7 @@ const verifyOtp = async (req, res) => {
                 }).save()
                     .then(async (user) => {
                         const token = await createToken(user?._id);
-                        const userData = {id:user?._id, name:user?.fullName, email:user?.email, token:token};
+                        const userData = { id: user?._id, name: user?.fullName, email: user?.email, token: token };
                         return res.json({ status: true, message: 'Verification successfull', userData });
                     });
             }
@@ -61,6 +72,49 @@ const verifyOtp = async (req, res) => {
                 return res.json({ status: false, message: 'Max check attempts reached' });
             }
         });
+};
+
+const forgotOtp = async (req,res) => {
+    try {
+        client.verify.v2
+            .services(verifySid)
+            .verifications.create({ to: `+91${req.body.mobile}`, channel: 'sms' });
+        res.json({ success: true, message: 'otp send successfully' });
+    } catch (error) {
+        res.json({success: false, message: error.message});
+    }
+};
+
+const forgotPassword = async (req,res) =>{
+    try {
+        client.verify.v2
+            .services(verifySid)
+            .verificationChecks.create({ to: `+91${req.body.mobile}`, code: req.body.otp })
+            .then(async (verification_check) => {
+                if (verification_check.status === 'pending') {
+                    return res.json({ success: false, message: 'The OTP is invalid' });
+                }
+                if (verification_check.status === 'approved') {
+                    const salt = await bcrypt.genSalt();
+                    await userModel.findOneAndUpdate({mobile: req.body.mobile},
+                        {
+                            $set:{
+                                password:await bcrypt.hash(req.body.newPass, salt)
+                            }
+                        })
+                        .then(() => {
+                            res.json({ success: true, message: 'Password changed successfully' });
+                        }).catch(() => {
+                            res.json({ success: false, message: 'something went wrong' });
+                        });
+                }
+                if (verification_check.status === 429) {
+                    return res.json({ success: false, message: 'Max check attempts reached' });
+                }
+            });
+    } catch (error) {
+        res.json({success:false, message:error.message});
+    }
 };
 
 const login = async (req, res) => {
@@ -74,51 +128,61 @@ const login = async (req, res) => {
         if (!auth) {
             throw Error('wrong password');
         }
-        if(user?.blocked){
+        if (user?.blocked) {
             throw Error('user is temporarily blocked');
         }
         const token = await createToken(user?._id);
-        res.json({ id:user?._id, name:user?.fullName, email:user?.email, picture:user?.picture?.url, token });
+        const userData = { 
+            id: user?._id, 
+            name: user?.fullName, 
+            email: user?.email, 
+            picture: user?.picture?.url, 
+            blocked:user?.blocked, 
+            token 
+        };
+        res.json({...userData});
     } catch (error) {
-        res.json({error: error.message});
+        res.json({ error: error.message });
     }
 };
 
-const userAuth = async(req,res)=>{
+const userAuth = async (req, res) => {
     try {
-        if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
-            let token=req.headers.authorization.split(' ')[1];
-            if(!token || token==='null'){
+        if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+            let token = req.headers.authorization.split(' ')[1];
+            if (!token || token === 'null') {
                 return res.json({ success: false, message: 'User token required' });
             }
-            const decoded = jwt.verify(token,process.env.JWT_KEY);
+            const decoded = jwt.verify(token, process.env.JWT_KEY);
             const user = await userModel.findById(decoded.id).select('-password');
-            if(!user){
+            if (!user) {
                 return res.json({ success: false, message: 'User not exists' });
             }
-            const userData = { id:user?._id, name:user?.fullName, email:user?.email, picture:user?.picture?.url, token };
-            res.json({ success: true, message: 'User authorised', userData });
-        }else{
-            res.json({ success: false, message: 'User unauthorized' });
+            const userData = { 
+                id: user?._id, 
+                name: user?.fullName, 
+                email: user?.email, 
+                picture: user?.picture?.url, 
+                blocked: user?.blocked, 
+                token 
+            };
+            return res.json({ success: true, message: 'User authorised', userData });
+        } else {
+            return res.json({ success: false, message: 'User unauthorized' });
         }
     } catch (error) {
-        res.json({ success: false, message: 'User unauthorized' });
+        if (error.name === 'TokenExpiredError') {
+            res.status(401).json({ success: false, message: 'TokenExpiredError' });
+        }
+        return res.json({ success: false, message: 'User unauthorized' });
     }
 };
 
-const home = async (req, res) => {
-    try {
-        console.log(req.body);
-    } catch (error) {
-        res.json(error);
-    }
-};
-
-const fetchUserWatchlist = async (req,res) => {
+const fetchUserWatchlist = async (req, res) => {
     try {
         const userId = req.userId;
         const watchlist = await watchlistModel
-            .find({user:userId})
+            .find({ user: userId })
             .populate('movies')
             .populate('series')
             .exec();
@@ -128,47 +192,47 @@ const fetchUserWatchlist = async (req,res) => {
     }
 };
 
-const fetchUserDetails = async (req,res)=>{
+const fetchUserDetails = async (req, res) => {
     try {
         const userId = req.userId;
-        const userData = await userModel.findOne({_id:userId},{password:0});
+        const userData = await userModel.findOne({ _id: userId }, { password: 0 });
         res.json(userData);
     } catch (error) {
         res.json(error);
     }
 };
 
-const updateProfile = async(req,res)=>{
+const updateProfile = async (req, res) => {
     try {
         const userId = req.userId;
-        const {fullName} = req.body;
-        if(!fullName){
+        const { fullName } = req.body;
+        if (!fullName) {
             throw Error('all fields required');
         }
-        await userModel.updateOne({_id:userId},{
-            $set:{
+        await userModel.updateOne({ _id: userId }, {
+            $set: {
                 fullName
             }
-        }).then(()=>{
-            res.json({success: true, message:'profile updated successfully'});
-        }).catch(()=>{
-            res.json({success: false, message:'something went wrong'});
+        }).then(() => {
+            res.json({ success: true, message: 'profile updated successfully' });
+        }).catch(() => {
+            res.json({ success: false, message: 'something went wrong' });
         });
     } catch (error) {
         res.json(error);
     }
 };
 
-const updateAvatar = async(req,res)=>{
-    try{
-        const { filename,path } = req.file;
+const updateAvatar = async (req, res) => {
+    try {
+        const { filename, path } = req.file;
         await userModel.updateOne({ _id: req.userId }, {
             $set: {
-                picture: {file:filename,url:path}
+                picture: { file: filename, url: path }
             }
-        }).then(()=>{
+        }).then(() => {
             res.json({ status: true, message: 'Profile updated successfully' });
-        }).catch(()=>{
+        }).catch(() => {
             res.json({ status: false, message: 'something went wrong' });
         });
     } catch (error) {
@@ -185,8 +249,8 @@ const addFriend = async (req, res) => {
                 $addToSet: { friends: friendId } // Update object
             }
         );
-        if(result.nModified === 0){
-            return res.json({message:'Friend already exists'});
+        if (result.nModified === 0) {
+            return res.json({ message: 'Friend already exists' });
         }
         res.json({ message: 'Friend added successfully' });
     } catch (error) {
@@ -195,22 +259,36 @@ const addFriend = async (req, res) => {
 };
 
 // /users?search='username'
-const allUsers = async(req,res)=>{
+const allUsers = async (req, res) => {
     try {
         const search = req.query?.search?.trim();
         const userId = req.userId;
-        const keyword = search?{
-            $or:[
-                {fullName:{$regex:search, $options:'i'}},
-                {email:{$regex:search, $options:'i'}}
+        const keyword = search ? {
+            $or: [
+                { fullName: { $regex: search, $options: 'i' } },
+                { email: { $regex: search, $options: 'i' } }
             ]
-        }:{};
-        const users = await userModel.find(keyword).find({_id:{$ne:userId}});
+        } : {};
+        const users = await userModel.find(keyword).find({ _id: { $ne: userId } });
         res.send(users);
     } catch (error) {
-        console.error('Error all users:',error.message);
+        console.error('Error all users:', error.message);
     }
 };
 
 
-module.exports = { register, verifyOtp, login, home, userAuth, fetchUserWatchlist, fetchUserDetails, updateProfile, updateAvatar, addFriend, allUsers };
+module.exports = { 
+    register, 
+    resendOtp, 
+    verifyOtp,
+    forgotOtp,
+    forgotPassword,
+    login,
+    userAuth, 
+    fetchUserWatchlist, 
+    fetchUserDetails, 
+    updateProfile, 
+    updateAvatar, 
+    addFriend, 
+    allUsers,
+};

@@ -114,7 +114,7 @@ export default function SingleChat({ fetchAgain, setFetchAgain }) {
         setMessages([...messages, newMsgRecieved]);
       }
     });
-  });
+  }, []);
 
   const typingHandler = (e) => {
     setNewMessage(e.target.value);

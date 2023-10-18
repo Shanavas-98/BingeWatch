@@ -11,8 +11,8 @@ import { IMG_URL } from '../../axios/apiUrls';
 
 function SeriesList() {
   const navigate = useNavigate();
-  const viewSeries = (seriesId) => {
-    navigate(`/admin/series/show/${seriesId}`);
+  const viewSeries = (showId) => {
+    navigate(`/admin/series/view-show/${showId}`);
   };
   const [loading, setLoading] = useState(true);
   const [series, setSeries] = useState([]);
@@ -191,9 +191,7 @@ function SeriesList() {
                   <td className="w-full pl-10">{item?.endDate}</td>
                   <td className="w-full pl-10">
                     <Button
-                      variant="outlined"
-                      color="primary"
-                      size="medium"
+                      colorScheme="gray"
                       onClick={() => viewSeries(item?._id)}
                     >
                       View

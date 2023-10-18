@@ -43,7 +43,7 @@ export default function ShowBar({ data }) {
     getRating(id);
   }, []);
   const showRating = async (val) => {
-    if (!user) {
+    if (!user || user.blocked) {
       navigate('/login');
     } else if (val) {
       setRate(val);
@@ -63,14 +63,14 @@ export default function ShowBar({ data }) {
     }
   };
   const handleReviewModal = () => {
-    if (!user) {
+    if (!user || user.blocked) {
       navigate('/login');
     } else {
       setReviewModalOpen(true);
     }
   };
   const handleWatchlist = async (showId) => {
-    if (!user) {
+    if (!user || user.blocked) {
       navigate('/login');
     } else {
       setAdded(!added);

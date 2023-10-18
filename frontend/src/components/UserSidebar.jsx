@@ -38,7 +38,7 @@ export default function UserSidebar() {
       <NavLink to="/watchlist">
         <SidebarItem icon={<Bookmarks />} text="Watchlist" />
       </NavLink>
-      {user
+      {(user && !user.blocked)
         ? (
           <div
             role="button"
@@ -59,6 +59,8 @@ export default function UserSidebar() {
             </NavLink>
           </>
         )}
+      {(user && !user.blocked)
+      && (
       <NavLink to="/profile">
         <div className="border-t flex justify-center py-2 text-white">
           <img
@@ -79,6 +81,7 @@ export default function UserSidebar() {
           </div>
         </div>
       </NavLink>
+      )}
     </Sidebar>
   );
 }
