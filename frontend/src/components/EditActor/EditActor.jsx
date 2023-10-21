@@ -39,20 +39,20 @@ function EditActor({ actorId }) {
       .trim('no trailing spaces')
       .strict(true)
       .required('biography is required'),
-    birthday: Yup.date()
-      .typeError('Invalid date format')
-      .min(new Date('1900-01-01'), 'Date must be after 1900-01-01')
-      .when('deathday', (deathday, schema) => (deathday
-        ? schema.max(deathday, 'birthday must be less than deathday')
-        : schema))
-      .nullable(),
-    deathday: Yup.date()
-      .typeError('Invalid date format')
-      .when('birthday', (birthday, schema) => (birthday
-        ? schema.min(birthday, 'deathday must be greater than birthday')
-        : schema))
-      .max(new Date(), 'Date cannot be in the future')
-      .nullable(),
+    // birthday: Yup.date()
+    //   .typeError('Invalid date format')
+    //   .min(new Date('1900-01-01'), 'Date must be after 1900-01-01')
+    //   .when('deathday', (deathday, schema) => (deathday
+    //     ? schema.max(deathday, 'birthday must be less than deathday')
+    //     : schema))
+    //   .nullable(),
+    // deathday: Yup.date()
+    //   .typeError('Invalid date format')
+    //   .when('birthday', (birthday, schema) => (birthday
+    //     ? schema.min(birthday, 'deathday must be greater than birthday')
+    //     : schema))
+    //   .max(new Date(), 'Date cannot be in the future')
+    //   .nullable(),
     gender: Yup.string()
       .trim('no trailing spaces')
       .strict(true)

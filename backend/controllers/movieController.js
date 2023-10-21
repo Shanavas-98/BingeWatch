@@ -1226,6 +1226,39 @@ const getMoviesOfYear = async(req,res)=>{
     }
 };
 
+const getGenreMovies = async (genreId,genreName) => {
+    try {
+        const moviesCount = await movieModel.find({genres:genreId}).countDocuments().exec();
+        if(moviesCount>0){
+            const elem = {};
+            elem[genreName]=moviesCount;
+            return elem;
+        }else{
+            return null;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const getMoviesCount = async (req,res) => {
+    try {
+        const genres = await genreModel.find({}, '_id genreName').exec();
+        const genreMoviesCount =await Promise.all(
+            genres.map(async(gen) => await getGenreMovies(gen._id,gen.genreName))
+        );
+        const filteredMoviesCount = genreMoviesCount.filter((obj) => obj !== null);
+        // genreMoviesCount.sort((a,b)=>{
+        //     const valueA = Object.values(a)[0];
+        //     const valueB = Object.values(b)[0];
+        //     return valueB - valueA;
+        // });
+        res.json(filteredMoviesCount);
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 
 module.exports = {
     getMovieDetails,
@@ -1259,6 +1292,7 @@ module.exports = {
     fetchRelatedMovies,
     fetchContents,
     getMoviesGrowth,
-    getMoviesOfYear
+    getMoviesOfYear,
+    getMoviesCount
 };
 

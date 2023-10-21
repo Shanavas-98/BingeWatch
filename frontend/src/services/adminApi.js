@@ -7,13 +7,18 @@ export const adminLogin = (values) => adminInstance.post('/login', { ...values }
 
 export const fetchUsers = (page, limit, search, field, order) => adminInstance.get(`/users?page=${page}&limit=${limit}&search=${search}&field=${field}&order=${order}`);
 export const blockUser = (userId) => adminInstance.patch(`/users/block-user/${userId}`);
+
 export const getUserGrowth = () => adminInstance.get('/users/growth');
 export const fetchUserCounts = () => adminInstance.get('/users/counts');
 export const fetchMonthlyUsers = () => adminInstance.get('/users/monthly');
+
 export const getMovieGrowth = () => adminInstance.get('/movies/growth');
 export const fetchMonthlyMovies = () => adminInstance.get('/movies/monthly');
+export const fetchMovieCounts = () => adminInstance.get('/movies/counts');
+
 export const getShowGrowth = () => adminInstance.get('/shows/growth');
 export const fetchMonthlyShows = () => adminInstance.get('/shows/monthly');
+export const fetchShowCounts = () => adminInstance.get('/shows/counts');
 
 export const addMovie = (movieId) => adminInstance.post(`/movie/add/${movieId}`);
 export const fetchMovie = (movieId) => adminInstance.get(`/movie/view/${movieId}`);

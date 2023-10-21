@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Grid, Heading } from '@chakra-ui/react';
-import UserDoughnut from '../UserChart/UserDoughnut';
 import MovieLineChart from './MovieLineChart';
+import MovieDoughnut from './MovieDoughnut';
 
 function MovieChart() {
   return (
@@ -38,9 +38,9 @@ function MovieChart() {
             size="md"
             mb="4"
           >
-            Users
+            Movies
           </Heading>
-          <UserDoughnut />
+          <MovieDoughnut />
         </Box>
       </Grid>
     </Box>

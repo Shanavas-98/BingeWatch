@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Heading, Stack,
@@ -16,6 +16,7 @@ import ShowChart from '../ShowChart/ShowChart';
 // import { userGrowth } from './getUserData';
 
 function Dashboard() {
+  const [toggleTab, setToggleTab] = useState(1);
   return (
     <>
       <Heading
@@ -29,9 +30,9 @@ function Dashboard() {
         direction={['column', 'row']}
         justifyContent="space-evenly"
       >
-        <UserBox />
-        <MovieBox />
-        <ShowBox />
+        <UserBox handleTab={setToggleTab} />
+        <MovieBox handleTab={setToggleTab} />
+        <ShowBox handleTab={setToggleTab} />
       </Stack>
       <Box p="4">
         <Heading
@@ -48,9 +49,12 @@ function Dashboard() {
           <ShowBar />
         </Box>
       </Box>
-      <UserChart />
-      <MovieChart />
-      <ShowChart />
+      {toggleTab === 1
+      && <UserChart />}
+      {toggleTab === 2
+      && <MovieChart />}
+      {toggleTab === 3
+      && <ShowChart />}
     </>
   );
 }

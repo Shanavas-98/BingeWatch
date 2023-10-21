@@ -36,15 +36,16 @@ const adminAuth = async (req, res) => {
                 return res.json({ success: false, message: 'Admin not exists' });
             }
             const adminData = {id:admin._id,email:admin.email,token};
-            res.json({ success: true, message: 'Admin authorised', adminData });
+            return res.json({ success: true, message: 'Admin authorised', adminData });
         }else{
-            res.json({ success: false, message: 'Admin unauthorised' });
+            return res.json({ success: false, message: 'Admin unauthorised' });
         }
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
-            res.status(401).json({ success: false, message: 'TokenExpiredError' });
+            return res.status(401).json({ success: false, message: 'TokenExpiredError' });
+        }else{
+            return res.json({ success: false, message: 'Admin unauthorised' });
         }
-        res.json({ success: false, message: 'Admin unauthorised' });
     }
 };
 

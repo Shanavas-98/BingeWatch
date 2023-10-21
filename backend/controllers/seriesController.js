@@ -591,6 +591,38 @@ const getShowsOfYear = async(req,res)=>{
     }
 };
 
+const getGenreShows = async (genreId,genreName) => {
+    try {
+        const showCount = await seriesModel.find({genres:genreId}).countDocuments().exec();
+        if(showCount>0){
+            const elem = {};
+            elem[genreName]=showCount;
+            return elem;
+        }else{
+            return null;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const getShowsCount = async (req,res) => {
+    try {
+        const genres = await genreModel.find({}, '_id genreName').exec();
+        const genreShowsCount = await Promise.all(
+            genres.map(async(gen) => await getGenreShows(gen._id,gen.genreName))
+        );
+        const filteredShowsCount = genreShowsCount.filter((obj) => obj !== null);
+        // genreShowsCount.sort((a,b)=>{
+        //     const valueA = Object.values(a)[0];
+        //     const valueB = Object.values(b)[0];
+        //     return valueB - valueA;
+        // });
+        res.json(filteredShowsCount);
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 module.exports = {
     getShowDetails,
@@ -608,5 +640,6 @@ module.exports = {
     fetchEpisode,
     editEpisode,
     getShowsGrowth,
-    getShowsOfYear
+    getShowsOfYear,
+    getShowsCount
 };

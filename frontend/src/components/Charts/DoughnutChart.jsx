@@ -23,6 +23,18 @@ Chart.register(
   ArcElement,
   Legend,
 );
+const colorsArray = [
+  'rgba(255, 99, 132, 0.7)', // Red
+  'rgba(54, 162, 235, 0.7)', // Blue
+  'rgba(255, 206, 86, 0.7)', // Yellow
+  'rgba(75, 192, 192, 0.7)', // Green
+  'rgba(153, 102, 255, 0.7)', // Purple
+  'rgba(255, 159, 64, 0.7)', // Orange
+  'rgba(245, 124, 0, 0.7)', // Dark Orange
+  'rgba(91, 192, 222, 0.7)', // Teal
+  'rgba(250, 184, 194, 0.7)', // Pink
+  'rgba(230, 184, 0, 0.7)', // Dark Yellow
+];
 function DoughnutChart({ titleText, labelsArray, dataArray }) {
   DoughnutChart.propTypes = {
     titleText: PropTypes.string.isRequired,
@@ -33,7 +45,7 @@ function DoughnutChart({ titleText, labelsArray, dataArray }) {
     responsive: true,
     plugins: {
       legend: {
-        position: 'bottom',
+        position: 'right',
       },
       title: {
         display: true,
@@ -47,8 +59,8 @@ function DoughnutChart({ titleText, labelsArray, dataArray }) {
       {
         label: 'count',
         data: dataArray,
-        borderColor: ['rgba(107,70,193,0.5)', 'rgba(214,43,129)'],
-        backgroundColor: ['rgba(62,12,171,0.3)', 'rgba(214,43,129,0.3)'],
+        borderColor: colorsArray,
+        backgroundColor: colorsArray,
         borderWidth: 1,
       },
     ],

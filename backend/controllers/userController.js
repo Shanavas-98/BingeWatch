@@ -172,9 +172,10 @@ const userAuth = async (req, res) => {
         }
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
-            res.status(401).json({ success: false, message: 'TokenExpiredError' });
+            return res.status(401).json({ success: false, message: 'TokenExpiredError' });
+        }else{
+            return res.json({ success: false, message: 'User unauthorized' });
         }
-        return res.json({ success: false, message: 'User unauthorized' });
     }
 };
 

@@ -23,7 +23,8 @@ const {
     fetchCrew,
     editCrew,
     getMoviesGrowth,
-    getMoviesOfYear
+    getMoviesOfYear,
+    getMoviesCount
 } = require('../controllers/movieController');
 const { 
     fetchSeries, 
@@ -37,7 +38,8 @@ const {
     fetchEpisode,
     editEpisode,
     getShowsGrowth,
-    getShowsOfYear
+    getShowsOfYear,
+    getShowsCount
 } = require('../controllers/seriesController');
 
 // router.post('/register',register);
@@ -51,8 +53,10 @@ router.get('/users/counts',authAdmin,getUserCounts);
 router.get('/users/monthly',authAdmin,getUsersOfYear);
 router.get('/movies/growth',authAdmin,getMoviesGrowth);
 router.get('/movies/monthly',authAdmin,getMoviesOfYear);
+router.get('/movies/counts',authAdmin,getMoviesCount);
 router.get('/shows/growth',authAdmin,getShowsGrowth);
 router.get('/shows/monthly',authAdmin,getShowsOfYear);
+router.get('/shows/counts',authAdmin,getShowsCount);
 
 router.get('/movies',authAdmin,fetchMovies);
 router.post('/movie/add/:movieId',authAdmin,getMovieDetails);
