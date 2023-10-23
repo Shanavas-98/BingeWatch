@@ -31,8 +31,14 @@ export const getUserDetails = () => userInstance.get('/profile');
 export const updateUserDetails = (data) => userInstance.patch('/update-profile', { ...data });
 export const updateUserAvatar = (formData) => userInstance.patch('/update-avatar', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
 // export const getFriend = (friendId) => userInstance.get(`/users?userId=${friendId}`);
-export const fetchAllUsers = (query) => userInstance.get(`/users?search=${query}`);
-export const friendRequest = (friendId) => userInstance.patch(`/add-friend?friendId=${friendId}`);
+export const friendRequest = (friendId) => userInstance.post(`/add-friend/${friendId}`);
+export const fetchRequests = () => userInstance.get('/friend-requests');
+export const deleteReq = (reqId) => userInstance.put(`/friend-requests/cancel/${reqId}`);
+export const acceptReq = (reqId) => userInstance.patch(`/friend-requests/accept/${reqId}`);
+export const rejectReq = (reqId) => userInstance.patch(`/friend-requests/reject/${reqId}`);
+export const deleteFriend = (friendId) => userInstance.patch(`/unfriend/${friendId}`);
+
+export const fetchFriends = (query) => userInstance.get(`/friends?search=${query}`);
 export const getChats = () => userInstance.get('/chat');
 export const newChat = (friendId) => userInstance.post('/chat', { friendId });
 export const newGroupChat = (obj) => userInstance.post('/chat/group', { ...obj });

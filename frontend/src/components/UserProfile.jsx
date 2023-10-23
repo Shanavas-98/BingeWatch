@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { DoneAll, Edit } from '@mui/icons-material';
 import { getUserDetails, updateUserAvatar, updateUserDetails } from '../services/userApi';
+import { AVATAR } from '../axios/apiUrls';
 
 export default function UserProfile() {
   const [userData, setuserData] = useState(null);
@@ -80,7 +81,7 @@ export default function UserProfile() {
             <img
               alt="profile"
               className="h-48 w-48 object-cover mx-auto rounded-full"
-              src={!image ? userData?.picture?.url : URL.createObjectURL(image)}
+              src={!image ? (userData?.picture?.url || AVATAR) : URL.createObjectURL(image)}
             />
             <div className="ab bg-green-500 text-xs absolute bottom-1 right-4 font-bold  rounded-full w-10 h-10  text-white flex justify-center items-center   float-left hover:bg-gray-300 hover:text-gray-600  overflow-hidden cursor-pointer">
               <input type="file" name="photo" className="absolute inset-0  opacity-0 cursor-pointer" onChange={handleImage} />

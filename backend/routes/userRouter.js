@@ -10,11 +10,16 @@ const {
     fetchUserDetails, 
     updateProfile, 
     updateAvatar, 
-    addFriend, 
-    allUsers, 
+    addFriend,
     resendOtp, 
     forgotPassword, 
-    forgotOtp
+    forgotOtp,
+    getRequests,
+    cancelFriend,
+    acceptFriend,
+    rejectFriend,
+    allFriends,
+    unfriend
 }=require('../controllers/userController');
 const { 
     fetchMovies, 
@@ -65,10 +70,15 @@ router.get('/season/:seasonId',fetchSeasonDetails);
 router.get('/episode/:episodeId',fetchEpisodeDetails);
 router.get('/watchlist',authUser,fetchUserWatchlist);
 router.get('/profile',authUser,fetchUserDetails);
-router.get('/users',authUser,allUsers);
+router.get('/friends',authUser,allFriends);
+router.patch('/unfriend/:friendId',authUser,unfriend);
 router.patch('/update-profile',authUser,updateProfile);
 router.patch('/update-avatar',authUser,uploadImage,updateAvatar);
-router.patch('/add-friend',authUser,addFriend);
+router.post('/add-friend/:friendId',authUser,addFriend);
+router.get('/friend-requests',authUser,getRequests);
+router.put('/friend-requests/cancel/:reqId',authUser,cancelFriend);
+router.patch('/friend-requests/accept/:reqId',authUser,acceptFriend);
+router.patch('/friend-requests/reject/:reqId',authUser,rejectFriend);
 
 
 module.exports = router;

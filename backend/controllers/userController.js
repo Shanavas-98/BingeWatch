@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 const watchlistModel = require('../models/watchlistModel');
 const userModel = require('../models/userModel');
 const createToken = require('../config/createToken');
+const requestModel = require('../models/requestModel');
 
 let newUser;
 const register = async (req, res) => {
@@ -34,14 +35,14 @@ const register = async (req, res) => {
 
 };
 
-const resendOtp = async (req,res) => {
+const resendOtp = async (req, res) => {
     try {
         client.verify.v2
             .services(verifySid)
             .verifications.create({ to: `+91${newUser.mobile}`, channel: 'sms' });
         res.json({ success: true, message: 'otp send successfully' });
     } catch (error) {
-        res.json({success: false, message: error.message});
+        res.json({ success: false, message: error.message });
     }
 };
 
@@ -74,18 +75,18 @@ const verifyOtp = async (req, res) => {
         });
 };
 
-const forgotOtp = async (req,res) => {
+const forgotOtp = async (req, res) => {
     try {
         client.verify.v2
             .services(verifySid)
             .verifications.create({ to: `+91${req.body.mobile}`, channel: 'sms' });
         res.json({ success: true, message: 'otp send successfully' });
     } catch (error) {
-        res.json({success: false, message: error.message});
+        res.json({ success: false, message: error.message });
     }
 };
 
-const forgotPassword = async (req,res) =>{
+const forgotPassword = async (req, res) => {
     try {
         client.verify.v2
             .services(verifySid)
@@ -96,10 +97,10 @@ const forgotPassword = async (req,res) =>{
                 }
                 if (verification_check.status === 'approved') {
                     const salt = await bcrypt.genSalt();
-                    await userModel.findOneAndUpdate({mobile: req.body.mobile},
+                    await userModel.findOneAndUpdate({ mobile: req.body.mobile },
                         {
-                            $set:{
-                                password:await bcrypt.hash(req.body.newPass, salt)
+                            $set: {
+                                password: await bcrypt.hash(req.body.newPass, salt)
                             }
                         })
                         .then(() => {
@@ -113,7 +114,7 @@ const forgotPassword = async (req,res) =>{
                 }
             });
     } catch (error) {
-        res.json({success:false, message:error.message});
+        res.json({ success: false, message: error.message });
     }
 };
 
@@ -132,15 +133,15 @@ const login = async (req, res) => {
             throw Error('user is temporarily blocked');
         }
         const token = await createToken(user?._id);
-        const userData = { 
-            id: user?._id, 
-            name: user?.fullName, 
-            email: user?.email, 
-            picture: user?.picture?.url, 
-            blocked:user?.blocked, 
-            token 
+        const userData = {
+            id: user?._id,
+            name: user?.fullName,
+            email: user?.email,
+            picture: user?.picture?.url,
+            blocked: user?.blocked,
+            token
         };
-        res.json({...userData});
+        res.json({ ...userData });
     } catch (error) {
         res.json({ error: error.message });
     }
@@ -158,13 +159,13 @@ const userAuth = async (req, res) => {
             if (!user) {
                 return res.json({ success: false, message: 'User not exists' });
             }
-            const userData = { 
-                id: user?._id, 
-                name: user?.fullName, 
-                email: user?.email, 
-                picture: user?.picture?.url, 
-                blocked: user?.blocked, 
-                token 
+            const userData = {
+                id: user?._id,
+                name: user?.fullName,
+                email: user?.email,
+                picture: user?.picture?.url,
+                blocked: user?.blocked,
+                token
             };
             return res.json({ success: true, message: 'User authorised', userData });
         } else {
@@ -173,7 +174,7 @@ const userAuth = async (req, res) => {
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
             return res.status(401).json({ success: false, message: 'TokenExpiredError' });
-        }else{
+        } else {
             return res.json({ success: false, message: 'User unauthorized' });
         }
     }
@@ -241,55 +242,158 @@ const updateAvatar = async (req, res) => {
     }
 };
 
+// /users?search='username'
+const allFriends = async (req, res) => {
+    try {
+        const search = req.query?.search?.trim().toLowerCase() || '';
+        const userId = req.userId;
+        const user = await userModel.findById(userId).populate({ path: 'friends', select: '_id fullName picture email' });
+        console.log(user);
+        const filteredFriends = user?.friends?.filter((friend) => {
+            return (
+                friend?.fullName?.toLowerCase().includes(search) ||
+                friend?.email?.toLowerCase().includes(search)
+            );
+        });
+        res.json(filteredFriends);
+    } catch (error) {
+        console.error('Error all friends:', error.message);
+    }
+};
+
 const addFriend = async (req, res) => {
     try {
-        const friendId = req.query.friendId;
-        const result = await userModel.updateOne(
-            { _id: req.userId }, // Query object
-            {
-                $addToSet: { friends: friendId } // Update object
-            }
-        );
-        if (result.nModified === 0) {
-            return res.json({ message: 'Friend already exists' });
+        const friendId = req.params.friendId;
+        const isFriend = await userModel.findOne({ $and: [{ _id: req.userId }, { friends: friendId }] });
+        if (isFriend) {
+            return res.json({ success: false, message: 'user already your friend' });
         }
-        res.json({ message: 'Friend added successfully' });
+        const isRequest = await requestModel.findOne({
+            $or: [
+                {
+                    $and: [
+                        { user: friendId },
+                        { friend: req.userId },
+                        { status: 'pending' }
+                    ]
+                },
+                {
+                    $and: [
+                        { user: req.userId },
+                        { friend: friendId },
+                        { status: 'pending' }
+                    ]
+                }
+            ]
+        });
+        if (isRequest) {
+            return res.json({ success: false, message: 'friend request already exist' });
+        }
+        const request = await new requestModel({
+            user: req.userId,
+            friend: friendId
+        }).save();
+        console.log(request);
+        return res.json({ success: true, message: 'Friend request send successfully' });
     } catch (error) {
         res.json(error);
     }
 };
 
-// /users?search='username'
-const allUsers = async (req, res) => {
+const getRequests = async (req, res) => {
     try {
-        const search = req.query?.search?.trim();
-        const userId = req.userId;
-        const keyword = search ? {
-            $or: [
-                { fullName: { $regex: search, $options: 'i' } },
-                { email: { $regex: search, $options: 'i' } }
-            ]
-        } : {};
-        const users = await userModel.find(keyword).find({ _id: { $ne: userId } });
-        res.send(users);
+        const send = await requestModel.find({ $and: [{ user: req.userId }, { status: 'pending' }] })
+            .populate({
+                path: 'friend',
+                select: '_id picture fullName',
+            }).exec();
+        const recieved = await requestModel.find({ $and: [{ friend: req.userId }, { status: 'pending' }] })
+            .populate({
+                path: 'user',
+                select: '_id picture fullName',
+            }).exec();
+        res.json({ send, recieved });
     } catch (error) {
-        console.error('Error all users:', error.message);
+        res.json(error);
+    }
+};
+
+const cancelFriend = async (req, res) => {
+    try {
+        const reqId = req.params.reqId;
+        const result = await requestModel.deleteOne({ _id: reqId });
+        if (result.deletedCount === 1) {
+            res.json({ success: true, message: 'Friend request canceled' });
+        } else {
+            res.json({ success: false, message: 'Friend request not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+const acceptFriend = async (req, res) => {
+    try {
+        const reqId = req.params.reqId;
+        const request = await requestModel.findByIdAndUpdate(reqId, { status: 'accepted' });
+        await userModel.findByIdAndUpdate(request.user,
+            { $push: { friends: request.friend } },
+            { new: true });
+        await userModel.findByIdAndUpdate(request.friend,
+            { $push: { friends: request.user } },
+            { new: true });
+        res.json({ success: true, message: 'friend request accepted' });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+const rejectFriend = async (req, res) => {
+    try {
+        const reqId = req.params.reqId;
+        const result = await requestModel.findByIdAndUpdate(reqId, { status: 'rejected' });
+        if (result) {
+            res.json({ success: true, message: 'Friend request rejected' });
+        } else {
+            res.json({ success: false, message: 'Friend request not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+const unfriend = async(req,res)=>{
+    try {
+        const friendId = req.params.friendId;
+        const result = await userModel.findByIdAndUpdate(req.userId,{$pull:{friends:friendId}});
+        if (result) {
+            res.json({ success: true, message: 'Unfriend successfull' });
+        } else {
+            res.json({ success: false, message: 'Friend not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
     }
 };
 
 
-module.exports = { 
-    register, 
-    resendOtp, 
+module.exports = {
+    register,
+    resendOtp,
     verifyOtp,
     forgotOtp,
     forgotPassword,
     login,
-    userAuth, 
-    fetchUserWatchlist, 
-    fetchUserDetails, 
-    updateProfile, 
-    updateAvatar, 
-    addFriend, 
-    allUsers,
+    userAuth,
+    fetchUserWatchlist,
+    fetchUserDetails,
+    updateProfile,
+    updateAvatar,
+    addFriend,
+    allFriends,
+    getRequests,
+    cancelFriend,
+    acceptFriend,
+    rejectFriend,
+    unfriend
 };

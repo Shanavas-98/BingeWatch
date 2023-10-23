@@ -16,7 +16,12 @@ export default function Review({ review, friend }) {
   };
   const addFriend = async (friendId) => {
     try {
-      await friendRequest(friendId);
+      const { data } = await friendRequest(friendId);
+      if (data.success) {
+        toast.success(data.message);
+      } else {
+        throw Error(data.message);
+      }
     } catch (err) {
       toast.error(err.message, {
         position: 'top-center',

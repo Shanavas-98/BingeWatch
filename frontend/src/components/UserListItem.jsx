@@ -30,7 +30,7 @@ export default function UserListItem({ user, handleFunction }) {
         size="sm"
         cursor="pointer"
         name={user?.fullName}
-        src={user?.pic}
+        src={user?.picture?.url}
       />
       <Box>
         <Text>{user?.fullName}</Text>

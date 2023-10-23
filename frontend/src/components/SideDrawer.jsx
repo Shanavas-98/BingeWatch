@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable no-nested-ternary */
+import React, { useEffect, useState } from 'react';
 import {
   Box, Button, Drawer, DrawerBody,
   DrawerCloseButton, DrawerContent, DrawerHeader,
@@ -8,45 +9,39 @@ import {
 import { BellIcon, SearchIcon } from '@chakra-ui/icons';
 import ChatLoading from './ChatLoading';
 import UserListItem from './UserListItem';
-import { fetchAllUsers, newChat } from '../services/userApi';
+import { fetchFriends, newChat } from '../services/userApi';
 import useChat from '../hooks/useChat';
 
 export default function SideDrawer() {
   const toast = useToast();
   const [search, setSearch] = useState('');
-  const [searchResult, setSearchResult] = useState([]);
+  const [friends, setFriends] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
   const {
     setSelectedChat, chats, setChats,
   } = useChat();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const handleSearch = async () => {
-    if (!search) {
-      toast({
-        title: 'Please enter something in search',
-        status: 'warning',
-        duration: 3000,
-        isClosable: true,
-        position: 'top-center',
-      });
-    }
-    try {
-      setLoading(true);
-      const { data } = await fetchAllUsers(search);
-      setSearchResult(data);
-      setLoading(false);
-    } catch (error) {
-      toast({
-        title: 'Error occured!',
-        description: 'failed to load search results',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-        position: 'bottom-center',
-      });
-    }
-  };
+  useEffect(() => {
+    const handleSearch = async () => {
+      try {
+        setLoading(true);
+        const { data } = await fetchFriends(search);
+        setFriends(data);
+        setLoading(false);
+      } catch (error) {
+        toast({
+          title: 'Error occured!',
+          description: 'failed to load search results',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+          position: 'bottom-center',
+        });
+      }
+    };
+    handleSearch();
+  }, [search]);
   const createChat = async (friendId) => {
     try {
       setLoadingChat(true);
@@ -87,7 +82,7 @@ export default function SideDrawer() {
               display={{ base: 'none', md: 'flex' }}
               px={4}
             >
-              Search User
+              Friends
             </Text>
           </Button>
         </Tooltip>
@@ -111,7 +106,7 @@ export default function SideDrawer() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Search users</DrawerHeader>
+          <DrawerHeader>Search Friends</DrawerHeader>
 
           <DrawerBody>
             <Box
@@ -119,27 +114,24 @@ export default function SideDrawer() {
               pb={2}
             >
               <Input
-                placeholder="Search user"
+                placeholder="Search friend"
                 mr={2}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-              <Button
-                onClick={handleSearch}
-              >
-                Go
-              </Button>
             </Box>
             {loading ? (
               <ChatLoading />
-            ) : (
-              searchResult?.map((person) => (
+            ) : friends && friends.length > 0 ? (
+              friends?.map((person) => (
                 <UserListItem
                   key={person?._id}
                   user={person}
                   handleFunction={() => createChat(person?._id)}
                 />
               ))
+            ) : (
+              <Text>No Friends!</Text>
             )}
             {loadingChat && <Spinner ml="auto" display="flex" />}
           </DrawerBody>

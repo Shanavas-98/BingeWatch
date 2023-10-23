@@ -10,7 +10,7 @@ import { EditIcon, ViewIcon } from '@chakra-ui/icons';
 import UserBadgeItem from './UserBadgeItem';
 import UserListItem from './UserListItem';
 import {
-  addToGroup, chatRename, fetchAllUsers, removeFromGroup,
+  addToGroup, chatRename, fetchFriends, removeFromGroup,
 } from '../services/userApi';
 import useAuth from '../hooks/useAuth';
 import useChat from '../hooks/useChat';
@@ -66,7 +66,7 @@ export default function UpdateGroupChatModal({ fetchAgain, setFetchAgain, fetchM
     setSearch(query);
     try {
       setLoading(true);
-      const { data } = await fetchAllUsers(search);
+      const { data } = await fetchFriends(search);
       setSearchResult(data);
       setLoading(false);
     } catch (error) {

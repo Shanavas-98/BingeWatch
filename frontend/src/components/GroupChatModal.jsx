@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 import UserListItem from './UserListItem';
 import UserBadgeItem from './UserBadgeItem';
-import { fetchAllUsers, newGroupChat } from '../services/userApi';
+import { fetchFriends, newGroupChat } from '../services/userApi';
 import useChat from '../hooks/useChat';
 
 export default function GroupChatModal({ children }) {
@@ -31,7 +31,7 @@ export default function GroupChatModal({ children }) {
     setSearch(query);
     try {
       setLoading(true);
-      const { data } = await fetchAllUsers(search);
+      const { data } = await fetchFriends(search);
       setSearchResult(data);
       setLoading(false);
     } catch (error) {

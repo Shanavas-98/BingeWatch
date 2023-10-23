@@ -21,10 +21,12 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    friends: {
-        type: [ObjectId],
-        default: [],
-    },
+    friends: [
+        {
+            type:ObjectId,
+            ref:'user'
+        }
+    ],
     picture:{
         file:String,
         url:String

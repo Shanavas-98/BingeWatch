@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import {
-  Box,
   Heading, Stack,
 } from '@chakra-ui/react';
 
 import UserBox from '../UserChart/UserBox';
-import UserBar from '../UserChart/UserBar';
+// import UserBar from '../UserChart/UserBar';
+// import MovieBar from '../MovieChart/MovieBar';
+// import ShowBar from '../ShowChart/ShowBar';
 import UserChart from '../UserChart/UserChart';
 import MovieBox from '../MovieChart/MovieBox';
-import MovieBar from '../MovieChart/MovieBar';
 import MovieChart from '../MovieChart/MovieChart';
 import ShowBox from '../ShowChart/ShowBox';
-import ShowBar from '../ShowChart/ShowBar';
 import ShowChart from '../ShowChart/ShowChart';
 // import { userGrowth } from './getUserData';
 
@@ -34,7 +33,7 @@ function Dashboard() {
         <MovieBox handleTab={setToggleTab} />
         <ShowBox handleTab={setToggleTab} />
       </Stack>
-      <Box p="4">
+      {/* <Box p="4">
         <Heading
           textAlign={['center', 'left']}
           size="md"
@@ -48,7 +47,7 @@ function Dashboard() {
           <MovieBar />
           <ShowBar />
         </Box>
-      </Box>
+      </Box> */}
       {toggleTab === 1
       && <UserChart />}
       {toggleTab === 2
