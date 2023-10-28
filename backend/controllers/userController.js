@@ -21,7 +21,6 @@ const sendOtp = (mobile) => {
             .verifications.create({ to: `+91${mobile}`, channel: 'sms' });
         return true;
     } catch (error) {
-        console.log('send otp', error);
         return false;
     }
 };
@@ -40,7 +39,6 @@ const sendVerifyLink = async (email, userId) => {
         const result = await sendEmail(email, subject, text);
         return result;
     } catch (error) {
-        console.log('send verify link', error);
         return false;
     }
 };
@@ -77,7 +75,6 @@ const register = async (req, res) => {
 
 const resendOtp = async (req, res) => {
     try {
-        console.log(req.body);
         const otpSend = sendOtp(req.body?.mobile);
         if (otpSend) {
             res.json({ success: true, message: 'otp send successfully' });
@@ -92,10 +89,8 @@ const verifyOtp = async (mobile, otp) => {
         const verification = await client.verify.v2
             .services(verifySid)
             .verificationChecks.create({ to: `+91${mobile}`, code: otp });
-        console.log('verify otp', verification.status);
         return String(verification.status);
     } catch (error) {
-        console.log('verify otp', error);
         return null;
     }
 };
@@ -163,8 +158,6 @@ const forgotPassword = async (req, res) => {
 
 const resendLink = async (req,res)=>{
     try {
-        console.log(req.body);
-        console.log(req.userId);
         const linkSend = await sendVerifyLink(req.body.email, req.userId);
         res.json({success:linkSend});
     } catch (error) {
@@ -179,13 +172,11 @@ const verifyEmail = async (req, res) => {
             return res.json({ success: false, expired:false, message: 'verification token required' });
         }
         const decoded = jwt.verify(token, process.env.JWT_KEY);
-        console.log('decoded', decoded);
         const now = Math.floor(Date.now() / 1000);
         if (decoded.exp && now > decoded.exp) {
             return res.json({ success: false, expired:true, message: 'verification link expired' });
         }
         const verify = await tokenModel.findOne({$and:[{ user: decoded.id},{token:token}] });
-        console.log('verify', verify);
         if (verify) {
             await userModel.updateOne({ _id: decoded.id }, {
                 $set: { emailVerified: true }
@@ -286,7 +277,6 @@ const fetchUserDetails = async (req, res) => {
     try {
         const userId = req.userId;
         const userData = await userModel.findOne({ _id: userId }, { password: 0 });
-        console.log('profile', userData);
         res.json(userData);
     } catch (error) {
         res.json(error);
@@ -297,7 +287,6 @@ const updateName = async (req, res) => {
     try {
         const userId = req.userId;
         const { name } = req.body;
-        console.log(req.body);
         if (!name) {
             throw Error('name is required');
         }
@@ -336,7 +325,6 @@ const updateEmail = async (req, res) => {
     try {
         const userId = req.userId;
         const { email } = req.body;
-        console.log(req.body);
         if (!email) {
             throw Error('email is required');
         }
@@ -398,8 +386,8 @@ const allFriends = async (req, res) => {
     try {
         const search = req.query?.search?.trim().toLowerCase() || '';
         const userId = req.userId;
-        const user = await userModel.findById(userId, { _id: 1, friends: 1 }).populate({ path: 'friends', select: '_id fullName picture email' });
-        console.log(user);
+        const user = await userModel.findById(userId, { _id: 1, friends: 1 })
+            .populate({ path: 'friends', select: '_id fullName picture email' });
         const filteredFriends = user?.friends?.filter((friend) => {
             return (
                 friend?.fullName?.toLowerCase().includes(search) ||
@@ -440,11 +428,10 @@ const addFriend = async (req, res) => {
         if (isRequest) {
             return res.json({ success: false, message: 'friend request already exist' });
         }
-        const request = await new requestModel({
+        await new requestModel({
             user: req.userId,
             friend: friendId
         }).save();
-        console.log(request);
         return res.json({ success: true, message: 'Friend request send successfully' });
     } catch (error) {
         res.json(error);

@@ -21,7 +21,6 @@ const sendEmail = async (email, subject, text) => {
             text: text,
         };
         await mailTransporter.sendMail(message);
-        console.log('Email sent successfully');
         return true;
     } catch (error) {
         console.log('Email sent failed',error.message);

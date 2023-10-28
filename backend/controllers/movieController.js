@@ -1058,7 +1058,7 @@ const fetchAllReviews = async (req, res) => {
             .find({ content: movieId, user: { $ne: userId } })
             .populate({
                 path:'user',
-                select:'_id fullName picture'
+                select:'_id fullName picture friends'
             })
             .exec();
         const userReview = await reviewModel
