@@ -3,23 +3,26 @@ const router=express.Router();
 const authUser = require('../middlewares/authUser');
 const { 
     register, 
-    verifyOtp, 
+    verifyOtpSend, 
     login, 
     userAuth, 
     fetchUserWatchlist, 
     fetchUserDetails, 
-    updateProfile, 
     updateAvatar, 
     addFriend,
     resendOtp, 
-    forgotPassword, 
-    forgotOtp,
+    forgotPassword,
     getRequests,
     cancelFriend,
     acceptFriend,
     rejectFriend,
     allFriends,
-    unfriend
+    unfriend,
+    verifyEmail,
+    updateName,
+    updateEmail,
+    updateMobile,
+    resendLink,
 }=require('../controllers/userController');
 const { 
     fetchMovies, 
@@ -45,9 +48,10 @@ const {
 const uploadImage = require('../utils/imageUpload');
 
 router.post('/register',register);
-router.get('/resend-otp',resendOtp);
-router.post('/verify',verifyOtp);
-router.post('/forgot-otp',forgotOtp);
+router.post('/resend-otp',resendOtp);
+router.post('/resend-link',authUser,resendLink);
+router.post('/verify-otp',verifyOtpSend);
+router.get('/verify-email/:token',verifyEmail);
 router.post('/forgot',forgotPassword);
 router.post('/login',login);
 router.get('/auth-user',userAuth);
@@ -72,8 +76,10 @@ router.get('/watchlist',authUser,fetchUserWatchlist);
 router.get('/profile',authUser,fetchUserDetails);
 router.get('/friends',authUser,allFriends);
 router.patch('/unfriend/:friendId',authUser,unfriend);
-router.patch('/update-profile',authUser,updateProfile);
-router.patch('/update-avatar',authUser,uploadImage,updateAvatar);
+router.patch('/update-picture',authUser,uploadImage,updateAvatar);
+router.patch('/update-name',authUser,updateName);
+router.patch('/update-email',authUser,updateEmail);
+router.patch('/update-mobile',authUser,updateMobile);
 router.post('/add-friend/:friendId',authUser,addFriend);
 router.get('/friend-requests',authUser,getRequests);
 router.put('/friend-requests/cancel/:reqId',authUser,cancelFriend);

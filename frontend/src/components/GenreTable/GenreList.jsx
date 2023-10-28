@@ -164,7 +164,7 @@ function GenreList() {
           ? (
             <tbody className=" w-full">
               {genres?.map((item) => (
-                <tr className="flex w-full">
+                <tr className="flex w-full pt-3">
                   <td className="w-full pl-20">{item?.genreId}</td>
                   <td className="w-full pl-20">{item?.genreName}</td>
                   <td className="w-full pl-20">

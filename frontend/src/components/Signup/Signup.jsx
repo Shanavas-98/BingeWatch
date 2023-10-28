@@ -51,8 +51,12 @@ function Signup() {
       // seting the loading state
       setLoading(!loading);
       const { data } = await userSignup(values);
-      if (data?.status) {
-        navigate('/verify');
+      if (data?.link) {
+        toast.success('verify link send to your email');
+      }
+      if (data?.otp) {
+        toast.success('otp send to your mobile');
+        navigate(`/verify-otp/${data?.mobile}`);
       } else {
         setLoading(false);
         throw Error(data?.message);

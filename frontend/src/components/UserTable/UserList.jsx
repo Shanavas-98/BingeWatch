@@ -1,6 +1,5 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { Button, Input } from '@chakra-ui/react';
 import { toast } from 'react-toastify';
 import {
@@ -8,28 +7,8 @@ import {
 } from '@mui/icons-material';
 
 import { blockUser, fetchUsers } from '../../services/adminApi';
+import BlockUserConfirm from './BlockUserConfirm';
 // import { IMG_URL } from '../../axios/apiUrls';
-
-function BlockButton({ user }) {
-  const [block, setBlock] = useState(user?.blocked);
-  const handleBlock = async () => {
-    const userId = user?._id;
-    const { data } = await blockUser(userId);
-    if (data?.success) {
-      if (data?.block) {
-        toast.warning('user blocked successfully');
-      } else {
-        toast.warning('user unblocked successfully');
-      }
-      setBlock(!block);
-    }
-  };
-  return (
-    <Button variant="outlined" color="primary" size="small" onClick={handleBlock}>
-      {block ? 'Unblock' : 'Block'}
-    </Button>
-  );
-}
 
 function UserList() {
   const [loading, setLoading] = useState(true);
@@ -70,6 +49,16 @@ function UserList() {
     };
     getUsers();
   }, [page, limit, search, field, order]);
+  const handleBlock = async (userId) => {
+    const { data } = await blockUser(userId);
+    if (data?.success) {
+      if (data?.block) {
+        toast.warning('user blocked successfully');
+      } else {
+        toast.warning('user unblocked successfully');
+      }
+    }
+  };
   if (loading) {
     return (
       <div>
@@ -142,7 +131,6 @@ function UserList() {
                   : <KeyboardArrowUp fontSize="medium" />}
               </Button>
             </th>
-            <th className="flex justify-around w-full">Verified</th>
             <th className="flex justify-around w-full">Actions</th>
           </tr>
         </thead>
@@ -155,8 +143,7 @@ function UserList() {
                 <td className="w-full pl-10">{person?.fullName}</td>
                 <td className="w-full pl-10">{person?.email}</td>
                 <td className="w-full pl-10">{person?.mobile}</td>
-                <td className="w-full pl-10">{person?.verified ? 'true' : 'false'}</td>
-                <td className="w-full pl-10"><BlockButton user={person} /></td>
+                <td className="w-full pl-10"><BlockUserConfirm onConfirm={() => handleBlock(person?._id)} blocked={person?.blocked} /></td>
               </tr>
             ))}
           </tbody>
@@ -238,12 +225,5 @@ function UserList() {
     </>
   );
 }
-
-BlockButton.propTypes = {
-  user: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    blocked: PropTypes.bool.isRequired,
-  }).isRequired,
-};
 
 export default UserList;

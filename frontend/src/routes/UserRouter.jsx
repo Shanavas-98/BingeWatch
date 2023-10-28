@@ -22,6 +22,7 @@ import UserAuth from '../utils/UserAuth';
 import UserLogin from '../components/Login/UserLogin';
 import Search from '../components/Search/Search';
 import Forgot from '../components/Forgot/Forgot';
+import EmailVerify from '../components/EmailVerify';
 
 function UserRouter() {
   return (
@@ -30,7 +31,7 @@ function UserRouter() {
         <Route index element={<HomePage />} />
         <Route path="login" element={<UserLogin />} />
         <Route path="register" element={<Signup />} />
-        <Route path="verify" element={<Otp />} />
+        <Route path="verify-otp/:mobile" element={<Otp />} />
         <Route path="forgot" element={<Forgot />} />
         <Route path="search" element={<Search />} />
         <Route path="movies" element={<MoviesLayout />}>
@@ -53,6 +54,7 @@ function UserRouter() {
           <Route path="profile" element={<ProfilePage />} />
           <Route path="chat" element={<ChatPage />} />
         </Route>
+        <Route path="verify-email/:token" element={<EmailVerify />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

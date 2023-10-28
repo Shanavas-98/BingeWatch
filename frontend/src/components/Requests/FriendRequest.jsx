@@ -85,8 +85,6 @@ function FriendRequest() {
   };
   return (
     <Tabs
-      mt={10}
-      p={10}
       colorScheme="purple"
       variant="enclosed"
     >
@@ -115,6 +113,7 @@ function FriendRequest() {
               pb={2}
             >
               <Input
+                name="search"
                 placeholder="Search friend"
                 mr={2}
                 value={search}

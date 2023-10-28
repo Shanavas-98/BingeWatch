@@ -7,13 +7,47 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const watchlistModel = require('../models/watchlistModel');
 const userModel = require('../models/userModel');
-const createToken = require('../config/createToken');
 const requestModel = require('../models/requestModel');
+const tokenModel = require('../models/tokenModel');
+const createToken = require('../config/createToken');
+const sendEmail = require('../utils/sendEmail');
 
-let newUser;
+// let newUser;
+
+const sendOtp = (mobile) => {
+    try {
+        client.verify.v2
+            .services(verifySid)
+            .verifications.create({ to: `+91${mobile}`, channel: 'sms' });
+        return true;
+    } catch (error) {
+        console.log('send otp', error);
+        return false;
+    }
+};
+
+const sendVerifyLink = async (email, userId) => {
+    try {
+        const expiry = 60*60;
+        const token = createToken(userId, expiry);
+        const jwtToken = await new tokenModel({
+            user: userId,
+            token: token
+        }).save();
+        const url = `${process.env.CLIENT_URL}/verify-email/${jwtToken.token}`;
+        const subject = 'Email Verification Link';
+        const text = `Welcome to Binge Watch. Click this link to verify your email ${url}. This link will expire in one hour`;
+        const result = await sendEmail(email, subject, text);
+        return result;
+    } catch (error) {
+        console.log('send verify link', error);
+        return false;
+    }
+};
+
 const register = async (req, res) => {
     try {
-        const { email, mobile } = req.body;
+        const { fullName, email, mobile, password } = req.body;
         const isEmail = await userModel.findOne({ email: email });
         if (isEmail) {
             return res.json({ message: 'user email already exists', status: false });
@@ -22,13 +56,19 @@ const register = async (req, res) => {
         if (isMobile) {
             return res.json({ message: 'user mobile already exists', status: false });
         }
-
-        newUser = req.body;
-
-        client.verify.v2
-            .services(verifySid)
-            .verifications.create({ to: `+91${mobile}`, channel: 'sms' });
-        res.json({ status: true });
+        const user = await new userModel({
+            fullName,
+            email,
+            mobile,
+            password,
+        }).save();
+        // newUser = req.body;
+        const otpSend = sendOtp(user?.mobile);
+        const linkSend = await sendVerifyLink(user?.email, user?._id);
+        res.json({ mobile: user?.mobile, otp: otpSend, link: linkSend });
+        // client.verify.v2
+        //     .services(verifySid)
+        //     .verifications.create({ to: `+91${mobile}`, channel: 'sms' });
     } catch (error) {
         res.json(error);
     }
@@ -37,84 +77,125 @@ const register = async (req, res) => {
 
 const resendOtp = async (req, res) => {
     try {
-        client.verify.v2
-            .services(verifySid)
-            .verifications.create({ to: `+91${newUser.mobile}`, channel: 'sms' });
-        res.json({ success: true, message: 'otp send successfully' });
+        console.log(req.body);
+        const otpSend = sendOtp(req.body?.mobile);
+        if (otpSend) {
+            res.json({ success: true, message: 'otp send successfully' });
+        }
     } catch (error) {
         res.json({ success: false, message: error.message });
     }
 };
 
-const verifyOtp = async (req, res) => {
-    const otpCode = req.body.otp;
-    client.verify.v2
-        .services(verifySid)
-        .verificationChecks.create({ to: `+91${newUser.mobile}`, code: otpCode })
-        .then(async (verification_check) => {
-            if (verification_check.status === 'pending') {
-                return res.json({ status: false, message: 'The OTP is invalid' });
-            }
-            if (verification_check.status === 'approved') {
-                await userModel({
-                    fullName: newUser.fullName,
-                    email: newUser.email,
-                    mobile: newUser.mobile,
-                    password: newUser.password,
-                    verified: true
-                }).save()
-                    .then(async (user) => {
-                        const token = await createToken(user?._id);
-                        const userData = { id: user?._id, name: user?.fullName, email: user?.email, token: token };
-                        return res.json({ status: true, message: 'Verification successfull', userData });
-                    });
-            }
-            if (verification_check.status === 429) {
-                return res.json({ status: false, message: 'Max check attempts reached' });
-            }
-        });
+const verifyOtp = async (mobile, otp) => {
+    try {
+        const verification = await client.verify.v2
+            .services(verifySid)
+            .verificationChecks.create({ to: `+91${mobile}`, code: otp });
+        console.log('verify otp', verification.status);
+        return String(verification.status);
+    } catch (error) {
+        console.log('verify otp', error);
+        return null;
+    }
 };
 
-const forgotOtp = async (req, res) => {
+const verifyOtpSend = async (req, res) => {
     try {
-        client.verify.v2
-            .services(verifySid)
-            .verifications.create({ to: `+91${req.body.mobile}`, channel: 'sms' });
-        res.json({ success: true, message: 'otp send successfully' });
+        const otp = req.body.otp;
+        const mobile = req.body.mobile;
+        const status = await verifyOtp(mobile, otp);
+        if (status === 'pending') {
+            return res.json({ status: false, message: 'Invalid OTP' });
+        }
+        if (status === 'approved') {
+            const user = await userModel.updateOne({ mobile: mobile }, {
+                $set: {
+                    mobileVerified: true
+                }
+            });
+            if (user) {
+                return res.json({ status: true, message: 'mobile verified successfully' });
+            } else {
+                return res.json({ status: false, message: 'User not found!' });
+            }
+            // const token = await createToken(user?._id);
+            // const userData = { id: user?._id, name: user?.fullName, email: user?.email, token: token };
+        }
+        if (status === 429) {
+            return res.json({ status: false, message: 'Max check attempts reached' });
+        }
     } catch (error) {
-        res.json({ success: false, message: error.message });
+        console.log(error);
     }
 };
 
 const forgotPassword = async (req, res) => {
     try {
-        client.verify.v2
-            .services(verifySid)
-            .verificationChecks.create({ to: `+91${req.body.mobile}`, code: req.body.otp })
-            .then(async (verification_check) => {
-                if (verification_check.status === 'pending') {
-                    return res.json({ success: false, message: 'The OTP is invalid' });
-                }
-                if (verification_check.status === 'approved') {
-                    const salt = await bcrypt.genSalt();
-                    await userModel.findOneAndUpdate({ mobile: req.body.mobile },
-                        {
-                            $set: {
-                                password: await bcrypt.hash(req.body.newPass, salt)
-                            }
-                        })
-                        .then(() => {
-                            res.json({ success: true, message: 'Password changed successfully' });
-                        }).catch(() => {
-                            res.json({ success: false, message: 'something went wrong' });
-                        });
-                }
-                if (verification_check.status === 429) {
-                    return res.json({ success: false, message: 'Max check attempts reached' });
-                }
-            });
+        const mobile = req.body.mobile;
+        const otp = req.body.otp;
+        const status = await verifyOtp(mobile, otp);
+        if (status === 'pending') {
+            return res.json({ success: false, message: 'Invalid OTP!' });
+        }
+        if (status === 'approved') {
+            const salt = await bcrypt.genSalt();
+            const user = await userModel.findOneAndUpdate({ mobile: mobile },
+                {
+                    $set: {
+                        password: await bcrypt.hash(req.body.newPass, salt),
+                        mobileVerified: true
+                    }
+                });
+            if (user) {
+                res.json({ success: true, message: 'Password changed successfully' });
+            } else {
+                res.json({ success: false, message: 'User not found' });
+            }
+        }
+        if (status === 429) {
+            return res.json({ success: false, message: 'Max check attempts reached' });
+        }
     } catch (error) {
         res.json({ success: false, message: error.message });
+    }
+};
+
+const resendLink = async (req,res)=>{
+    try {
+        console.log(req.body);
+        console.log(req.userId);
+        const linkSend = await sendVerifyLink(req.body.email, req.userId);
+        res.json({success:linkSend});
+    } catch (error) {
+        res.json({success:false, message:error.message});
+    }
+};
+
+const verifyEmail = async (req, res) => {
+    try {
+        const token = req.params.token;
+        if (!token || token === 'null') {
+            return res.json({ success: false, expired:false, message: 'verification token required' });
+        }
+        const decoded = jwt.verify(token, process.env.JWT_KEY);
+        console.log('decoded', decoded);
+        const now = Math.floor(Date.now() / 1000);
+        if (decoded.exp && now > decoded.exp) {
+            return res.json({ success: false, expired:true, message: 'verification link expired' });
+        }
+        const verify = await tokenModel.findOne({$and:[{ user: decoded.id},{token:token}] });
+        console.log('verify', verify);
+        if (verify) {
+            await userModel.updateOne({ _id: decoded.id }, {
+                $set: { emailVerified: true }
+            });
+            return res.json({ success: true, expired:false, message: 'email verified successfully' });
+        }
+    } catch (error) {
+        res.json({success:false, expired:false, message:error.message});
+    } finally {
+        await tokenModel.deleteOne({ token: req.params.token });
     }
 };
 
@@ -125,6 +206,12 @@ const login = async (req, res) => {
         if (!user) {
             throw Error('incorrect email');
         }
+        if (!user?.emailVerified) {
+            const linkSend = sendVerifyLink(user?.email, user?._id);
+            if (linkSend) {
+                throw Error('email not verified. click on the link send to your email');
+            }
+        }
         const auth = await bcrypt.compare(password, user?.password);
         if (!auth) {
             throw Error('wrong password');
@@ -132,7 +219,8 @@ const login = async (req, res) => {
         if (user?.blocked) {
             throw Error('user is temporarily blocked');
         }
-        const token = await createToken(user?._id);
+        const expiry = 24 * 60 * 60;
+        const token = createToken(user?._id, expiry);
         const userData = {
             id: user?._id,
             name: user?.fullName,
@@ -198,28 +286,30 @@ const fetchUserDetails = async (req, res) => {
     try {
         const userId = req.userId;
         const userData = await userModel.findOne({ _id: userId }, { password: 0 });
+        console.log('profile', userData);
         res.json(userData);
     } catch (error) {
         res.json(error);
     }
 };
 
-const updateProfile = async (req, res) => {
+const updateName = async (req, res) => {
     try {
         const userId = req.userId;
-        const { fullName } = req.body;
-        if (!fullName) {
-            throw Error('all fields required');
+        const { name } = req.body;
+        console.log(req.body);
+        if (!name) {
+            throw Error('name is required');
         }
-        await userModel.updateOne({ _id: userId }, {
+        const user = await userModel.updateOne({ _id: userId }, {
             $set: {
-                fullName
+                fullName: name
             }
-        }).then(() => {
-            res.json({ success: true, message: 'profile updated successfully' });
-        }).catch(() => {
-            res.json({ success: false, message: 'something went wrong' });
         });
+        if(!user){
+            return res.json({ success: false, message: 'user not found' });
+        }
+        return res.json({ success: true, message: 'Name updated successfully' });
     } catch (error) {
         res.json(error);
     }
@@ -228,17 +318,78 @@ const updateProfile = async (req, res) => {
 const updateAvatar = async (req, res) => {
     try {
         const { filename, path } = req.file;
-        await userModel.updateOne({ _id: req.userId }, {
+        const user = await userModel.updateOne({ _id: req.userId }, {
             $set: {
                 picture: { file: filename, url: path }
             }
-        }).then(() => {
-            res.json({ status: true, message: 'Profile updated successfully' });
-        }).catch(() => {
-            res.json({ status: false, message: 'something went wrong' });
         });
+        if(!user){
+            return res.json({ success: false, message: 'user not found' });
+        }
+        return res.json({ status: true, message: 'Picture updated successfully' });
     } catch (error) {
         res.json(error);
+    }
+};
+
+const updateEmail = async (req, res) => {
+    try {
+        const userId = req.userId;
+        const { email } = req.body;
+        console.log(req.body);
+        if (!email) {
+            throw Error('email is required');
+        }
+        const exist = await userModel.findOne({email: email});
+        if(exist._id === userId){
+            throw Error('email already linked to your account');
+        }
+        if(exist){
+            throw Error('email already linked to another account');
+        }
+        const user = await userModel.updateOne({ _id: userId }, {
+            $set: {
+                email: email,
+                emailVerified: false
+            }
+        });
+        if(!user){
+            return res.json({ success: false, message: 'user not found' });
+        }
+        const linkSend = await sendVerifyLink(user?.email, user?._id);
+        return res.json({ success: true, link:linkSend, message: 'email updated successfully' });
+    } catch (error) {
+        res.json(error);
+    }
+};
+
+const updateMobile = async (req, res) => {
+    try {
+        const userId = req.userId;
+        const { mobile } = req.body;
+        if (!mobile) {
+            throw Error('mobile is required');
+        }
+        const exist = await userModel.findOne({mobile: mobile});
+        if(exist._id === userId){
+            throw Error('mobile already linked to your account');
+        }
+        if(exist){
+            throw Error('mobile already linked to another account');
+        }
+        const user = await userModel.updateOne({ _id: userId }, {
+            $set: {
+                mobile: mobile,
+                mobileVerified: false
+            }
+        });
+        if(!user){
+            return res.json({ success: false, message: 'user not found' });
+        }
+        const otpSend = sendOtp(user?.mobile);
+        return res.json({ success: true, otp:otpSend, message: 'mobile updated successfully' });
+    } catch (error) {
+        res.json({success:false, message:error.message});
     }
 };
 
@@ -247,7 +398,7 @@ const allFriends = async (req, res) => {
     try {
         const search = req.query?.search?.trim().toLowerCase() || '';
         const userId = req.userId;
-        const user = await userModel.findById(userId).populate({ path: 'friends', select: '_id fullName picture email' });
+        const user = await userModel.findById(userId, { _id: 1, friends: 1 }).populate({ path: 'friends', select: '_id fullName picture email' });
         console.log(user);
         const filteredFriends = user?.friends?.filter((friend) => {
             return (
@@ -362,15 +513,14 @@ const rejectFriend = async (req, res) => {
     }
 };
 
-const unfriend = async(req,res)=>{
+const unfriend = async (req, res) => {
     try {
         const friendId = req.params.friendId;
-        const result = await userModel.findByIdAndUpdate(req.userId,{$pull:{friends:friendId}});
-        if (result) {
-            res.json({ success: true, message: 'Unfriend successfull' });
-        } else {
-            res.json({ success: false, message: 'Friend not found' });
-        }
+        await userModel.findByIdAndUpdate(req.userId,
+            { $pull: { friends: friendId } });
+        await userModel.findByIdAndUpdate(friendId,
+            { $pull: { friends: req.userId } });
+        res.json({ success: true, message: 'Unfriend successfull' });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
@@ -380,15 +530,19 @@ const unfriend = async(req,res)=>{
 module.exports = {
     register,
     resendOtp,
-    verifyOtp,
-    forgotOtp,
+    verifyOtpSend,
+    sendVerifyLink,
+    resendLink,
+    verifyEmail,
     forgotPassword,
     login,
     userAuth,
     fetchUserWatchlist,
     fetchUserDetails,
-    updateProfile,
     updateAvatar,
+    updateName,
+    updateEmail,
+    updateMobile,
     addFriend,
     allFriends,
     getRequests,

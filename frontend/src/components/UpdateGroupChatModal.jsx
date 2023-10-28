@@ -170,7 +170,6 @@ export default function UpdateGroupChatModal({ fetchAgain, setFetchAgain, fetchM
             justifyContent="center"
           >
             {selectedChat?.chatName}
-
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody
@@ -199,7 +198,7 @@ export default function UpdateGroupChatModal({ fetchAgain, setFetchAgain, fetchM
 
             <FormControl display="flex">
               <Input
-                placeholder="Group name"
+                placeholder={selectedChat?.chatName}
                 mb={3}
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)}

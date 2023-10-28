@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 
 import useCountdown from '../../hooks/useCountdown';
-import { newOtp, setNewPassword } from '../../services/userApi';
+import { sendOtp, setNewPassword } from '../../services/userApi';
 
 function Forgot() {
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ function Forgot() {
   const { secLeft, setTimer } = useCountdown();
   const resendOtp = async (phone) => {
     setTimer(30);
-    const { data } = await newOtp(phone);
+    const { data } = await sendOtp(phone);
     if (data.success) {
       toast.success(data.message);
     } else {

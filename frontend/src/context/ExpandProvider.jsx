@@ -9,11 +9,24 @@ export function ExpandProvider({ children }) {
   ExpandProvider.propTypes = {
     children: PropTypes.node.isRequired,
   };
-  useEffect(() => {
-    localStorage.setItem('chakra-ui-color-mode', 'dark');
-  }, []);
   const [expand, setExpand] = useState(true);
   const contextValue = useMemo(() => ({ expand, setExpand }), [expand, setExpand]);
+  const handleResize = () => {
+    if (window.innerWidth < 1024) {
+      setExpand(false);
+    } else {
+      setExpand(true);
+    }
+  };
+  useEffect(() => {
+    localStorage.setItem('chakra-ui-color-mode', 'dark');
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
     <ExpandContext.Provider value={contextValue}>
       {children}

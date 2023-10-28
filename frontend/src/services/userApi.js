@@ -3,9 +3,10 @@ import { userInstance } from '../axios/axiosInstance';
 
 export const userLogin = (values) => userInstance.post('/login', { ...values });
 export const userSignup = (values) => userInstance.post('/register', { ...values });
-export const sendOtp = () => userInstance.get('/resend-otp');
-export const verifyOtp = (otp) => userInstance.post('/verify', { otp });
-export const newOtp = (mobile) => userInstance.post('/forgot-otp', { mobile });
+export const sendOtp = (mobile) => userInstance.post('/resend-otp', { mobile });
+export const verifyOtp = (otp, mobile) => userInstance.post('/verify-otp', { otp, mobile });
+export const sendVerifyEmail = (email) => userInstance.post('/resend-link', { email });
+export const verifyEmail = (token) => userInstance.get(`/verify-email/${token}`);
 export const setNewPassword = (values) => userInstance.post('/forgot', { ...values });
 // export const isUserBlocked = () => userInstance.get('/is-blocked');
 export const userAuth = () => userInstance.get('/auth-user');
@@ -28,8 +29,10 @@ export const fetchSeason = (seasonId) => userInstance.get(`/season/${seasonId}`)
 export const fetchEpisode = (episodeId) => userInstance.get(`/episode/${episodeId}`);
 export const fetchWatchlist = () => userInstance.get('/watchlist');
 export const getUserDetails = () => userInstance.get('/profile');
-export const updateUserDetails = (data) => userInstance.patch('/update-profile', { ...data });
-export const updateUserAvatar = (formData) => userInstance.patch('/update-avatar', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+export const updateName = (name) => userInstance.patch('/update-name', { name });
+export const updateEmail = (email) => userInstance.patch('/update-email', { email });
+export const updateMobile = (mobile) => userInstance.patch('/update-mobile', { mobile });
+export const updatePicture = (formData) => userInstance.patch('/update-picture', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
 // export const getFriend = (friendId) => userInstance.get(`/users?userId=${friendId}`);
 export const friendRequest = (friendId) => userInstance.post(`/add-friend/${friendId}`);
 export const fetchRequests = () => userInstance.get('/friend-requests');

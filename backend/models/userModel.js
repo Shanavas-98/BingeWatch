@@ -12,10 +12,18 @@ const userSchema = new mongoose.Schema({
         required:true,
         unique:true
     },
+    emailVerified:{
+        type:Boolean,
+        default:false
+    },
     mobile:{
         type:Number,
         required:true,
         unique:true
+    },
+    mobileVerified:{
+        type:Boolean,
+        default:false
     },
     password:{
         type:String,
@@ -31,10 +39,6 @@ const userSchema = new mongoose.Schema({
         file:String,
         url:String
     },
-    verified:{
-        type:Boolean,
-        default:false
-    },
     blocked:{
         type:Boolean,
         default:false
@@ -42,12 +46,6 @@ const userSchema = new mongoose.Schema({
 },{
     timestamps:true
 });
-
-// Method to update and encrypt the password
-userSchema.methods.updatePassword = async function(newPassword) {
-    const salt = await bcrypt.genSalt();
-    this.password = await bcrypt.hash(newPassword, salt);
-};
 
 // Method to encrypt password of new user
 userSchema.pre('save',async function(next) {
