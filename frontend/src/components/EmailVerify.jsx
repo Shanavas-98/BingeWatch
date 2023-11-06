@@ -9,14 +9,14 @@ import { verifyEmail } from '../services/userApi';
 function EmailVerify() {
   const { token } = useParams();
   const [success, setSuccess] = useState(false);
-  const [expired, setExpired] = useState(false);
+  const [message, setMessage] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     async function verify(jwt) {
       try {
         const { data } = await verifyEmail(jwt);
         setSuccess(data?.success);
-        setExpired(data?.expired);
+        setMessage(data?.message);
         if (data?.success) {
           toast.success(data?.message);
         } else {
@@ -32,20 +32,23 @@ function EmailVerify() {
     <Box
       alignItems="center"
       justifyContent="center"
+      m={2}
     >
       <Heading>Email Verification</Heading>
       {success
         ? (
           <>
-            <Text>Email verified successfully</Text>
+            <Text>
+              {message}
+            </Text>
             <Button onClick={() => navigate('/login')}>Login</Button>
           </>
         )
         : (
-          <Text>Email verification failed</Text>
+          <Text>
+            {message}
+          </Text>
         )}
-      {expired
-      && <Text>Verification link Expired</Text>}
     </Box>
   );
 }

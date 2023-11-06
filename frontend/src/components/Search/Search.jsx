@@ -1,4 +1,4 @@
-import { Button, Input } from '@chakra-ui/react';
+import { Button, Input, Text } from '@chakra-ui/react';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -145,6 +145,7 @@ function Search() {
       </div>
       { movies && <MovieTiles results={movies} /> }
       { series && <ShowTiles results={series} /> }
+      {movies.length < 1 && series.length < 1 && <Text>Movie Not Found!</Text>}
     </div>
   );
 }

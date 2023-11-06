@@ -27,7 +27,7 @@ const sendOtp = (mobile) => {
 
 const sendVerifyLink = async (email, userId) => {
     try {
-        const expiry = 60*60;
+        const expiry = 60 * 60;
         const token = createToken(userId, expiry);
         const jwtToken = await new tokenModel({
             user: userId,
@@ -156,12 +156,12 @@ const forgotPassword = async (req, res) => {
     }
 };
 
-const resendLink = async (req,res)=>{
+const resendLink = async (req, res) => {
     try {
         const linkSend = await sendVerifyLink(req.body.email, req.userId);
-        res.json({success:linkSend});
+        res.json({ success: linkSend });
     } catch (error) {
-        res.json({success:false, message:error.message});
+        res.json({ success: false, message: error.message });
     }
 };
 
@@ -169,22 +169,22 @@ const verifyEmail = async (req, res) => {
     try {
         const token = req.params.token;
         if (!token || token === 'null') {
-            return res.json({ success: false, expired:false, message: 'verification token required' });
+            throw Error('Verification token required');
         }
         const decoded = jwt.verify(token, process.env.JWT_KEY);
         const now = Math.floor(Date.now() / 1000);
         if (decoded.exp && now > decoded.exp) {
-            return res.json({ success: false, expired:true, message: 'verification link expired' });
+            throw Error('Verification link expired');
         }
-        const verify = await tokenModel.findOne({$and:[{ user: decoded.id},{token:token}] });
+        const verify = await tokenModel.findOne({ $and: [{ user: decoded.id }, { token: token }] });
         if (verify) {
             await userModel.updateOne({ _id: decoded.id }, {
                 $set: { emailVerified: true }
             });
-            return res.json({ success: true, expired:false, message: 'email verified successfully' });
+            return res.json({ success: true, message: 'Email verified successfully' });
         }
     } catch (error) {
-        res.json({success:false, expired:false, message:error.message});
+        return res.json({ success: false, message: error.message });
     } finally {
         await tokenModel.deleteOne({ token: req.params.token });
     }
@@ -295,7 +295,7 @@ const updateName = async (req, res) => {
                 fullName: name
             }
         });
-        if(!user){
+        if (!user) {
             return res.json({ success: false, message: 'user not found' });
         }
         return res.json({ success: true, message: 'Name updated successfully' });
@@ -312,7 +312,7 @@ const updateAvatar = async (req, res) => {
                 picture: { file: filename, url: path }
             }
         });
-        if(!user){
+        if (!user) {
             return res.json({ success: false, message: 'user not found' });
         }
         return res.json({ status: true, message: 'Picture updated successfully' });
@@ -328,11 +328,11 @@ const updateEmail = async (req, res) => {
         if (!email) {
             throw Error('email is required');
         }
-        const exist = await userModel.findOne({email: email});
-        if(exist._id === userId){
+        const exist = await userModel.findOne({ email: email });
+        if (exist._id === userId) {
             throw Error('email already linked to your account');
         }
-        if(exist){
+        if (exist) {
             throw Error('email already linked to another account');
         }
         const user = await userModel.updateOne({ _id: userId }, {
@@ -341,11 +341,11 @@ const updateEmail = async (req, res) => {
                 emailVerified: false
             }
         });
-        if(!user){
+        if (!user) {
             return res.json({ success: false, message: 'user not found' });
         }
         const linkSend = await sendVerifyLink(user?.email, user?._id);
-        return res.json({ success: true, link:linkSend, message: 'email updated successfully' });
+        return res.json({ success: true, link: linkSend, message: 'email updated successfully' });
     } catch (error) {
         res.json(error);
     }
@@ -358,11 +358,11 @@ const updateMobile = async (req, res) => {
         if (!mobile) {
             throw Error('mobile is required');
         }
-        const exist = await userModel.findOne({mobile: mobile});
-        if(exist._id === userId){
+        const exist = await userModel.findOne({ mobile: mobile });
+        if (exist._id === userId) {
             throw Error('mobile already linked to your account');
         }
-        if(exist){
+        if (exist) {
             throw Error('mobile already linked to another account');
         }
         const user = await userModel.updateOne({ _id: userId }, {
@@ -371,13 +371,13 @@ const updateMobile = async (req, res) => {
                 mobileVerified: false
             }
         });
-        if(!user){
+        if (!user) {
             return res.json({ success: false, message: 'user not found' });
         }
         const otpSend = sendOtp(user?.mobile);
-        return res.json({ success: true, otp:otpSend, message: 'mobile updated successfully' });
+        return res.json({ success: true, otp: otpSend, message: 'mobile updated successfully' });
     } catch (error) {
-        res.json({success:false, message:error.message});
+        res.json({ success: false, message: error.message });
     }
 };
 
