@@ -168,15 +168,18 @@ const resendLink = async (req, res) => {
 const verifyEmail = async (req, res) => {
     try {
         const token = req.params.token;
+        console.log('token',token);
         if (!token || token === 'null') {
             throw Error('Verification token required');
         }
         const decoded = jwt.verify(token, process.env.JWT_KEY);
+        console.log('decoded',decoded);
         const now = Math.floor(Date.now() / 1000);
-        if (decoded.exp && now > decoded.exp) {
+        if (decoded.exp !== undefined && now > decoded.exp) {
             throw Error('Verification link expired');
         }
-        const verify = await tokenModel.findOne({ $and: [{ user: decoded.id }, { token: token }] });
+        const verify = await tokenModel.findOne({ user: decoded.id, token: token });
+        console.log('verified',verify);
         if (verify) {
             await userModel.updateOne({ _id: decoded.id }, {
                 $set: { emailVerified: true }
