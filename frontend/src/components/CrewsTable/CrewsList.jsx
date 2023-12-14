@@ -60,7 +60,7 @@ function CrewsList() {
       </div>
     ); // Display a loading indicator
   }
-  if (crews.length < 1) {
+  if (crews?.length < 1) {
     return (
       <div>
         <h1 className="text-white">Crews List is Empty</h1>

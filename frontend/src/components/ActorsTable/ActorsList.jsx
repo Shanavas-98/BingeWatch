@@ -159,7 +159,7 @@ function ActorsList() {
           </tr>
         </thead>
         <tbody>
-          {actors?.map((person) => (
+          {actors.length > 0 && actors?.map((person) => (
             <tr
               key={person?.actorId}
             >

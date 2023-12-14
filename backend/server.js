@@ -33,16 +33,27 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use(express.static(path.join(__dirname, '../frontend/build')));
+app.use(express.static(path.join(__dirname, '/build')));
 
-app.use('/',userRoute);
-app.use('/admin',adminRoute);
-app.use('/chat',chatRoutes);
-app.use('/message',messageRoutes);
 
-const server = app.listen(process.env.PORT,console.log('Server Started on PORT ',process.env.PORT));
+app.use('/api',userRoute);
+app.use('/admin/api',adminRoute);
+app.use('/api/chat',chatRoutes);
+app.use('/api/message',messageRoutes);
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '/build', 'index.html'));
+});
+const server = app.listen(process.env.PORT,(err)=>{
+    if(err){
+        console.log(err);
+    }else{
+        console.log(`Server running on http://localhost:${process.env.PORT}`);
+    }
+});
+
 
 const io = require('socket.io')(server,{
     pingTimeout:60000,

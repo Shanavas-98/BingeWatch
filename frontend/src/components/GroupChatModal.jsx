@@ -46,7 +46,7 @@ export default function GroupChatModal({ children }) {
     }
   };
   const handleSubmit = async () => {
-    if (!groupName || !selectedUsers) {
+    if (!groupName || selectedUsers.length < 1) {
       toast({
         title: 'Please fill all fields',
         status: 'warning',

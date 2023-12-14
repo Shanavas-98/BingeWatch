@@ -185,7 +185,7 @@ export default function UpdateGroupChatModal({ fetchAgain, setFetchAgain, fetchM
               flexWrap="wrap"
               pb={3}
             >
-              {selectedUsers?.map((person) => (
+              {selectedUsers.length > 0 && selectedUsers?.map((person) => (
                 <UserBadgeItem
                   key={person?._id}
                   user={person}
