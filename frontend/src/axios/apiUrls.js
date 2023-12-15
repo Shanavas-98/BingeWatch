@@ -1,5 +1,5 @@
 const USER_URL = `${process.env.REACT_APP_SERVER_URL}/api`;
-const ADMIN_URL = `${process.env.REACT_APP_SERVER_URL}/admin/api`;
+const ADMIN_URL = `${process.env.REACT_APP_SERVER_URL}/api/admin`;
 const TMDB_URL = 'https://api.themoviedb.org/3';
 const MOVIE_URL = 'https://api.themoviedb.org/3/movie';
 const SHOW_URL = 'https://api.themoviedb.org/3/tv';

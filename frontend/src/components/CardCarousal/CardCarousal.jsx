@@ -24,7 +24,7 @@ function CardCarousal({ cards, baseLink, style }) {
           <div
             role="button"
             tabIndex={0}
-            key={card?.key}
+            key={card?.id}
             className={`flex flex-col m-1 ${style?.wd} rounded-md items-center`}
             onClick={() => handleCardClick(card?.id)}
             onKeyDown={(event) => handleKeyPress(event, card?.id)}

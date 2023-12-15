@@ -142,9 +142,9 @@ function ViewSeries({ showId }) {
             ))}
           </div>
           <h2 className="text-white text-lg mb-2">Casts</h2>
-          <CardCarousal key={castCards[0].key} cards={castCards} baseLink="/actor" style={cardStyle} />
+          <CardCarousal cards={castCards} baseLink="/actor" style={cardStyle} />
           <h2 className="text-white text-lg mb-2">Crews</h2>
-          <CardCarousal key={crewCards[0].key} cards={crewCards} baseLink="/crew" style={cardStyle} />
+          <CardCarousal cards={crewCards} baseLink="/crew" style={cardStyle} />
         </div>
       </div>
     );
