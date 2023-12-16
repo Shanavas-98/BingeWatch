@@ -40,11 +40,11 @@ app.use('/api/chat',chatRoutes);
 app.use('/api/message',messageRoutes);
 
 // Serve React app's static files
-app.use(express.static(path.join(__dirname, '../frontend/build')));
+app.use(express.static(path.join(__dirname, './build')));
 
 // Handle React app's route
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+    res.sendFile(path.join(__dirname, './build', 'index.html'));
 });
 
 //server running on port
