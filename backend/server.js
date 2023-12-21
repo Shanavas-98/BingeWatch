@@ -16,15 +16,15 @@ const connectDB = require('./config/db');
 connectDB();
 
 app.use(cors({
-    origin:process.env.CLIENT_URL,
-    methods:['GET','POST','PUT','PATCH','DELETE'],
-    credentials:true
+    origin: [process.env.CLIENT_URL1, process.env.CLIENT_URL2],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    credentials: true
 }));
 
 app.use(cookieSession({
-    name:'session',
-    keys:process.env.SESSION_KEY,
-    maxAge:24*60*60*1000
+    name: 'session',
+    keys: process.env.SESSION_KEY,
+    maxAge: 24 * 60 * 60 * 1000
 }));
 
 // Middleware to parse form data
@@ -34,10 +34,10 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Your API routes...
-app.use('/api',userRoute);
-app.use('/api/admin',adminRoute);
-app.use('/api/chat',chatRoutes);
-app.use('/api/message',messageRoutes);
+app.use('/api', userRoute);
+app.use('/api/admin', adminRoute);
+app.use('/api/chat', chatRoutes);
+app.use('/api/message', messageRoutes);
 
 // Serve React app's static files
 app.use(express.static(path.join(__dirname, 'build')));
@@ -48,50 +48,50 @@ app.get('*', (req, res) => {
 });
 
 //server running on port
-const server = app.listen(process.env.PORT,(err)=>{
-    if(err){
+const server = app.listen(process.env.PORT, (err) => {
+    if (err) {
         console.log(err);
-    }else{
+    } else {
         console.log(`Server running on http://localhost:${process.env.PORT}`);
     }
 });
 
 
-const io = require('socket.io')(server,{
-    pingTimeout:60000,
-    cors:{
+const io = require('socket.io')(server, {
+    pingTimeout: 60000,
+    cors: {
         origin: process.env.CLIENT_URL
     }
 });
 
-io.on('connection',(socket)=>{
+io.on('connection', (socket) => {
     console.log('connected socket.io');
-    socket.on('setup',(userData)=>{
+    socket.on('setup', (userData) => {
         socket.join(userData?.id);
         socket.emit('connected');
     });
 
-    socket.on('join chat',(room)=>{
+    socket.on('join chat', (room) => {
         socket.join(room);
     });
 
-    socket.on('typing',(room)=>socket.in(room).emit('typing'));
-    socket.on('stop typing',(room)=>socket.in(room).emit('stop typing'));
+    socket.on('typing', (room) => socket.in(room).emit('typing'));
+    socket.on('stop typing', (room) => socket.in(room).emit('stop typing'));
 
-    socket.on('new message',(newMsgRecieved)=>{
+    socket.on('new message', (newMsgRecieved) => {
         let chat = newMsgRecieved?.chat;
-        if(!chat?.users){
+        if (!chat?.users) {
             return console.log('chat users not defined');
         }
         chat?.users?.forEach(user => {
-            if(user?._id==newMsgRecieved?.sender?._id){
+            if (user?._id == newMsgRecieved?.sender?._id) {
                 return;
             }
-            socket.in(user?._id).emit('message recieved',newMsgRecieved);
+            socket.in(user?._id).emit('message recieved', newMsgRecieved);
         });
     });
 
-    socket.off('setup',()=>{
+    socket.off('setup', () => {
         console.log('socket disconnected');
         socket.leave(userData?.id);
     });
